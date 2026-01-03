@@ -238,7 +238,7 @@ function FlipCard({ project, isSimple = false, className = "", showNumber = fals
       {/* Flip container - only image area */}
       <div
         className={`relative cursor-pointer overflow-hidden rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] ${
-          isSimple ? "mb-6 aspect-[4/3]" : "mb-8 aspect-[8/9]"
+          isSimple ? "mb-6 min-h-[75vh]" : "mb-8 aspect-[8/9]"
         }`}
         style={isSimple ? undefined : { perspective: "1000px" }}
         onClick={() => setIsFlipped(!isFlipped)}
@@ -530,8 +530,8 @@ function SimpleWorksSection() {
           </p>
         </div>
 
-        {/* Simple grid layout */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        {/* Simple grid layout - single column for full-height cards */}
+        <div className="grid grid-cols-1 gap-12">
           {PROJECTS.map((work) => (
             <FlipCard key={work.slug} project={work} isSimple />
           ))}
