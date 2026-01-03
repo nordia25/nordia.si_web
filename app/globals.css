@@ -888,10 +888,34 @@ p, span, a, li, label {
   }
 }
 
-/* Fallback for WebkitTextFillColor - ensure text is visible */
-@supports not (-webkit-text-fill-color: transparent) {
-  [style*="WebkitTextFillColor"] {
-    color: inherit !important;
+/* CRITICAL: Force hero text visible if gradient/stroke effects fail
+   This is a nuclear fallback for Windows GPU issues */
+#hero h1,
+#hero h1 span,
+#hero p,
+#hero a,
+#hero button,
+#hero [class*="rotating"],
+#hero [class*="text"] {
+  color: #f5f5f7 !important;
+  -webkit-text-fill-color: #f5f5f7 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Allow gradient text effects ONLY if fully supported */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) and (-webkit-text-fill-color: transparent) {
+  #hero h1 span[style*="background"],
+  #hero [style*="background"][style*="clip"] {
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+}
+
+/* Allow outline text effects ONLY if stroke is supported */
+@supports (-webkit-text-stroke: 1px white) and (-webkit-text-fill-color: transparent) {
+  #hero [style*="stroke"] {
+    -webkit-text-fill-color: transparent !important;
   }
 }
 
