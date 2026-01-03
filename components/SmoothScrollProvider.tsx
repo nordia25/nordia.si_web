@@ -1,0 +1,64 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useIsSlowDevice } from "@/hooks/useDeviceDetection";
+
+gsap.registerPlugin(ScrollTrigger);
+
+interface SmoothScrollProviderProps {
+  children: React.ReactNode;
+}
+
+export default function SmoothScrollProvider({
+  children,
+}: SmoothScrollProviderProps) {
+  const lenisRef = useRef<Lenis | null>(null);
+  const tickerCallbackRef = useRef<((time: number) => void) | null>(null);
+  const isSlowDevice = useIsSlowDevice();
+
+  useEffect(() => {
+    // Skip smooth scroll on slow devices for better performance
+    if (isSlowDevice) {
+      return;
+    }
+
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+    });
+
+    lenisRef.current = lenis;
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    // Store the callback in a ref so we can remove the SAME function
+    const tickerCallback = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+    tickerCallbackRef.current = tickerCallback;
+
+    gsap.ticker.add(tickerCallback);
+
+    // Enable lag smoothing for better performance on slower devices
+    // Lower values = more responsive but can cause jumps
+    // Higher values = smoother but more lag
+    gsap.ticker.lagSmoothing(500, 33);
+
+    return () => {
+      // Remove the SAME callback function we added
+      if (tickerCallbackRef.current) {
+        gsap.ticker.remove(tickerCallbackRef.current);
+      }
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, [isSlowDevice]);
+
+  return <>{children}</>;
+}
