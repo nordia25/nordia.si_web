@@ -121,6 +121,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="sl" className={texGyreHeros.variable}>
+      <head>
+        <link
+          rel="preload"
+          href="/nordia-hero-bg.jpg"
+          as="image"
+          type="image/jpeg"
+        />
+      </head>
       <body className="font-sans antialiased">
         <script
           type="application/ld+json"
