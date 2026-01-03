@@ -25,7 +25,9 @@ export function useIsTouchDevice() {
       setIsTouch(
         safeMatchMedia("(hover: none) and (pointer: coarse)") ||
           "ontouchstart" in window ||
-          navigator.maxTouchPoints > 0
+          (typeof navigator !== "undefined" &&
+            "maxTouchPoints" in navigator &&
+            navigator.maxTouchPoints > 0)
       );
     }, 0);
   }, []);

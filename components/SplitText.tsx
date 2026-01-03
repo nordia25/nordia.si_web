@@ -38,21 +38,20 @@ export default function SplitText({
       if (hasAnimated.current) return;
       hasAnimated.current = true;
 
+      // Simplified animation without 3D transforms for GPU compatibility
       gsap.fromTo(
         elements,
         {
-          y: "110%",
-          rotateX: -80,
+          y: "100%",
           opacity: 0,
         },
         {
           y: "0%",
-          rotateX: 0,
           opacity: 1,
-          duration: 1.2,
+          duration: 1,
           stagger,
           delay,
-          ease: "expo.out",
+          ease: "power4.out",
         }
       );
     };
@@ -79,11 +78,9 @@ export default function SplitText({
         <span
           key={i}
           className="inline-block overflow-hidden"
-          style={{ perspective: "1000px" }}
         >
           <span
             className="split-item inline-block"
-            style={{ transformStyle: "preserve-3d" }}
           >
             {char === " " ? "\u00A0" : char}
           </span>

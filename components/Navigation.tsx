@@ -35,7 +35,11 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      try {
+        document.body.style.overflow = "hidden";
+      } catch {
+        // Ignore - scroll lock is non-critical
+      }
 
       // Animate in - simple fade
       const tl = gsap.timeline();
@@ -66,7 +70,11 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
         "-=0.3"
       );
     } else {
-      document.body.style.overflow = "";
+      try {
+        document.body.style.overflow = "";
+      } catch {
+        // Ignore - scroll lock is non-critical
+      }
 
       // Animate out
       const tl = gsap.timeline();
@@ -89,7 +97,11 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
     }
 
     return () => {
-      document.body.style.overflow = "";
+      try {
+        document.body.style.overflow = "";
+      } catch {
+        // Ignore - scroll lock is non-critical
+      }
     };
   }, [isOpen]);
 

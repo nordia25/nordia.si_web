@@ -70,6 +70,7 @@ export default function HeroBackground() {
       />
 
       {/* Layer 5: Subtle brand tint */}
+      {/* Note: mixBlendMode removed - causes GPU rendering issues on Intel iGPU and older NVIDIA drivers */}
       <div
         className="pointer-events-none absolute inset-0 z-[5]"
         style={{
@@ -78,7 +79,6 @@ export default function HeroBackground() {
             transparent 50%,
             rgba(59,130,246,0.06) 100%
           )`,
-          mixBlendMode: "overlay",
         }}
         aria-hidden="true"
       />
