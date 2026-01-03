@@ -76,7 +76,7 @@ export default function ParallaxVideo() {
         </video>
 
         {/* Subtle color overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/10 via-transparent to-blue-900/10 mix-blend-overlay" />
+        {/* Color overlay removed - mix-blend-overlay causes GPU issues on Windows */}
       </div>
 
       {/* Top transition - longer, smoother fade */}

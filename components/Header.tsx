@@ -53,7 +53,7 @@ export default function Header() {
       <header
         className={`fixed left-0 right-0 top-0 py-6 transition-opacity duration-700 md:py-8 ${
           isVisible ? "opacity-100" : "opacity-0"
-        } ${isMenuOpen ? "pointer-events-none z-[101]" : "z-40 mix-blend-difference"}`}
+        } ${isMenuOpen ? "pointer-events-none z-[101]" : "z-40"}`}
       >
         <div className="container-wide flex items-center justify-between">
           {/* Logo */}

@@ -131,7 +131,7 @@ export default function PrivacyPage() {
       <nav className="fixed left-0 right-0 top-0 z-50 px-6 py-6 md:px-12">
         <Link
           href="/"
-          className="group inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/50 px-5 py-2.5 backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-black/80"
+          className="group inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/90 px-5 py-2.5 transition-all duration-300 hover:border-white/30 hover:bg-black"
         >
           <svg
             className="h-4 w-4 rotate-180 transition-transform duration-300 group-hover:-translate-x-1"

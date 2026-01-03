@@ -10,13 +10,27 @@ import { usePreloader } from "@/contexts/PreloaderContext";
 // Empty subscribe function for one-time checks
 const emptySubscribe = () => () => {};
 
+// Safe matchMedia wrapper that doesn't throw on older browsers
+function safeMatchMedia(query: string): boolean {
+  try {
+    return window.matchMedia(query).matches;
+  } catch {
+    return false;
+  }
+}
+
 // Hook to detect touch devices (SSR-safe, hydration-safe)
 function useIsTouchDevice() {
   return useSyncExternalStore(
     emptySubscribe,
-    () =>
-      window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
-      "ontouchstart" in window,
+    () => {
+      try {
+        return safeMatchMedia("(hover: none) and (pointer: coarse)") ||
+          "ontouchstart" in window;
+      } catch {
+        return false;
+      }
+    },
     () => false // Server: assume not touch
   );
 }
@@ -351,7 +365,7 @@ export default function HeroSection() {
                   {/* Border container */}
                   <span className="relative block rounded-full p-px bg-gradient-to-r from-white/20 via-white/30 to-white/20 group-hover/cta:from-[#1d4ed8] group-hover/cta:via-[#1d4ed8] group-hover/cta:to-[#1d4ed8] transition-all duration-500">
                     {/* Inner button */}
-                    <span className="relative flex items-center gap-4 rounded-full bg-black/80 px-10 py-5 backdrop-blur-sm transition-all duration-500 group-hover/cta:bg-[#1d4ed8]">
+                    <span className="relative flex items-center gap-4 rounded-full bg-black/90 px-10 py-5 transition-all duration-500 group-hover/cta:bg-[#1d4ed8]">
                       {/* Background overlay for smooth transition */}
                       <span className="absolute inset-0 rounded-full bg-black/80 transition-opacity duration-500 group-hover/cta:opacity-0" />
 

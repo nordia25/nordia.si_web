@@ -5,6 +5,7 @@ import Preloader from "./Preloader";
 import CustomCursor from "./CustomCursor";
 import NoiseOverlay from "./NoiseOverlay";
 import SmoothScrollProvider from "./SmoothScrollProvider";
+import ErrorBoundary from "./ErrorBoundary";
 import { PreloaderProvider, usePreloader } from "@/contexts/PreloaderContext";
 
 // Inner component that uses the preloader context
@@ -80,15 +81,17 @@ export default function AppWrapper({ children }: AppWrapperProps) {
   }, []);
 
   return (
-    <PreloaderProvider>
-      <AppContent
-        showPreloader={showPreloader}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-        isMounted={isMounted}
-      >
-        {children}
-      </AppContent>
-    </PreloaderProvider>
+    <ErrorBoundary>
+      <PreloaderProvider>
+        <AppContent
+          showPreloader={showPreloader}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          isMounted={isMounted}
+        >
+          {children}
+        </AppContent>
+      </PreloaderProvider>
+    </ErrorBoundary>
   );
 }

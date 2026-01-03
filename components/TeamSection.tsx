@@ -174,7 +174,7 @@ export default function TeamSection() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`${member.name} na ${social.name}`}
-                            className="pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white/80 backdrop-blur-sm transition-all duration-200 hover:bg-white hover:text-black"
+                            className="pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full border border-white/20 bg-white/20 text-white/80 transition-all duration-200 hover:bg-white hover:text-black"
                           >
                             <span className="text-xs font-medium">
                               {social.initial}
