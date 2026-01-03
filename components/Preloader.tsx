@@ -16,16 +16,33 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   const taglineFillRef = useRef<HTMLDivElement>(null);
   const hasCompletedRef = useRef(false);
 
-  // Helper function to force hide the preloader element
+  // Helper function to force hide the preloader element (with error handling)
   const forceHidePreloader = () => {
-    if (preloaderRef.current) {
-      preloaderRef.current.style.display = 'none';
-      preloaderRef.current.style.visibility = 'hidden';
-      preloaderRef.current.style.opacity = '0';
-      preloaderRef.current.style.pointerEvents = 'none';
-      // Add data attribute for CSS fallback
-      preloaderRef.current.setAttribute('data-preloader-complete', 'true');
-      preloaderRef.current.classList.add('preloader-complete');
+    try {
+      if (preloaderRef.current) {
+        preloaderRef.current.style.display = 'none';
+        preloaderRef.current.style.visibility = 'hidden';
+        preloaderRef.current.style.opacity = '0';
+        preloaderRef.current.style.pointerEvents = 'none';
+        // Add data attribute for CSS fallback
+        preloaderRef.current.setAttribute('data-preloader-complete', 'true');
+        preloaderRef.current.classList.add('preloader-complete');
+      }
+    } catch (e) {
+      console.error('forceHidePreloader failed:', e);
+    }
+  };
+
+  // Safe completion - ALWAYS calls onComplete even if hiding fails
+  const safeComplete = () => {
+    if (hasCompletedRef.current) return;
+    hasCompletedRef.current = true;
+    forceHidePreloader();
+    // CRITICAL: onComplete MUST be called to unmount the preloader
+    try {
+      onComplete();
+    } catch (e) {
+      console.error('onComplete failed:', e);
     }
   };
 
@@ -34,9 +51,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
     const safetyTimeout = setTimeout(() => {
       if (!hasCompletedRef.current) {
         console.warn('Preloader safety timeout triggered - forcing hide');
-        hasCompletedRef.current = true;
-        forceHidePreloader(); // CRITICAL: Actually hide the DOM element
-        onComplete();
+        safeComplete();
       }
     }, 5000);
 
@@ -51,9 +66,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
         if (!textElement || !fillTextElement) {
           // Elements not found - complete immediately and hide
-          hasCompletedRef.current = true;
-          forceHidePreloader();
-          onComplete();
+          safeComplete();
           return;
         }
 
@@ -143,22 +156,14 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           duration: 0.6,
           ease: "power3.inOut",
           onComplete: () => {
-            if (!hasCompletedRef.current) {
-              hasCompletedRef.current = true;
-              forceHidePreloader(); // Also hide on animation complete
-              onComplete();
-            }
+            safeComplete();
           },
         });
       }, preloaderRef);
     } catch (error) {
       // Animation setup failed - complete immediately and hide
       console.error('Preloader animation failed:', error);
-      if (!hasCompletedRef.current) {
-        hasCompletedRef.current = true;
-        forceHidePreloader();
-        onComplete();
-      }
+      safeComplete();
     }
 
     return () => {
