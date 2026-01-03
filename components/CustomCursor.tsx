@@ -35,6 +35,18 @@ function CustomCursor() {
     setCursorText(text);
   }, []);
 
+  // Hide system cursor only when custom cursor is active
+  useEffect(() => {
+    if (isSlowDevice) return;
+
+    // Add class to hide system cursor
+    document.body.classList.add("custom-cursor-active");
+
+    return () => {
+      document.body.classList.remove("custom-cursor-active");
+    };
+  }, [isSlowDevice]);
+
   useEffect(() => {
     // Skip all cursor logic on slow devices
     if (isSlowDevice) return;

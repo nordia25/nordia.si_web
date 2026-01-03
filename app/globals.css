@@ -33,11 +33,9 @@
    BASE — Clean & Minimal
    ============================================ */
 
-/* Hide cursor on desktop - optimized selector */
-@media (min-width: 1025px) {
-  body {
-    cursor: none;
-  }
+/* Custom cursor active - hide system cursor via JS class */
+body.custom-cursor-active {
+  cursor: none;
 }
 
 html {
