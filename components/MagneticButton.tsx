@@ -7,6 +7,14 @@ import { useIsTouchDevice } from "@/hooks/useDeviceDetection";
 // Throttle interval in ms (60fps = 16ms)
 const THROTTLE_MS = 16;
 
+// Animation timing constants
+const ANIMATION = {
+  /** Movement animation duration */
+  move: 0.4,
+  /** Return animation duration (elastic) */
+  return: 0.7,
+} as const;
+
 interface MagneticButtonProps {
   children: ReactNode;
   className?: string;
@@ -15,6 +23,10 @@ interface MagneticButtonProps {
   strength?: number;
 }
 
+/**
+ * Button/link with magnetic cursor-following effect.
+ * Disabled on touch devices for better mobile performance.
+ */
 function MagneticButton({
   children,
   className = "",
@@ -44,14 +56,14 @@ function MagneticButton({
       gsap.to(button, {
         x: x * strength,
         y: y * strength,
-        duration: 0.4,
+        duration: ANIMATION.move,
         ease: "power3.out",
       });
 
       gsap.to(textRef.current, {
         x: x * strength * 0.5,
         y: y * strength * 0.5,
-        duration: 0.4,
+        duration: ANIMATION.move,
         ease: "power3.out",
       });
     },
@@ -62,14 +74,14 @@ function MagneticButton({
     gsap.to(buttonRef.current, {
       x: 0,
       y: 0,
-      duration: 0.7,
+      duration: ANIMATION.return,
       ease: "elastic.out(1, 0.3)",
     });
 
     gsap.to(textRef.current, {
       x: 0,
       y: 0,
-      duration: 0.7,
+      duration: ANIMATION.return,
       ease: "elastic.out(1, 0.3)",
     });
   }, []);

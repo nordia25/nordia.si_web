@@ -2,6 +2,10 @@
 
 import { useIsSlowDeviceConservative } from "@/hooks/useDeviceDetection";
 
+/**
+ * Subtle animated noise texture overlay for visual depth.
+ * Disabled on slow devices to reduce CPU usage.
+ */
 export default function NoiseOverlay() {
   const isSlowDevice = useIsSlowDeviceConservative();
 

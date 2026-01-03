@@ -8,14 +8,36 @@ import { useIsSlowDevice } from "@/hooks/useDeviceDetection";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Lenis configuration for smooth, natural-feeling scroll
+const LENIS_CONFIG = {
+  /** Scroll animation duration in seconds */
+  duration: 1.2,
+  /** Lag smoothing threshold in ms (helps on slower devices) */
+  lagThreshold: 500,
+  /** Target FPS for lag smoothing (33ms ≈ 30fps minimum) */
+  lagMinFrameTime: 33,
+} as const;
+
+/**
+ * Custom easing function for natural scroll feel.
+ * Based on exponential decay: fast start, smooth deceleration.
+ */
+function scrollEasing(t: number): number {
+  return Math.min(1, 1.001 - Math.pow(2, -10 * t));
+}
+
 interface SmoothScrollProviderProps {
   children: React.ReactNode;
 }
 
+/**
+ * Provides smooth scrolling via Lenis library.
+ * Automatically disabled on slow/mobile devices for better performance.
+ * Falls back to native scroll if initialization fails.
+ */
 export default function SmoothScrollProvider({
   children,
 }: SmoothScrollProviderProps) {
-  const lenisRef = useRef<Lenis | null>(null);
   const tickerCallbackRef = useRef<((time: number) => void) | null>(null);
   const isSlowDevice = useIsSlowDevice();
 
@@ -29,48 +51,39 @@ export default function SmoothScrollProvider({
 
     try {
       lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        duration: LENIS_CONFIG.duration,
+        easing: scrollEasing,
         orientation: "vertical",
         gestureOrientation: "vertical",
         smoothWheel: true,
       });
 
-      lenisRef.current = lenis;
-
       lenis.on("scroll", ScrollTrigger.update);
 
-      // Store the callback in a ref so we can remove the SAME function
+      // Store callback in ref to ensure we remove the same function on cleanup
       const tickerCallback = (time: number) => {
-        if (lenis) {
-          lenis.raf(time * 1000);
-        }
+        lenis?.raf(time * 1000);
       };
       tickerCallbackRef.current = tickerCallback;
 
       gsap.ticker.add(tickerCallback);
-
-      // Enable lag smoothing for better performance on slower devices
-      gsap.ticker.lagSmoothing(500, 33);
+      gsap.ticker.lagSmoothing(
+        LENIS_CONFIG.lagThreshold,
+        LENIS_CONFIG.lagMinFrameTime
+      );
     } catch (error) {
-      // Lenis failed to initialize - fall back to native scroll
-      console.warn('Lenis smooth scroll failed to initialize:', error);
-      lenisRef.current = null;
+      console.warn("Lenis smooth scroll failed to initialize:", error);
     }
 
     return () => {
-      // Remove the SAME callback function we added
       if (tickerCallbackRef.current) {
         gsap.ticker.remove(tickerCallbackRef.current);
       }
-      if (lenis) {
-        try {
-          lenis.destroy();
-        } catch {
-          // Ignore destroy errors
-        }
+      try {
+        lenis?.destroy();
+      } catch {
+        // Ignore destroy errors
       }
-      lenisRef.current = null;
     };
   }, [isSlowDevice]);
 

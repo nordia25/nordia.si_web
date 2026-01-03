@@ -817,42 +817,10 @@ body {
 }
 
 /* ============================================
-   WINDOWS GPU FALLBACK — Force visibility
-   Ensures content is visible even if GPU rendering fails
-   CRITICAL: These rules ensure the site works on ALL Windows GPUs
+   FALLBACKS — Ensure visibility on all browsers
    ============================================ */
 
-/* Fallback colors if CSS variables fail */
-#hero,
-#hero * {
-  color: #f5f5f7;
-}
-
-/* NUCLEAR OPTION: Force ALL content visible
-   This overrides any animation/transition states that may be stuck */
-body,
-main,
-section,
-article,
-div[class*="container"],
-div[class*="hero"],
-div[class*="works"],
-div[class*="about"],
-header,
-footer,
-nav {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-/* Ensure all text is visible with solid fallback colors */
-h1, h2, h3, h4, h5, h6,
-p, span, a, li, label {
-  visibility: visible !important;
-}
-
-/* Force preloader to be hidden after animation completes
-   JavaScript handles this, but CSS backup in case of failure */
+/* Force preloader hidden after animation (CSS backup for JS) */
 .preloader-complete,
 [data-preloader-complete="true"] {
   display: none !important;
@@ -860,62 +828,19 @@ p, span, a, li, label {
   opacity: 0 !important;
 }
 
-/* Ensure z-index stacking doesn't hide content */
-#hero {
-  z-index: 1 !important;
-}
-
-/* Force hero content above any overlays */
-#hero > div {
-  position: relative;
-  z-index: 10;
-}
-
-/* Ensure gradient text has fallback - show solid color if gradient-clip fails */
+/* Gradient text fallback - solid color if background-clip unsupported */
 .text-gradient,
 .text-gradient-hero,
 .text-gradient-animated {
   color: #22d3ee;
 }
 
-/* Only use transparent fill if background-clip is supported */
 @supports (-webkit-background-clip: text) or (background-clip: text) {
   .text-gradient,
   .text-gradient-hero,
   .text-gradient-animated {
     -webkit-text-fill-color: transparent;
     color: transparent;
-  }
-}
-
-/* CRITICAL: Force hero text visible if gradient/stroke effects fail
-   This is a nuclear fallback for Windows GPU issues */
-#hero h1,
-#hero h1 span,
-#hero p,
-#hero a,
-#hero button,
-#hero [class*="rotating"],
-#hero [class*="text"] {
-  color: #f5f5f7 !important;
-  -webkit-text-fill-color: #f5f5f7 !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* Allow gradient text effects ONLY if fully supported */
-@supports ((-webkit-background-clip: text) or (background-clip: text)) and (-webkit-text-fill-color: transparent) {
-  #hero h1 span[style*="background"],
-  #hero [style*="background"][style*="clip"] {
-    color: transparent !important;
-    -webkit-text-fill-color: transparent !important;
-  }
-}
-
-/* Allow outline text effects ONLY if stroke is supported */
-@supports (-webkit-text-stroke: 1px white) and (-webkit-text-fill-color: transparent) {
-  #hero [style*="stroke"] {
-    -webkit-text-fill-color: transparent !important;
   }
 }
 
@@ -927,20 +852,18 @@ p, span, a, li, label {
 /* .service-accordion, .team-member - no longer using will-change */
 
 /* Reduce paint areas for fixed elements */
-.preloader,
+.preloader {
+  contain: layout paint;
+}
+
 .noise {
   contain: strict;
 }
 
 
 /* ============================================
-   MARQUEE ANIMATIONS
+   ADDITIONAL ANIMATIONS
    ============================================ */
-
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
 
 @keyframes marquee-reverse {
   0% { transform: translateX(-50%); }
@@ -960,7 +883,6 @@ p, span, a, li, label {
   animation-play-state: paused;
 }
 
-/* Scroll indicator animation */
 @keyframes scrollIndicator {
   0%, 100% { transform: translateY(-100%); opacity: 0; }
   50% { transform: translateY(100%); opacity: 1; }

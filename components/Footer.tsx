@@ -7,6 +7,16 @@ import ArrowIcon from "./icons/ArrowIcon";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Animation timing constants
+const ANIMATION = {
+  /** CTA word reveal duration */
+  ctaDuration: 1,
+  /** Footer items animation duration */
+  itemsDuration: 0.8,
+  /** Stagger delay between items */
+  stagger: 0.1,
+} as const;
+
 interface CompanyInfo {
   city: string;
   timezone: string;
@@ -69,6 +79,10 @@ function useLocalTime(timezone: string): string {
   return time;
 }
 
+/**
+ * Site footer with CTA section, company info, and navigation.
+ * Features scroll-triggered animations and live local time display.
+ */
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
@@ -85,9 +99,9 @@ export default function Footer() {
           {
             yPercent: 0,
             opacity: 1,
-            duration: 1,
+            duration: ANIMATION.ctaDuration,
             ease: "power4.out",
-            stagger: 0.1,
+            stagger: ANIMATION.stagger,
             scrollTrigger: {
               trigger: ctaRef.current,
               start: "top 85%",
@@ -109,9 +123,9 @@ export default function Footer() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          duration: ANIMATION.itemsDuration,
           ease: "power3.out",
-          stagger: 0.1,
+          stagger: ANIMATION.stagger,
           scrollTrigger: {
             trigger: ".footer-content",
             start: "top 85%",

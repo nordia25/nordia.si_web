@@ -4,9 +4,23 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useSimpleLayout } from "@/hooks/useDeviceDetection";
+import { useSimpleLayout, usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Animation timing constants
+const ANIMATION = {
+  /** Simple layout animation duration */
+  simple: 0.6,
+  /** Full layout animation duration */
+  full: 0.8,
+  /** Stagger delay between items */
+  stagger: 0.1,
+  /** Horizontal scroll scrub factor */
+  scrub: 1.5,
+  /** Ready state delay in ms */
+  readyDelay: 100,
+} as const;
 
 interface Project {
   slug: string;
@@ -165,42 +179,12 @@ const PROJECTS: readonly Project[] = [
   },
 ] as const;
 
-// Hook for reduced motion preference
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
-  useEffect(() => {
-    try {
-      const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-      setPrefersReducedMotion(mediaQuery.matches);
-
-      const handler = (e: MediaQueryListEvent) =>
-        setPrefersReducedMotion(e.matches);
-      mediaQuery.addEventListener("change", handler);
-      return () => mediaQuery.removeEventListener("change", handler);
-    } catch {
-      // Fallback for browsers that don't support matchMedia
-      setPrefersReducedMotion(false);
-    }
-  }, []);
-
-  return prefersReducedMotion;
-}
-
-// Helper to darken a hex color
-function darkenColor(hex: string, percent: number): string {
-  const num = parseInt(hex.replace("#", ""), 16);
-  const amt = Math.round(2.55 * percent);
-  const R = Math.max((num >> 16) - amt, 0);
-  const G = Math.max(((num >> 8) & 0x00ff) - amt, 0);
-  const B = Math.max((num & 0x0000ff) - amt, 0);
-  return `#${(0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1)}`;
-}
-
-// SVG noise pattern for texture overlay
-const NOISE_SVG = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`;
-
-// FlipCard component with 3D flip animation
+/**
+ * Interactive card with 3D flip animation.
+ * Shows project image on front, detailed info on back.
+ * Falls back to fade transition on simple/reduced-motion mode.
+ */
 interface FlipCardProps {
   project: Project;
   isSimple?: boolean;
@@ -467,7 +451,10 @@ function FlipCard({ project, isSimple = false, className = "", showNumber = fals
   );
 }
 
-// Simple vertical layout for mobile/tablets/slow devices
+/**
+ * Vertical card layout for mobile/tablets/slow devices.
+ * Uses simple fade-in animations for better performance.
+ */
 function SimpleWorksSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -485,7 +472,7 @@ function SimpleWorksSection() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.6,
+          duration: ANIMATION.simple,
           ease: "power2.out",
           scrollTrigger: {
             trigger: header,
@@ -504,14 +491,14 @@ function SimpleWorksSection() {
           {
             opacity: 1,
             y: 0,
-            duration: 0.6,
+            duration: ANIMATION.simple,
             ease: "power2.out",
             scrollTrigger: {
               trigger: card,
               start: "top 85%",
               once: true,
             },
-            delay: i * 0.1,
+            delay: i * ANIMATION.stagger,
           }
         );
       });
@@ -584,7 +571,10 @@ function SimpleWorksSection() {
   );
 }
 
-// Full horizontal scroll layout for desktop with scroll-snap
+/**
+ * Horizontal scroll layout for desktop.
+ * Uses GSAP ScrollTrigger for smooth horizontal scrolling effect.
+ */
 function HorizontalWorksSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -596,7 +586,7 @@ function HorizontalWorksSection() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsReady(true);
-    }, 100);
+    }, ANIMATION.readyDelay);
     return () => clearTimeout(timer);
   }, []);
 
@@ -630,7 +620,7 @@ function HorizontalWorksSection() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          duration: ANIMATION.full,
           ease: "power2.out",
           scrollTrigger: {
             trigger: header,
@@ -649,7 +639,7 @@ function HorizontalWorksSection() {
           start: "top top",
           end: `+=${scrollWidth}`,
           pin: true,
-          scrub: 1.5,
+          scrub: ANIMATION.scrub,
           anticipatePin: 1,
         },
       });
@@ -736,7 +726,10 @@ function HorizontalWorksSection() {
   );
 }
 
-// Main component - chooses between simple and horizontal layout
+/**
+ * Services/works showcase section.
+ * Renders horizontal scroll on desktop, vertical grid on mobile/slow devices.
+ */
 export default function WorksSection() {
   const useSimple = useSimpleLayout();
 

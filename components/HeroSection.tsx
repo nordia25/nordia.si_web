@@ -1,46 +1,42 @@
 "use client";
 
-import { useRef, useState, useSyncExternalStore, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import MagneticButton from "./MagneticButton";
 import ArrowIcon from "./icons/ArrowIcon";
 import HeroBackground from "./HeroBackground";
 import { usePreloader } from "@/contexts/PreloaderContext";
+import { useIsTouchDevice } from "@/hooks/useDeviceDetection";
 
-// Empty subscribe function for one-time checks
-const emptySubscribe = () => () => {};
+// Visual constants
+const GRADIENT_CYAN =
+  "linear-gradient(135deg, #22d3ee 0%, #06b6d4 25%, #0ea5e9 50%, #3b82f6 75%, #2563eb 100%)";
 
-// Safe matchMedia wrapper that doesn't throw on older browsers
-function safeMatchMedia(query: string): boolean {
-  try {
-    return window.matchMedia(query).matches;
-  } catch {
-    return false;
-  }
-}
+const SPOTLIGHT = {
+  /** Spotlight radius for gradient/elegant text */
+  SMALL: 120,
+  /** Spotlight radius for outline text */
+  LARGE: 150,
+} as const;
 
-// Hook to detect touch devices (SSR-safe, hydration-safe)
-function useIsTouchDevice() {
-  return useSyncExternalStore(
-    emptySubscribe,
-    () => {
-      try {
-        return safeMatchMedia("(hover: none) and (pointer: coarse)") ||
-          "ontouchstart" in window;
-      } catch {
-        return false;
-      }
-    },
-    () => false // Server: assume not touch
-  );
-}
+const COLORS = {
+  /** Dimmed text color for non-hovered state */
+  TEXT_DIMMED: "#b3b3b3",
+  /** Bright text color */
+  TEXT_BRIGHT: "#e5e5e5",
+  /** White text */
+  WHITE: "#f2f2f2",
+} as const;
 
 interface TextEffectProps {
   children: string;
   className?: string;
 }
 
-// Gradient text with mouse-following spotlight
+/**
+ * Gradient text with mouse-following spotlight effect.
+ * On touch devices, displays full brightness without spotlight.
+ */
 function GradientText({ children, className = "" }: TextEffectProps) {
   const containerRef = useRef<HTMLSpanElement>(null);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
@@ -55,25 +51,25 @@ function GradientText({ children, className = "" }: TextEffectProps) {
     setMousePos({ x, y });
   };
 
-  // On touch devices, show full brightness gradient without spotlight effect
+  const baseStyle = {
+    letterSpacing: "-0.04em",
+    background: GRADIENT_CYAN,
+    WebkitBackgroundClip: "text",
+    backgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    color: "transparent",
+  } as const;
+
+  // Touch devices: full brightness without spotlight
   if (isTouch) {
     return (
-      <span
-        className={`${className} inline-block cursor-default`}
-        style={{
-          letterSpacing: "-0.04em",
-          background:
-            "linear-gradient(135deg, #22d3ee 0%, #06b6d4 25%, #0ea5e9 50%, #3b82f6 75%, #2563eb 100%)",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          color: "transparent",
-        }}
-      >
+      <span className={`${className} inline-block cursor-default`} style={baseStyle}>
         {children}
       </span>
     );
   }
+
+  const spotlightMask = `radial-gradient(circle ${SPOTLIGHT.SMALL}px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`;
 
   return (
     <span
@@ -84,34 +80,17 @@ function GradientText({ children, className = "" }: TextEffectProps) {
       onMouseLeave={() => setIsHovered(false)}
       style={{ letterSpacing: "-0.04em" }}
     >
-      {/* Base dimmed gradient */}
-      <span
-        style={{
-          background:
-            "linear-gradient(135deg, #22d3ee 0%, #06b6d4 25%, #0ea5e9 50%, #3b82f6 75%, #2563eb 100%)",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          color: "transparent",
-          filter: "brightness(1)",
-        }}
-      >
-        {children}
-      </span>
+      {/* Base gradient */}
+      <span style={baseStyle}>{children}</span>
       {/* Bright overlay with spotlight mask */}
       <span
         className="absolute inset-0 transition-opacity duration-300"
         style={{
-          background:
-            "linear-gradient(135deg, #22d3ee 0%, #06b6d4 25%, #0ea5e9 50%, #3b82f6 75%, #2563eb 100%)",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          color: "transparent",
+          ...baseStyle,
           filter: "brightness(1.5)",
           opacity: isHovered ? 1 : 0,
-          maskImage: `radial-gradient(circle 120px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`,
-          WebkitMaskImage: `radial-gradient(circle 120px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`,
+          maskImage: spotlightMask,
+          WebkitMaskImage: spotlightMask,
         }}
       >
         {children}
@@ -120,7 +99,10 @@ function GradientText({ children, className = "" }: TextEffectProps) {
   );
 }
 
-// Spotlight effect - follows mouse position
+/**
+ * Elegant white text with mouse-following spotlight effect.
+ * On touch devices, displays bright text without spotlight.
+ */
 function ElegantText({ children, className = "" }: TextEffectProps) {
   const containerRef = useRef<HTMLSpanElement>(null);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
@@ -135,17 +117,19 @@ function ElegantText({ children, className = "" }: TextEffectProps) {
     setMousePos({ x, y });
   };
 
-  // On touch devices, show full white text without spotlight effect
+  // Touch devices: bright text without spotlight
   if (isTouch) {
     return (
       <span
         className={`${className} inline-block cursor-default text-white`}
-        style={{ letterSpacing: "-0.04em", color: "#e5e5e5" }}
+        style={{ letterSpacing: "-0.04em", color: COLORS.TEXT_BRIGHT }}
       >
         {children}
       </span>
     );
   }
+
+  const spotlightMask = `radial-gradient(circle ${SPOTLIGHT.SMALL}px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`;
 
   return (
     <span
@@ -154,18 +138,18 @@ function ElegantText({ children, className = "" }: TextEffectProps) {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ letterSpacing: "-0.04em", color: "#b3b3b3" }}
+      style={{ letterSpacing: "-0.04em", color: COLORS.TEXT_DIMMED }}
     >
       {/* Base dimmed text */}
-      <span className="text-white" style={{ color: "#b3b3b3" }}>{children}</span>
+      <span style={{ color: COLORS.TEXT_DIMMED }}>{children}</span>
       {/* Bright overlay with spotlight mask */}
       <span
         className="absolute inset-0 transition-opacity duration-300"
         style={{
           color: "rgba(255,255,255,1)",
           opacity: isHovered ? 1 : 0,
-          maskImage: `radial-gradient(circle 120px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`,
-          WebkitMaskImage: `radial-gradient(circle 120px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`,
+          maskImage: spotlightMask,
+          WebkitMaskImage: spotlightMask,
         }}
       >
         {children}
@@ -174,7 +158,10 @@ function ElegantText({ children, className = "" }: TextEffectProps) {
   );
 }
 
-// Outline text with spotlight effect - editorial style
+/**
+ * Outline text with mouse-following spotlight effect.
+ * Editorial style with cyan-tinted stroke on hover.
+ */
 function OutlineText({ children, className = "" }: TextEffectProps) {
   const containerRef = useRef<HTMLSpanElement>(null);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
@@ -189,7 +176,7 @@ function OutlineText({ children, className = "" }: TextEffectProps) {
     setMousePos({ x, y });
   };
 
-  // On touch devices, show brighter outline
+  // Touch devices: brighter outline without spotlight
   if (isTouch) {
     return (
       <span
@@ -206,6 +193,8 @@ function OutlineText({ children, className = "" }: TextEffectProps) {
     );
   }
 
+  const spotlightMask = `radial-gradient(circle ${SPOTLIGHT.LARGE}px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`;
+
   return (
     <span
       ref={containerRef}
@@ -215,7 +204,7 @@ function OutlineText({ children, className = "" }: TextEffectProps) {
       onMouseLeave={() => setIsHovered(false)}
       style={{ letterSpacing: "-0.04em" }}
     >
-      {/* Base dimmed outline text */}
+      {/* Base dimmed outline */}
       <span
         style={{
           color: "rgba(255,255,255,0.3)",
@@ -225,7 +214,7 @@ function OutlineText({ children, className = "" }: TextEffectProps) {
       >
         {children}
       </span>
-      {/* Bright overlay with spotlight mask - cyan tinted stroke */}
+      {/* Bright overlay with spotlight mask - cyan tinted */}
       <span
         className="absolute inset-0 transition-opacity duration-300"
         style={{
@@ -233,8 +222,8 @@ function OutlineText({ children, className = "" }: TextEffectProps) {
           WebkitTextStroke: "1.5px rgba(34,211,238,0.8)",
           WebkitTextFillColor: "transparent",
           opacity: isHovered ? 1 : 0,
-          maskImage: `radial-gradient(circle 150px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`,
-          WebkitMaskImage: `radial-gradient(circle 150px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`,
+          maskImage: spotlightMask,
+          WebkitMaskImage: spotlightMask,
         }}
       >
         {children}
@@ -243,40 +232,38 @@ function OutlineText({ children, className = "" }: TextEffectProps) {
   );
 }
 
-// Rotating text component with GSAP animation
 interface RotatingTextProps {
   words: string[];
   className?: string;
 }
 
+/**
+ * Rotating text component with GSAP animation.
+ * Cycles through words with fade transitions.
+ * Animation starts after preloader completes.
+ */
 function RotatingText({ words, className = "" }: RotatingTextProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isTouch = useIsTouchDevice();
   const { isComplete } = usePreloader();
 
   useEffect(() => {
-    if (!containerRef.current || isTouch) return;
-    // Wait for preloader to complete before starting animation
-    if (!isComplete) return;
+    if (!containerRef.current || isTouch || !isComplete) return;
 
     const ctx = gsap.context(() => {
-      const wordElements = containerRef.current && containerRef.current.querySelectorAll('.rotating-word');
+      const wordElements = containerRef.current?.querySelectorAll(".rotating-word");
       if (!wordElements || wordElements.length === 0) return;
 
-      // Reset to initial state - all dimmed except first
+      // Initial state: all dimmed except first
       gsap.set(wordElements, { opacity: 0.15 });
       gsap.set(wordElements[0], { opacity: 1 });
 
-      // Create infinite timeline
+      // Infinite rotation timeline
       const tl = gsap.timeline({ repeat: -1 });
 
       wordElements.forEach((_, i) => {
         const nextIndex = (i + 1) % words.length;
-
-        // Hold current word
-        tl.to({}, { duration: 2.5 });
-
-        // Fade out current, fade in next
+        tl.to({}, { duration: 2.5 }); // Hold
         tl.to(wordElements[i], { opacity: 0.15, duration: 0.6, ease: "power2.inOut" });
         tl.to(wordElements[nextIndex], { opacity: 1, duration: 0.6, ease: "power2.inOut" }, "<");
       });
@@ -293,7 +280,7 @@ function RotatingText({ words, className = "" }: RotatingTextProps) {
           className="rotating-word block text-white"
           style={{
             letterSpacing: "-0.04em",
-            color: "#f2f2f2",
+            color: COLORS.WHITE,
             opacity: i === 0 ? 1 : 0.15,
           }}
         >

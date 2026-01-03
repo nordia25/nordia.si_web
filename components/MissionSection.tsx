@@ -7,7 +7,22 @@ import { useSimpleLayout } from "@/hooks/useDeviceDetection";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Code block visual
+// Animation timing constants
+const ANIMATION = {
+  /** Simple layout animation duration */
+  simple: 0.8,
+  /** Full animation duration for title */
+  titleDuration: 1.2,
+  /** Full animation duration for content */
+  contentDuration: 1.0,
+  /** Stagger delay between items */
+  stagger: 0.1,
+} as const;
+
+/** Hover state background color */
+const HOVER_BG = "rgba(255,255,255,0.07)";
+
+/** Code block visual showing performance metrics */
 function CodeBlock() {
   return (
     <div className="font-mono text-sm md:text-base">
@@ -93,10 +108,13 @@ function AutomationVisual() {
   );
 }
 
+/**
+ * Philosophy section with asymmetric bento grid layout.
+ * Features scroll-triggered animations and hover effects on desktop.
+ */
 export default function MissionSection() {
   const useSimple = useSimpleLayout();
   const sectionRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -120,9 +138,9 @@ export default function MissionSection() {
           start: "top 70%",
           once: true,
           onEnter: () => {
-            gsap.to(title, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" });
-            gsap.to(subtitle, { opacity: 1, y: 0, duration: 0.8, delay: 0.1, ease: "power3.out" });
-            gsap.to(items, { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, delay: 0.2, ease: "power3.out" });
+            gsap.to(title, { opacity: 1, y: 0, duration: ANIMATION.simple, ease: "power3.out" });
+            gsap.to(subtitle, { opacity: 1, y: 0, duration: ANIMATION.simple, delay: ANIMATION.stagger, ease: "power3.out" });
+            gsap.to(items, { opacity: 1, y: 0, duration: ANIMATION.simple, stagger: ANIMATION.stagger, delay: 0.2, ease: "power3.out" });
           },
         });
       } else {
@@ -134,8 +152,8 @@ export default function MissionSection() {
           trigger: title,
           start: "top 80%",
           onEnter: () => {
-            gsap.to(title, { opacity: 1, y: 0, duration: 1.2, ease: "power4.out" });
-            gsap.to(subtitle, { opacity: 1, y: 0, duration: 1, delay: 0.15, ease: "power3.out" });
+            gsap.to(title, { opacity: 1, y: 0, duration: ANIMATION.titleDuration, ease: "power4.out" });
+            gsap.to(subtitle, { opacity: 1, y: 0, duration: ANIMATION.contentDuration, delay: 0.15, ease: "power3.out" });
           },
         });
 
@@ -148,8 +166,8 @@ export default function MissionSection() {
               gsap.to(item, {
                 opacity: 1,
                 y: 0,
-                duration: 1,
-                delay: i * 0.1,
+                duration: ANIMATION.contentDuration,
+                delay: i * ANIMATION.stagger,
                 ease: "power3.out",
               });
             },
@@ -185,10 +203,7 @@ export default function MissionSection() {
         aria-hidden="true"
       />
 
-      <div
-        ref={contentRef}
-        className="relative px-6 py-24 md:px-12 md:py-40 lg:py-48"
-      >
+      <div className="relative px-6 py-24 md:px-12 md:py-40 lg:py-48">
         <div className="mx-auto max-w-7xl">
 
           {/* Editorial Header */}
@@ -247,7 +262,7 @@ export default function MissionSection() {
                   {/* Background that extends to left edge */}
                   <div
                     className="pointer-events-none absolute inset-0 -left-[50vw] transition-colors duration-300"
-                    style={{ backgroundColor: hoveredModule === 0 ? "rgba(255,255,255,0.07)" : "transparent" }}
+                    style={{ backgroundColor: hoveredModule === 0 ? HOVER_BG : "transparent" }}
                   />
                   <div className="flex h-full flex-col">
                     <span className="mb-8 inline-block font-mono text-sm text-cyan-400/60">01</span>
@@ -276,7 +291,7 @@ export default function MissionSection() {
                   {/* Background that extends to right edge */}
                   <div
                     className="pointer-events-none absolute inset-0 -right-[50vw] transition-colors duration-300"
-                    style={{ backgroundColor: hoveredModule === 1 ? "rgba(255,255,255,0.07)" : "transparent" }}
+                    style={{ backgroundColor: hoveredModule === 1 ? HOVER_BG : "transparent" }}
                   />
                   <div className="relative mb-4 flex items-baseline gap-4">
                     <span className="font-mono text-sm text-blue-400/60">02</span>
@@ -307,7 +322,7 @@ export default function MissionSection() {
                   {/* Background that extends to right edge */}
                   <div
                     className="pointer-events-none absolute inset-0 -right-[50vw] transition-colors duration-300"
-                    style={{ backgroundColor: hoveredModule === 2 ? "rgba(255,255,255,0.07)" : "transparent" }}
+                    style={{ backgroundColor: hoveredModule === 2 ? HOVER_BG : "transparent" }}
                   />
                   <div className="relative mb-4 flex items-baseline gap-4">
                     <span className="font-mono text-sm text-purple-400/60">03</span>

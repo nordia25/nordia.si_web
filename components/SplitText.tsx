@@ -6,6 +6,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Animation timing constants
+const ANIMATION = {
+  /** Default animation duration */
+  duration: 1,
+  /** Default stagger between elements */
+  defaultStagger: 0.02,
+} as const;
+
 interface SplitTextProps {
   children: string;
   className?: string;
@@ -16,6 +24,10 @@ interface SplitTextProps {
   scrollTrigger?: boolean;
 }
 
+/**
+ * Animated text component that splits content into chars/words/lines.
+ * Each part animates in with scroll-triggered reveal effect.
+ */
 export default function SplitText({
   children,
   className = "",
@@ -48,7 +60,7 @@ export default function SplitText({
         {
           y: "0%",
           opacity: 1,
-          duration: 1,
+          duration: ANIMATION.duration,
           stagger,
           delay,
           ease: "power4.out",

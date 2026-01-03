@@ -2,10 +2,14 @@
 
 import Image from "next/image";
 
+/**
+ * Hero section background with layered overlays for depth and readability.
+ * Layers: base image → darkness → center focus → top/bottom fade → vignette → brand tint
+ */
 export default function HeroBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Hero Image - static */}
+      {/* Hero Image - extended 5% beyond bounds to hide edges when scaled */}
       <div className="absolute inset-[-5%]">
         <Image
           src="/nordia-hero-bg.jpg"

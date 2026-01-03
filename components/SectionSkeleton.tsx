@@ -1,3 +1,7 @@
+/**
+ * Loading placeholder for lazy-loaded sections.
+ * Shows a simple spinner while content loads.
+ */
 export default function SectionSkeleton() {
   return (
     <div className="flex min-h-[50vh] items-center justify-center">

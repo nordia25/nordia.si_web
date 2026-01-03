@@ -4,55 +4,50 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import Navigation from "./Navigation";
+import { usePreloader } from "@/contexts/PreloaderContext";
 
+// Animation timing
+const MENU_ANIMATION = {
+  duration: 0.4,
+  ease: "power3.inOut",
+  /** Y offset for hamburger line transform */
+  lineOffset: 4,
+} as const;
+
+/**
+ * Site header with animated logo and hamburger menu.
+ * Visibility synced with preloader completion.
+ */
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const { isComplete } = usePreloader();
   const line1Ref = useRef<HTMLSpanElement>(null);
   const line2Ref = useRef<HTMLSpanElement>(null);
 
-  // Show after preloader
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Animate menu button lines
   useEffect(() => {
-    if (isMenuOpen) {
-      gsap.to(line1Ref.current, {
-        rotate: 45,
-        y: 4,
-        duration: 0.4,
-        ease: "power3.inOut",
-      });
-      gsap.to(line2Ref.current, {
-        rotate: -45,
-        y: -4,
-        duration: 0.4,
-        ease: "power3.inOut",
-      });
-    } else {
-      gsap.to(line1Ref.current, {
-        rotate: 0,
-        y: 0,
-        duration: 0.4,
-        ease: "power3.inOut",
-      });
-      gsap.to(line2Ref.current, {
-        rotate: 0,
-        y: 0,
-        duration: 0.4,
-        ease: "power3.inOut",
-      });
-    }
+    const targetRotate = isMenuOpen ? 45 : 0;
+    const targetY = isMenuOpen ? MENU_ANIMATION.lineOffset : 0;
+
+    gsap.to(line1Ref.current, {
+      rotate: targetRotate,
+      y: targetY,
+      duration: MENU_ANIMATION.duration,
+      ease: MENU_ANIMATION.ease,
+    });
+    gsap.to(line2Ref.current, {
+      rotate: -targetRotate,
+      y: -targetY,
+      duration: MENU_ANIMATION.duration,
+      ease: MENU_ANIMATION.ease,
+    });
   }, [isMenuOpen]);
 
   return (
     <>
       <header
         className={`fixed left-0 right-0 top-0 py-6 transition-opacity duration-700 md:py-8 ${
-          isVisible ? "opacity-100" : "opacity-0"
+          isComplete ? "opacity-100" : "opacity-0"
         } ${isMenuOpen ? "pointer-events-none z-[101]" : "z-40"}`}
       >
         <div className="container-wide flex items-center justify-between">

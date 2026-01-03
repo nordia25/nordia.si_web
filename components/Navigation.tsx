@@ -2,6 +2,21 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import ArrowIcon from "./icons/ArrowIcon";
+
+// Animation timing constants
+const ANIMATION = {
+  /** Background fade duration */
+  bgFade: 0.4,
+  /** Menu items animation duration */
+  itemsDuration: 0.6,
+  /** Stagger delay between menu items */
+  itemsStagger: 0.08,
+  /** Footer animation duration */
+  footerDuration: 0.5,
+  /** Close animation duration */
+  closeDuration: 0.3,
+} as const;
 
 interface NavigationProps {
   isOpen: boolean;
@@ -12,21 +27,20 @@ interface MenuItem {
   label: string;
   href: string;
   description: string;
-  isExternal?: boolean;
 }
 
+/** Navigation menu items */
 const menuItems: MenuItem[] = [
   { label: "Filozofija", href: "#why", description: "Naš pristop" },
   { label: "Storitve", href: "#works", description: "Kaj ustvarjamo" },
   { label: "O nas", href: "#about", description: "Kdo smo" },
-  {
-    label: "Pišite nam",
-    href: "mailto:info@nordia.si",
-    description: "Kontakt",
-    isExternal: true,
-  },
+  { label: "Pišite nam", href: "mailto:info@nordia.si", description: "Kontakt" },
 ];
 
+/**
+ * Full-screen navigation overlay with animated menu items.
+ * Manages scroll lock and GSAP animations for open/close states.
+ */
 export default function Navigation({ isOpen, onClose }: NavigationProps) {
   const navRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -34,19 +48,20 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
   const footerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      try {
-        document.body.style.overflow = "hidden";
-      } catch {
-        // Ignore - scroll lock is non-critical
-      }
+    // Scroll lock management
+    try {
+      document.body.style.overflow = isOpen ? "hidden" : "";
+    } catch {
+      // Non-critical - ignore errors
+    }
 
-      // Animate in - simple fade
+    if (isOpen) {
+      // Animate in
       const tl = gsap.timeline();
 
       tl.to(bgRef.current, {
         opacity: 1,
-        duration: 0.4,
+        duration: ANIMATION.bgFade,
         ease: "power2.out",
       });
 
@@ -56,9 +71,9 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
         {
           yPercent: 0,
           opacity: 1,
-          duration: 0.6,
+          duration: ANIMATION.itemsDuration,
           ease: "power3.out",
-          stagger: 0.08,
+          stagger: ANIMATION.itemsStagger,
         },
         "-=0.2"
       );
@@ -66,41 +81,31 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
       tl.fromTo(
         footerRef.current,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" },
+        { opacity: 1, y: 0, duration: ANIMATION.footerDuration, ease: "power3.out" },
         "-=0.3"
       );
     } else {
-      try {
-        document.body.style.overflow = "";
-      } catch {
-        // Ignore - scroll lock is non-critical
-      }
-
       // Animate out
       const tl = gsap.timeline();
 
       tl.to([menuItemsRef.current, footerRef.current], {
         opacity: 0,
-        duration: 0.3,
+        duration: ANIMATION.closeDuration,
         ease: "power2.in",
       });
 
-      tl.to(
-        bgRef.current,
-        {
-          opacity: 0,
-          duration: 0.3,
-          ease: "power2.in",
-        },
-        "-=0.1"
-      );
+      tl.to(bgRef.current, {
+        opacity: 0,
+        duration: ANIMATION.closeDuration,
+        ease: "power2.in",
+      }, "-=0.1");
     }
 
     return () => {
       try {
         document.body.style.overflow = "";
       } catch {
-        // Ignore - scroll lock is non-critical
+        // Non-critical - ignore errors
       }
     };
   }, [isOpen]);
@@ -181,19 +186,10 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
                       className="ml-8 hidden h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-[var(--foreground)] group-hover:bg-[var(--foreground)] md:flex"
                       aria-hidden="true"
                     >
-                      <svg
+                      <ArrowIcon
                         className="h-5 w-5 -rotate-45 text-[var(--foreground-subtle)] transition-all duration-300 group-hover:rotate-0 group-hover:text-[var(--background)]"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M14 5l7 7m0 0l-7 7m7-7H3"
-                        />
-                      </svg>
+                        strokeWidth={1.5}
+                      />
                     </span>
                   </a>
                 </li>
@@ -226,20 +222,10 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
                 className="group flex items-center gap-3 text-sm text-[var(--foreground-subtle)] transition-colors duration-300 hover:text-[var(--foreground)]"
               >
                 <span>info@nordia.si</span>
-                <svg
+                <ArrowIcon
                   className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                  />
-                </svg>
+                  strokeWidth={1.5}
+                />
               </a>
             </div>
           </div>

@@ -3,6 +3,9 @@ interface ArrowIconProps {
   strokeWidth?: number;
 }
 
+/**
+ * Reusable arrow icon for buttons, links, and navigation.
+ */
 export default function ArrowIcon({
   className = "w-4 h-4",
   strokeWidth = 2,

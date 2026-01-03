@@ -4,6 +4,21 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
+// Animation timing constants
+const ANIMATION = {
+  /** Main 404 animation duration */
+  hero: 1.2,
+  /** Subtitle/description duration */
+  content: 0.8,
+  /** Floating elements duration */
+  floatDuration: 1,
+  /** Stagger between floating elements */
+  floatStagger: 0.1,
+} as const;
+
+/**
+ * Custom 404 page with parallax effects and GSAP animations.
+ */
 export default function NotFound() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -42,7 +57,7 @@ export default function NotFound() {
           opacity: 1,
           scale: 1,
           y: 0,
-          duration: 1.2,
+          duration: ANIMATION.hero,
           ease: "power4.out",
         }
       );
@@ -54,7 +69,7 @@ export default function NotFound() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          duration: ANIMATION.content,
           delay: 0.4,
           ease: "power3.out",
         }
@@ -67,7 +82,7 @@ export default function NotFound() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          duration: ANIMATION.content,
           delay: 0.6,
           ease: "power3.out",
         }
@@ -80,7 +95,7 @@ export default function NotFound() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          duration: ANIMATION.content,
           delay: 0.8,
           ease: "power3.out",
         }
@@ -93,9 +108,9 @@ export default function NotFound() {
         {
           opacity: 1,
           scale: 1,
-          duration: 1,
+          duration: ANIMATION.floatDuration,
           delay: 0.5,
-          stagger: 0.1,
+          stagger: ANIMATION.floatStagger,
           ease: "back.out(1.7)",
         }
       );

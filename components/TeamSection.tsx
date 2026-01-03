@@ -7,6 +7,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Animation timing constants
+const ANIMATION = {
+  /** Animation duration */
+  duration: 0.8,
+  /** Stagger delay between items */
+  stagger: 0.15,
+} as const;
+
 interface TeamMember {
   name: string;
   role: string;
@@ -51,6 +59,10 @@ const SOCIAL_PLATFORMS: readonly SocialPlatform[] = [
   { name: "Twitter", initial: "X" },
 ] as const;
 
+/**
+ * Team/about section with member cards and company info.
+ * Features hover-reveal content on desktop, static layout on mobile.
+ */
 export default function TeamSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -69,7 +81,7 @@ export default function TeamSection() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          duration: ANIMATION.duration,
           ease: "power3.out",
           scrollTrigger: {
             trigger: headerRef.current,
@@ -87,13 +99,13 @@ export default function TeamSection() {
           {
             opacity: 1,
             y: 0,
-            duration: 0.8,
+            duration: ANIMATION.duration,
             ease: "power3.out",
             scrollTrigger: {
               trigger: item,
               start: "top 80%",
             },
-            delay: i * 0.15,
+            delay: i * ANIMATION.stagger,
           }
         );
       });

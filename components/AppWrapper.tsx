@@ -8,14 +8,19 @@ import SmoothScrollProvider from "./SmoothScrollProvider";
 import ErrorBoundary from "./ErrorBoundary";
 import { PreloaderProvider, usePreloader } from "@/contexts/PreloaderContext";
 
-// Inner component that uses the preloader context
-function AppContent({ children, showPreloader, isLoading, setIsLoading, isMounted }: {
+interface AppContentProps {
   children: React.ReactNode;
   showPreloader: boolean;
   isLoading: boolean;
-  setIsLoading: (v: boolean) => void;
+  setIsLoading: (loading: boolean) => void;
   isMounted: boolean;
-}) {
+}
+
+/**
+ * Inner component that uses the preloader context.
+ * Separated to allow usePreloader hook usage within PreloaderProvider.
+ */
+function AppContent({ children, showPreloader, isLoading, setIsLoading, isMounted }: AppContentProps) {
   const { setComplete } = usePreloader();
 
   const handlePreloaderComplete = () => {
@@ -42,7 +47,11 @@ interface AppWrapperProps {
   children: React.ReactNode;
 }
 
-// Safe wrapper for window.matchMedia
+/**
+ * Safe wrapper for window.matchMedia.
+ * Note: This is intentionally duplicated from useDeviceDetection.ts because
+ * shouldSkipPreloader() must run synchronously during mount, before hooks execute.
+ */
 function safeMatchMedia(query: string): boolean {
   try {
     return window.matchMedia(query).matches;
@@ -51,7 +60,10 @@ function safeMatchMedia(query: string): boolean {
   }
 }
 
-// Check if should skip preloader (mobile, touch, reduced motion)
+/**
+ * Determines if preloader should be skipped.
+ * Skipped on: mobile devices, touch devices, or when user prefers reduced motion.
+ */
 function shouldSkipPreloader(): boolean {
   if (typeof window === "undefined") return true;
   const isMobile =

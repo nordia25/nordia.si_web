@@ -7,6 +7,19 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Animation timing constants
+const ANIMATION = {
+  /** Hero label duration */
+  label: 0.6,
+  /** Hero title duration */
+  title: 0.8,
+  /** Hero line duration */
+  line: 1,
+  /** Section content duration */
+  section: 0.8,
+} as const;
+
+/** Privacy policy sections content */
 const PRIVACY_SECTIONS = [
   {
     number: "01",
@@ -77,6 +90,9 @@ Zadnja posodobitev: December 2025`,
   },
 ];
 
+/**
+ * Privacy policy page with animated sections.
+ */
 export default function PrivacyPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -87,31 +103,31 @@ export default function PrivacyPage() {
       gsap.fromTo(
         ".hero-label",
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+        { opacity: 1, y: 0, duration: ANIMATION.label, ease: "power3.out" }
       );
 
       gsap.fromTo(
         ".hero-title",
         { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: "power3.out" }
+        { opacity: 1, y: 0, duration: ANIMATION.title, delay: 0.2, ease: "power3.out" }
       );
 
       gsap.fromTo(
         ".hero-line",
         { scaleX: 0 },
-        { scaleX: 1, duration: 1, delay: 0.4, ease: "power3.inOut" }
+        { scaleX: 1, duration: ANIMATION.line, delay: 0.4, ease: "power3.inOut" }
       );
 
       // Section animations on scroll
       const sections = document.querySelectorAll(".privacy-section");
-      sections.forEach((section, index) => {
+      sections.forEach((section) => {
         gsap.fromTo(
           section,
           { opacity: 0, y: 50 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.8,
+            duration: ANIMATION.section,
             ease: "power3.out",
             scrollTrigger: {
               trigger: section,

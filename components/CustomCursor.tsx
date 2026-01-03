@@ -4,6 +4,22 @@ import { useEffect, useRef, useState, useCallback, memo } from "react";
 import gsap from "gsap";
 import { useIsSlowDevice } from "@/hooks/useDeviceDetection";
 
+// Animation timing constants
+const ANIMATION = {
+  /** Hover animation duration */
+  hover: 0.4,
+  /** Dot animation duration */
+  dot: 0.3,
+  /** Click animation duration */
+  click: 0.15,
+  /** Cursor follow smoothing factor */
+  smoothing: 0.15,
+} as const;
+
+/**
+ * Custom cursor with smooth following and hover effects.
+ * Automatically disabled on slow/touch devices.
+ */
 function CustomCursor() {
   // Skip cursor on slow devices (mobile, touch, reduced motion, low-end)
   const isSlowDevice = useIsSlowDevice();
@@ -38,8 +54,8 @@ function CustomCursor() {
 
     const animate = () => {
       // Smooth follow for outer cursor
-      cursorPos.current.x += (mousePos.current.x - cursorPos.current.x) * 0.15;
-      cursorPos.current.y += (mousePos.current.y - cursorPos.current.y) * 0.15;
+      cursorPos.current.x += (mousePos.current.x - cursorPos.current.x) * ANIMATION.smoothing;
+      cursorPos.current.y += (mousePos.current.y - cursorPos.current.y) * ANIMATION.smoothing;
 
       // Apply position - simplified, no distortion
       gsap.set(cursor, {
@@ -115,13 +131,13 @@ function CustomCursor() {
         height: cursorText ? 120 : 80,
         backgroundColor: cursorText ? "rgba(255,255,255,0.95)" : "transparent",
         borderWidth: cursorText ? 0 : 1,
-        duration: 0.4,
+        duration: ANIMATION.hover,
         ease: "power3.out",
       });
       gsap.to(cursorDot, {
         scale: cursorText ? 0 : 0.5,
         opacity: cursorText ? 0 : 0.5,
-        duration: 0.3,
+        duration: ANIMATION.dot,
       });
     } else {
       gsap.to(cursor, {
@@ -129,13 +145,13 @@ function CustomCursor() {
         height: 56,
         backgroundColor: "transparent",
         borderWidth: 1,
-        duration: 0.4,
+        duration: ANIMATION.hover,
         ease: "power3.out",
       });
       gsap.to(cursorDot, {
         scale: 1,
         opacity: 1,
-        duration: 0.3,
+        duration: ANIMATION.dot,
       });
     }
   }, [isHovering, cursorText]);
@@ -147,7 +163,7 @@ function CustomCursor() {
 
     gsap.to(cursor, {
       scale: isClicking ? 0.85 : 1,
-      duration: 0.15,
+      duration: ANIMATION.click,
       ease: "power2.out",
     });
   }, [isClicking]);

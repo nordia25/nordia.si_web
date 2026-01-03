@@ -7,9 +7,19 @@ interface PreloaderProps {
   onComplete: () => void;
 }
 
+// Animation timing constants
+const TIMING = {
+  SAFETY_TIMEOUT: 5000,
+  TAGLINE_FADE: 0.4,
+  STROKE_DRAW: 1.6,
+  FILL_REVEAL: 0.6,
+  STROKE_FADE: 0.3,
+  HOLD: 0.2,
+  SLIDE_OUT: 0.6,
+} as const;
+
 export default function Preloader({ onComplete }: PreloaderProps) {
   const preloaderRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
   const textRef = useRef<SVGTextElement>(null);
   const fillTextRef = useRef<SVGTextElement>(null);
   const taglineRef = useRef<HTMLDivElement>(null);
@@ -47,13 +57,13 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   };
 
   useEffect(() => {
-    // Safety timeout - force complete AND HIDE if animation hasn't finished in 5 seconds
+    // Safety timeout - force complete AND HIDE if animation hasn't finished
     const safetyTimeout = setTimeout(() => {
       if (!hasCompletedRef.current) {
         console.warn('Preloader safety timeout triggered - forcing hide');
         safeComplete();
       }
-    }, 5000);
+    }, TIMING.SAFETY_TIMEOUT);
 
     let ctx: gsap.Context | null = null;
 
@@ -98,7 +108,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         tl.to(taglineRef.current, {
           opacity: 1,
           y: 0,
-          duration: 0.4,
+          duration: TIMING.TAGLINE_FADE,
           ease: "power3.out",
         });
 
@@ -107,7 +117,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           textElement,
           {
             strokeDashoffset: 0,
-            duration: 1.6,
+            duration: TIMING.STROKE_DRAW,
             ease: "power2.inOut",
           },
           "-=0.2"
@@ -118,7 +128,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           taglineFillRef.current,
           {
             clipPath: "inset(0 0% 0 0)",
-            duration: 1.6,
+            duration: TIMING.STROKE_DRAW,
             ease: "power2.inOut",
           },
           "<"
@@ -130,7 +140,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           {
             opacity: 1,
             clipPath: "inset(0 0% 0 0)",
-            duration: 0.6,
+            duration: TIMING.FILL_REVEAL,
             ease: "power3.inOut",
           },
           "-=0.4"
@@ -141,23 +151,21 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           textElement,
           {
             opacity: 0,
-            duration: 0.3,
+            duration: TIMING.STROKE_FADE,
             ease: "power2.out",
           },
           "-=0.5"
         );
 
         // 6. Hold briefly
-        tl.to({}, { duration: 0.2 });
+        tl.to({}, { duration: TIMING.HOLD });
 
         // 7. Slide everything up and out
         tl.to(preloaderRef.current, {
           yPercent: -100,
-          duration: 0.6,
+          duration: TIMING.SLIDE_OUT,
           ease: "power3.inOut",
-          onComplete: () => {
-            safeComplete();
-          },
+          onComplete: safeComplete,
         });
       }, preloaderRef);
     } catch (error) {
@@ -183,9 +191,9 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       <div className="flex flex-col items-center">
         {/* SVG Logo with stroke animation */}
         <svg
-          ref={svgRef}
           viewBox="0 0 400 100"
           className="h-auto w-[300px] md:w-[400px]"
+          aria-hidden="true"
         >
           {/* Stroke text (draws the outline) */}
           <text

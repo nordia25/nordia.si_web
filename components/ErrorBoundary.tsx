@@ -2,6 +2,7 @@
 
 import React from "react";
 
+/** Error boundary state containing error info */
 interface ErrorBoundaryState {
   hasError: boolean;
   error: Error | null;
@@ -11,6 +12,10 @@ interface ErrorBoundaryProps {
   children: React.ReactNode;
 }
 
+/**
+ * React error boundary that catches runtime errors and shows fallback UI.
+ * Prevents animation crashes from breaking the entire page.
+ */
 export default class ErrorBoundary extends React.Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
