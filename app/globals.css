@@ -817,6 +817,49 @@ body {
 }
 
 /* ============================================
+   WINDOWS GPU FALLBACK — Force visibility
+   Ensures content is visible even if GPU rendering fails
+   ============================================ */
+
+/* Fallback colors if CSS variables fail */
+#hero,
+#hero * {
+  color: #f5f5f7;
+}
+
+/* Ensure body and main content is ALWAYS visible */
+body,
+main,
+section {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure gradient text has fallback - show solid color if gradient-clip fails */
+.text-gradient,
+.text-gradient-hero,
+.text-gradient-animated {
+  color: #22d3ee;
+}
+
+/* Only use transparent fill if background-clip is supported */
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .text-gradient,
+  .text-gradient-hero,
+  .text-gradient-animated {
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+}
+
+/* Fallback for WebkitTextFillColor - ensure text is visible */
+@supports not (-webkit-text-fill-color: transparent) {
+  [style*="WebkitTextFillColor"] {
+    color: inherit !important;
+  }
+}
+
+/* ============================================
    PERFORMANCE — GPU Acceleration (safe optimizations only)
    ============================================ */
 

@@ -139,8 +139,8 @@ function ElegantText({ children, className = "" }: TextEffectProps) {
   if (isTouch) {
     return (
       <span
-        className={`${className} inline-block cursor-default`}
-        style={{ letterSpacing: "-0.04em", color: "rgba(255,255,255,0.9)" }}
+        className={`${className} inline-block cursor-default text-white`}
+        style={{ letterSpacing: "-0.04em", color: "#e5e5e5" }}
       >
         {children}
       </span>
@@ -150,14 +150,14 @@ function ElegantText({ children, className = "" }: TextEffectProps) {
   return (
     <span
       ref={containerRef}
-      className={`${className} relative inline-block cursor-default`}
+      className={`${className} relative inline-block cursor-default text-white`}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      style={{ letterSpacing: "-0.04em" }}
+      style={{ letterSpacing: "-0.04em", color: "#b3b3b3" }}
     >
       {/* Base dimmed text */}
-      <span style={{ color: "rgba(255,255,255,0.7)" }}>{children}</span>
+      <span className="text-white" style={{ color: "#b3b3b3" }}>{children}</span>
       {/* Bright overlay with spotlight mask */}
       <span
         className="absolute inset-0 transition-opacity duration-300"
@@ -286,14 +286,14 @@ function RotatingText({ words, className = "" }: RotatingTextProps) {
   }, [words.length, isTouch, isComplete]);
 
   return (
-    <div ref={containerRef} className={className}>
+    <div ref={containerRef} className={`${className} text-white`}>
       {words.map((word, i) => (
         <span
           key={word}
-          className="rotating-word block"
+          className="rotating-word block text-white"
           style={{
             letterSpacing: "-0.04em",
-            color: "rgba(255,255,255,0.95)",
+            color: "#f2f2f2",
             opacity: i === 0 ? 1 : 0.15,
           }}
         >
@@ -325,7 +325,8 @@ export default function HeroSection() {
       <HeroBackground />
 
       {/* Content - Full Width Editorial Grid */}
-      <div className="relative z-10 flex w-full items-center px-6 md:px-12 lg:px-16">
+      {/* z-50 ensures content is always above background layers */}
+      <div className="relative z-50 flex w-full items-center px-6 md:px-12 lg:px-16">
         <div className="mx-auto w-full max-w-[1800px]">
 
           {/* Main Content */}
