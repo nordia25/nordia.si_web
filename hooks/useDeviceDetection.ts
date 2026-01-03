@@ -46,6 +46,27 @@ function checkPrefersReducedMotion(): boolean {
 }
 
 /**
+ * Checks if device has low hardware capabilities (older computer).
+ * Detects: low CPU cores, low memory, or older Windows systems.
+ */
+function checkIsLowEndDevice(): boolean {
+  try {
+    // Check CPU cores (older computers typically have 2-4 cores)
+    const cores = navigator.hardwareConcurrency || 0;
+    if (cores > 0 && cores <= 4) return true;
+
+    // Check device memory if available (Chrome/Edge only)
+    // @ts-expect-error - deviceMemory is not in all browsers
+    const memory = navigator.deviceMemory;
+    if (memory && memory <= 4) return true;
+
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Detects if user prefers reduced motion.
  * SSR-safe: returns false by default.
  */
@@ -104,7 +125,7 @@ export function useIsMobile(): boolean {
 }
 
 /**
- * Detects if the device is likely slow (mobile, tablet, or prefers reduced motion).
+ * Detects if the device is likely slow (mobile, tablet, low-end hardware, or prefers reduced motion).
  * SSR-safe: returns false by default.
  */
 export function useIsSlowDevice(): boolean {
@@ -115,7 +136,8 @@ export function useIsSlowDevice(): boolean {
       const isMobile =
         safeMatchMedia(MEDIA_QUERIES.TOUCH) ||
         window.innerWidth < BREAKPOINTS.MOBILE;
-      setIsSlow(checkPrefersReducedMotion() || isMobile);
+      const isLowEnd = checkIsLowEndDevice();
+      setIsSlow(checkPrefersReducedMotion() || isMobile || isLowEnd);
     }, 0);
   }, []);
 
@@ -135,7 +157,8 @@ export function useIsSlowDeviceConservative(): boolean {
       const isMobile =
         safeMatchMedia(MEDIA_QUERIES.TOUCH) ||
         window.innerWidth < BREAKPOINTS.MOBILE;
-      setIsSlow(checkPrefersReducedMotion() || isMobile);
+      const isLowEnd = checkIsLowEndDevice();
+      setIsSlow(checkPrefersReducedMotion() || isMobile || isLowEnd);
     }, 0);
   }, []);
 
