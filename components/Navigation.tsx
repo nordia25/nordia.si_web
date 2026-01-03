@@ -114,15 +114,15 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
 
       {/* Content - hidden by default, GSAP animates in */}
       <div
-        className={`relative h-full overflow-y-auto ${isOpen ? "" : "invisible"}`}
+        className={`relative flex h-full flex-col ${isOpen ? "" : "invisible"}`}
       >
         {/* Spacer for header */}
-        <div className="h-24" />
+        <div className="h-20 shrink-0 md:h-24" />
 
         {/* Menu items */}
-        <nav className="py-8" aria-label="Glavni meni">
+        <nav className="flex flex-1 flex-col justify-center py-4 md:py-8" aria-label="Glavni meni">
           <div className="container-wide">
-            <ul className="space-y-2" role="menu">
+            <ul className="space-y-1 md:space-y-2" role="menu">
               {menuItems.map((item, index) => (
                 <li
                   key={item.label}
@@ -136,7 +136,7 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
                     onClick={handleLinkClick}
                     role="menuitem"
                     aria-label={`${item.label} - ${item.description}`}
-                    className="group flex items-baseline gap-8 border-b border-[var(--border)] py-4 transition-colors duration-300 hover:border-[var(--border-strong)]"
+                    className="group flex items-baseline gap-8 border-b border-[var(--border)] py-2 transition-colors duration-300 hover:border-[var(--border-strong)] md:py-4"
                   >
                     {/* Number */}
                     <span
@@ -148,11 +148,11 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
 
                     {/* Label */}
                     <span className="relative overflow-hidden">
-                      <span className="inline-block font-display text-[clamp(3rem,10vw,8rem)] uppercase leading-none tracking-tight text-[var(--foreground)] transition-transform duration-500 group-hover:-translate-y-full">
+                      <span className="inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight text-[var(--foreground)] transition-transform duration-500 group-hover:-translate-y-full">
                         {item.label}
                       </span>
                       <span
-                        className="text-gradient-animated absolute left-0 top-full inline-block font-display text-[clamp(3rem,10vw,8rem)] uppercase leading-none tracking-tight transition-transform duration-500 group-hover:-translate-y-full"
+                        className="text-gradient-animated absolute left-0 top-full inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight transition-transform duration-500 group-hover:-translate-y-full"
                         aria-hidden="true"
                       >
                         {item.label}
@@ -191,7 +191,7 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
         </nav>
 
         {/* Footer */}
-        <div ref={footerRef} className="pb-10">
+        <div ref={footerRef} className="mt-auto shrink-0 pb-6 md:pb-10">
           <div className="container-wide">
             <div className="flex flex-col gap-8 border-t border-[var(--border)] pt-8 md:flex-row md:items-center md:justify-between">
               {/* Socials */}

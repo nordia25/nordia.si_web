@@ -508,7 +508,7 @@ function SimpleWorksSection() {
       <div className="container-wide">
         {/* Header */}
         <div ref={headerRef} className="mb-16">
-          <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-cyan-400/80">
+          <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-[#1d4ed8]">
             Storitve
           </p>
           <h2 className="mb-8 font-display text-[clamp(2.5rem,8vw,5rem)] font-medium leading-[0.95] tracking-tight text-[var(--foreground)]">

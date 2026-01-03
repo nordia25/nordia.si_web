@@ -206,7 +206,7 @@ export default function TeamSection() {
           >
             {/* Title section */}
             <div>
-              <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-cyan-400/80">
+              <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-[#1d4ed8]">
                 O nas
               </p>
               <h2 className="font-display text-[clamp(2.5rem,8vw,7rem)] font-medium leading-[0.95] tracking-tight text-[var(--foreground)]">

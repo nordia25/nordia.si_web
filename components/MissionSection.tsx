@@ -193,7 +193,7 @@ export default function MissionSection() {
 
           {/* Editorial Header */}
           <div className="mb-24 md:mb-32">
-            <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-cyan-400/80">
+            <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-[#1d4ed8]">
               Filozofija
             </p>
 
