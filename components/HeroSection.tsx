@@ -193,10 +193,12 @@ function OutlineText({ children, className = "" }: TextEffectProps) {
   if (isTouch) {
     return (
       <span
-        className={`${className} inline-block cursor-default text-transparent`}
+        className={`${className} inline-block cursor-default`}
         style={{
           letterSpacing: "-0.04em",
+          color: "rgba(255,255,255,0.5)",
           WebkitTextStroke: "1.5px rgba(255,255,255,0.5)",
+          WebkitTextFillColor: "transparent",
         }}
       >
         {children}
@@ -215,16 +217,21 @@ function OutlineText({ children, className = "" }: TextEffectProps) {
     >
       {/* Base dimmed outline text */}
       <span
-        className="text-transparent"
-        style={{ WebkitTextStroke: "1.5px rgba(255,255,255,0.3)" }}
+        style={{
+          color: "rgba(255,255,255,0.3)",
+          WebkitTextStroke: "1.5px rgba(255,255,255,0.3)",
+          WebkitTextFillColor: "transparent",
+        }}
       >
         {children}
       </span>
       {/* Bright overlay with spotlight mask - cyan tinted stroke */}
       <span
-        className="absolute inset-0 text-transparent transition-opacity duration-300"
+        className="absolute inset-0 transition-opacity duration-300"
         style={{
+          color: "rgba(34,211,238,0.8)",
           WebkitTextStroke: "1.5px rgba(34,211,238,0.8)",
+          WebkitTextFillColor: "transparent",
           opacity: isHovered ? 1 : 0,
           maskImage: `radial-gradient(circle 150px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`,
           WebkitMaskImage: `radial-gradient(circle 150px at ${mousePos.x}% ${mousePos.y}%, black 0%, transparent 100%)`,

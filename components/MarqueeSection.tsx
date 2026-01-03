@@ -103,7 +103,8 @@ export default function MarqueeSection({
             }`}
             style={{
               WebkitTextStroke: i % 4 === 0 ? "none" : "1px currentColor",
-              color: i % 4 === 0 ? "inherit" : "transparent",
+              WebkitTextFillColor: i % 4 === 0 ? "inherit" : "transparent",
+              color: "inherit",
             }}
           >
             {word}

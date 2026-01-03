@@ -204,8 +204,11 @@ export default function MissionSection() {
               Razlika je
               <br />
               <span
-                className="text-transparent"
-                style={{ WebkitTextStroke: "1px rgba(255,255,255,0.4)" }}
+                style={{
+                  color: "rgba(255,255,255,0.4)",
+                  WebkitTextStroke: "1px rgba(255,255,255,0.4)",
+                  WebkitTextFillColor: "transparent"
+                }}
               >
                 v detajlih.
               </span>
