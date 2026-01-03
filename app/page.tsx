@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import AppWrapper from "@/components/AppWrapper";
 import SectionSkeleton from "@/components/SectionSkeleton";
+import SectionDivider from "@/components/SectionDivider";
 
 // Dynamic imports for below-the-fold content (improves LCP/TBT)
 const MissionSection = dynamic(() => import("@/components/MissionSection"), {
@@ -30,7 +31,9 @@ export default function Home() {
         {/* Spacer for fixed hero - maintains document flow */}
         <div className="h-screen" aria-hidden="true" />
         <MissionSection />
+        <SectionDivider />
         <WorksSection />
+        <SectionDivider />
         <TeamSection />
       </main>
       <Footer />

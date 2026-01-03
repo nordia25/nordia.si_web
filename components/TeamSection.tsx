@@ -121,7 +121,7 @@ export default function TeamSection() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative z-20 bg-[var(--background)] py-20 pt-40 md:py-32 md:pt-64 lg:py-40 lg:pt-80"
+      className="relative z-20 bg-[#080808] py-20 pt-40 md:py-32 md:pt-64 lg:py-40 lg:pt-80"
     >
       <div className="container-wide">
         {/* Desktop: Two-column layout - images left, content right */}
