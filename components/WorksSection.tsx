@@ -508,7 +508,7 @@ function SimpleWorksSection() {
       <div className="container-wide">
         {/* Header */}
         <div ref={headerRef} className="mb-16">
-          <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-[#1d4ed8]">
+          <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-[#a8a8a8]">
             Storitve
           </p>
           <h2 className="mb-8 font-display text-[clamp(2.5rem,8vw,5rem)] font-medium leading-[0.95] tracking-tight text-[var(--foreground)]">
@@ -647,7 +647,7 @@ function HorizontalWorksSection() {
       <div className="pb-40 pt-8 md:pb-48 md:pt-12">
         <div ref={headerRef} className="container-wide">
           <div>
-            <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-cyan-400/80">
+            <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-[#a8a8a8]">
               Storitve
             </p>
             <h2 className="mb-8 font-display text-[clamp(2.5rem,8vw,7rem)] font-medium leading-[0.95] tracking-tight text-[var(--foreground)]">
