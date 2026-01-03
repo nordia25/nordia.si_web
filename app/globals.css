@@ -608,7 +608,7 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   /* Slower animation = less main thread work */
   animation: noise 2s steps(4) infinite;
-  will-change: transform;
+  /* will-change removed - causes GPU memory lock on Windows Intel/NVIDIA */
 }
 
 @keyframes noise {
@@ -819,6 +819,7 @@ body {
 /* ============================================
    WINDOWS GPU FALLBACK — Force visibility
    Ensures content is visible even if GPU rendering fails
+   CRITICAL: These rules ensure the site works on ALL Windows GPUs
    ============================================ */
 
 /* Fallback colors if CSS variables fail */
@@ -827,12 +828,47 @@ body {
   color: #f5f5f7;
 }
 
-/* Ensure body and main content is ALWAYS visible */
+/* NUCLEAR OPTION: Force ALL content visible
+   This overrides any animation/transition states that may be stuck */
 body,
 main,
-section {
+section,
+article,
+div[class*="container"],
+div[class*="hero"],
+div[class*="works"],
+div[class*="about"],
+header,
+footer,
+nav {
   opacity: 1 !important;
   visibility: visible !important;
+}
+
+/* Ensure all text is visible with solid fallback colors */
+h1, h2, h3, h4, h5, h6,
+p, span, a, li, label {
+  visibility: visible !important;
+}
+
+/* Force preloader to be hidden after animation completes
+   JavaScript handles this, but CSS backup in case of failure */
+.preloader-complete,
+[data-preloader-complete="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Ensure z-index stacking doesn't hide content */
+#hero {
+  z-index: 1 !important;
+}
+
+/* Force hero content above any overlays */
+#hero > div {
+  position: relative;
+  z-index: 10;
 }
 
 /* Ensure gradient text has fallback - show solid color if gradient-clip fails */
@@ -863,11 +899,8 @@ section {
    PERFORMANCE — GPU Acceleration (safe optimizations only)
    ============================================ */
 
-/* GPU acceleration hints for animated elements */
-.service-accordion,
-.team-member {
-  will-change: transform, opacity;
-}
+/* GPU acceleration hints removed - causes issues on Windows Intel/NVIDIA */
+/* .service-accordion, .team-member - no longer using will-change */
 
 /* Reduce paint areas for fixed elements */
 .preloader,

@@ -256,7 +256,7 @@ function FlipCard({ project, isSimple = false, className = "", showNumber = fals
         className={`relative cursor-pointer overflow-hidden rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] ${
           isSimple ? "mb-6 aspect-[4/3]" : "mb-8 aspect-[8/9]"
         }`}
-        style={{ perspective: "1000px" }}
+        style={isSimple ? undefined : { perspective: "1000px" }}
         onClick={() => setIsFlipped(!isFlipped)}
         onKeyDown={handleKeyDown}
         tabIndex={0}
@@ -266,7 +266,10 @@ function FlipCard({ project, isSimple = false, className = "", showNumber = fals
       >
         <div
           className="h-full w-full"
-          style={{
+          style={isSimple ? {
+            // Simple fade transition for mobile/reduced-motion - no 3D transforms
+            transition: prefersReducedMotion ? "none" : "opacity 0.3s ease-out",
+          } : {
             transformStyle: "preserve-3d",
             transition: prefersReducedMotion ? "none" : "transform 0.6s ease-out",
             transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
@@ -275,7 +278,15 @@ function FlipCard({ project, isSimple = false, className = "", showNumber = fals
           {/* Front side - image */}
           <div
             className="absolute inset-0 overflow-hidden rounded-2xl bg-[var(--card-bg)]"
-            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+            style={isSimple ? {
+              // Simple visibility toggle for non-3D mode
+              opacity: isFlipped ? 0 : 1,
+              visibility: isFlipped ? "hidden" : "visible",
+              transition: "opacity 0.3s, visibility 0.3s",
+            } : {
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden"
+            }}
           >
             <Image
               src={project.image}
@@ -309,7 +320,12 @@ function FlipCard({ project, isSimple = false, className = "", showNumber = fals
           {/* Back side - BOLD EDITORIAL DESIGN */}
           <div
             className="absolute inset-0 overflow-hidden rounded-2xl bg-[#0a0a0a]"
-            style={{
+            style={isSimple ? {
+              // Simple visibility toggle for non-3D mode
+              opacity: isFlipped ? 1 : 0,
+              visibility: isFlipped ? "visible" : "hidden",
+              transition: "opacity 0.3s, visibility 0.3s",
+            } : {
               backfaceVisibility: "hidden",
               WebkitBackfaceVisibility: "hidden",
               transform: "rotateY(180deg)",

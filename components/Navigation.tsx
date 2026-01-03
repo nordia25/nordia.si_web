@@ -118,10 +118,10 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
       aria-label="Glavna navigacija"
       className={`pointer-events-none fixed inset-0 z-[100] ${isOpen ? "pointer-events-auto" : ""}`}
     >
-      {/* Background */}
+      {/* Background - visibility:hidden when closed prevents black screen on GPU failures */}
       <div
         ref={bgRef}
-        className="absolute inset-0 bg-[var(--background)] opacity-0"
+        className={`absolute inset-0 bg-[var(--background)] opacity-0 ${isOpen ? "" : "invisible"}`}
       />
 
       {/* Content - hidden by default, GSAP animates in */}

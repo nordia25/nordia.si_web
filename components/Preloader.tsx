@@ -16,12 +16,26 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   const taglineFillRef = useRef<HTMLDivElement>(null);
   const hasCompletedRef = useRef(false);
 
+  // Helper function to force hide the preloader element
+  const forceHidePreloader = () => {
+    if (preloaderRef.current) {
+      preloaderRef.current.style.display = 'none';
+      preloaderRef.current.style.visibility = 'hidden';
+      preloaderRef.current.style.opacity = '0';
+      preloaderRef.current.style.pointerEvents = 'none';
+      // Add data attribute for CSS fallback
+      preloaderRef.current.setAttribute('data-preloader-complete', 'true');
+      preloaderRef.current.classList.add('preloader-complete');
+    }
+  };
+
   useEffect(() => {
-    // Safety timeout - force complete if animation hasn't finished in 5 seconds
+    // Safety timeout - force complete AND HIDE if animation hasn't finished in 5 seconds
     const safetyTimeout = setTimeout(() => {
       if (!hasCompletedRef.current) {
-        console.warn('Preloader safety timeout triggered');
+        console.warn('Preloader safety timeout triggered - forcing hide');
         hasCompletedRef.current = true;
+        forceHidePreloader(); // CRITICAL: Actually hide the DOM element
         onComplete();
       }
     }, 5000);
@@ -36,8 +50,9 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         const fillTextElement = fillTextRef.current;
 
         if (!textElement || !fillTextElement) {
-          // Elements not found - complete immediately
+          // Elements not found - complete immediately and hide
           hasCompletedRef.current = true;
+          forceHidePreloader();
           onComplete();
           return;
         }
@@ -130,16 +145,18 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           onComplete: () => {
             if (!hasCompletedRef.current) {
               hasCompletedRef.current = true;
+              forceHidePreloader(); // Also hide on animation complete
               onComplete();
             }
           },
         });
       }, preloaderRef);
     } catch (error) {
-      // Animation setup failed - complete immediately
+      // Animation setup failed - complete immediately and hide
       console.error('Preloader animation failed:', error);
       if (!hasCompletedRef.current) {
         hasCompletedRef.current = true;
+        forceHidePreloader();
         onComplete();
       }
     }
