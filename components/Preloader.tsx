@@ -44,7 +44,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       tl.to(taglineRef.current, {
         opacity: 1,
         y: 0,
-        duration: 0.3,
+        duration: 0.4,
         ease: "power3.out",
       });
 
@@ -53,10 +53,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         textElement,
         {
           strokeDashoffset: 0,
-          duration: 1.2,
+          duration: 1.6,
           ease: "power2.inOut",
         },
-        "-=0.15"
+        "-=0.2"
       );
 
       // 3. Animate tagline fill from left to right (illumination effect)
@@ -64,7 +64,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         taglineFillRef.current,
         {
           clipPath: "inset(0 0% 0 0)",
-          duration: 1.2,
+          duration: 1.6,
           ease: "power2.inOut",
         },
         "<"
@@ -76,10 +76,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         {
           opacity: 1,
           clipPath: "inset(0 0% 0 0)",
-          duration: 0.5,
+          duration: 0.6,
           ease: "power3.inOut",
         },
-        "-=0.3"
+        "-=0.4"
       );
 
       // 5. Fade out stroke
@@ -87,19 +87,19 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         textElement,
         {
           opacity: 0,
-          duration: 0.25,
+          duration: 0.3,
           ease: "power2.out",
         },
-        "-=0.4"
+        "-=0.5"
       );
 
       // 6. Hold briefly
-      tl.to({}, { duration: 0.15 });
+      tl.to({}, { duration: 0.2 });
 
       // 7. Slide everything up and out
       tl.to(preloaderRef.current, {
         yPercent: -100,
-        duration: 0.5,
+        duration: 0.6,
         ease: "power3.inOut",
         onComplete,
       });
