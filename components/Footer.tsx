@@ -77,7 +77,7 @@ export default function Footer() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       // CTA text reveal - word by word
-      const words = ctaRef.current?.querySelectorAll(".word");
+      const words = ctaRef.current && ctaRef.current.querySelectorAll(".word");
       if (words) {
         gsap.fromTo(
           words,

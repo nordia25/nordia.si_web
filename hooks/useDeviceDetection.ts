@@ -3,6 +3,17 @@
 import { useState, useEffect } from "react";
 
 /**
+ * Safe wrapper for window.matchMedia that handles errors on older browsers
+ */
+function safeMatchMedia(query: string): boolean {
+  try {
+    return window.matchMedia(query).matches;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Detects if the device is a touch device (mobile/tablet)
  * SSR-safe: returns true by default to hide cursor initially
  */
@@ -10,13 +21,13 @@ export function useIsTouchDevice() {
   const [isTouch, setIsTouch] = useState(true);
 
   useEffect(() => {
-    queueMicrotask(() => {
+    setTimeout(() => {
       setIsTouch(
-        window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
+        safeMatchMedia("(hover: none) and (pointer: coarse)") ||
           "ontouchstart" in window ||
           navigator.maxTouchPoints > 0
       );
-    });
+    }, 0);
   }, []);
 
   return isTouch;
@@ -30,12 +41,12 @@ export function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    queueMicrotask(() => {
+    setTimeout(() => {
       setIsMobile(
-        window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
+        safeMatchMedia("(hover: none) and (pointer: coarse)") ||
           window.innerWidth < 768
       );
-    });
+    }, 0);
   }, []);
 
   return isMobile;
@@ -49,15 +60,15 @@ export function useIsSlowDevice() {
   const [isSlow, setIsSlow] = useState(false);
 
   useEffect(() => {
-    queueMicrotask(() => {
-      const prefersReducedMotion = window.matchMedia(
+    setTimeout(() => {
+      const prefersReducedMotion = safeMatchMedia(
         "(prefers-reduced-motion: reduce)"
-      ).matches;
+      );
       const isMobile =
-        window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
+        safeMatchMedia("(hover: none) and (pointer: coarse)") ||
         window.innerWidth < 768;
       setIsSlow(prefersReducedMotion || isMobile);
-    });
+    }, 0);
   }, []);
 
   return isSlow;
@@ -72,15 +83,15 @@ export function useIsSlowDeviceConservative() {
   const [isSlow, setIsSlow] = useState(true);
 
   useEffect(() => {
-    queueMicrotask(() => {
-      const prefersReducedMotion = window.matchMedia(
+    setTimeout(() => {
+      const prefersReducedMotion = safeMatchMedia(
         "(prefers-reduced-motion: reduce)"
-      ).matches;
+      );
       const isMobile =
-        window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
+        safeMatchMedia("(hover: none) and (pointer: coarse)") ||
         window.innerWidth < 768;
       setIsSlow(prefersReducedMotion || isMobile);
-    });
+    }, 0);
   }, []);
 
   return isSlow;
@@ -94,16 +105,14 @@ export function useSimpleLayout() {
   const [isSimple, setIsSimple] = useState(true);
 
   useEffect(() => {
-    queueMicrotask(() => {
-      const prefersReducedMotion = window.matchMedia(
+    setTimeout(() => {
+      const prefersReducedMotion = safeMatchMedia(
         "(prefers-reduced-motion: reduce)"
-      ).matches;
-      const isMobile = window.matchMedia(
-        "(hover: none) and (pointer: coarse)"
-      ).matches;
+      );
+      const isMobile = safeMatchMedia("(hover: none) and (pointer: coarse)");
       const isSmallScreen = window.innerWidth < 1024;
       setIsSimple(prefersReducedMotion || isMobile || isSmallScreen);
-    });
+    }, 0);
   }, []);
 
   return isSimple;

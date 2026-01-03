@@ -165,8 +165,8 @@ export default function TeamSection() {
                       {SOCIAL_PLATFORMS.map((social) => {
                         const href =
                           social.name === "LinkedIn"
-                            ? member.socials?.linkedin
-                            : member.socials?.twitter;
+                            ? (member.socials && member.socials.linkedin)
+                            : (member.socials && member.socials.twitter);
                         return (
                           <a
                             key={social.name}

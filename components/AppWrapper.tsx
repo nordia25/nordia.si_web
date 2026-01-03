@@ -41,15 +41,24 @@ interface AppWrapperProps {
   children: React.ReactNode;
 }
 
+// Safe wrapper for window.matchMedia
+function safeMatchMedia(query: string): boolean {
+  try {
+    return window.matchMedia(query).matches;
+  } catch {
+    return false;
+  }
+}
+
 // Check if should skip preloader (mobile, touch, reduced motion)
 function shouldSkipPreloader(): boolean {
   if (typeof window === "undefined") return true;
   const isMobile =
-    window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
+    safeMatchMedia("(hover: none) and (pointer: coarse)") ||
     window.innerWidth < 768;
-  const prefersReducedMotion = window.matchMedia(
+  const prefersReducedMotion = safeMatchMedia(
     "(prefers-reduced-motion: reduce)"
-  ).matches;
+  );
   return isMobile || prefersReducedMotion;
 }
 
@@ -60,14 +69,14 @@ export default function AppWrapper({ children }: AppWrapperProps) {
 
   // After hydration, check if we should show preloader
   useEffect(() => {
-    queueMicrotask(() => {
+    setTimeout(() => {
       setIsMounted(true);
       const skipPreloader = shouldSkipPreloader();
       if (!skipPreloader) {
         setShowPreloader(true);
         setIsLoading(true);
       }
-    });
+    }, 0);
   }, []);
 
   return (

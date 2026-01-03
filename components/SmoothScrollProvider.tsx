@@ -25,37 +25,51 @@ export default function SmoothScrollProvider({
       return;
     }
 
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-    });
+    let lenis: Lenis | null = null;
 
-    lenisRef.current = lenis;
+    try {
+      lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: "vertical",
+        gestureOrientation: "vertical",
+        smoothWheel: true,
+      });
 
-    lenis.on("scroll", ScrollTrigger.update);
+      lenisRef.current = lenis;
 
-    // Store the callback in a ref so we can remove the SAME function
-    const tickerCallback = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-    tickerCallbackRef.current = tickerCallback;
+      lenis.on("scroll", ScrollTrigger.update);
 
-    gsap.ticker.add(tickerCallback);
+      // Store the callback in a ref so we can remove the SAME function
+      const tickerCallback = (time: number) => {
+        if (lenis) {
+          lenis.raf(time * 1000);
+        }
+      };
+      tickerCallbackRef.current = tickerCallback;
 
-    // Enable lag smoothing for better performance on slower devices
-    // Lower values = more responsive but can cause jumps
-    // Higher values = smoother but more lag
-    gsap.ticker.lagSmoothing(500, 33);
+      gsap.ticker.add(tickerCallback);
+
+      // Enable lag smoothing for better performance on slower devices
+      gsap.ticker.lagSmoothing(500, 33);
+    } catch (error) {
+      // Lenis failed to initialize - fall back to native scroll
+      console.warn('Lenis smooth scroll failed to initialize:', error);
+      lenisRef.current = null;
+    }
 
     return () => {
       // Remove the SAME callback function we added
       if (tickerCallbackRef.current) {
         gsap.ticker.remove(tickerCallbackRef.current);
       }
-      lenis.destroy();
+      if (lenis) {
+        try {
+          lenis.destroy();
+        } catch {
+          // Ignore destroy errors
+        }
+      }
       lenisRef.current = null;
     };
   }, [isSlowDevice]);

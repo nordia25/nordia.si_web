@@ -76,7 +76,7 @@ function CustomCursor() {
     const handleMouseOut = (e: MouseEvent) => {
       const relatedTarget = e.relatedTarget as HTMLElement | null;
       if (
-        relatedTarget?.closest('[data-cursor-text], a, button, [role="button"]')
+        relatedTarget && relatedTarget.closest('[data-cursor-text], a, button, [role="button"]')
       ) {
         return;
       }
@@ -157,22 +157,22 @@ function CustomCursor() {
 
   return (
     <>
-      {/* Main cursor */}
+      {/* Main cursor - removed mix-blend-mode for GPU compatibility */}
       <div
         ref={cursorRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9998] hidden h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 mix-blend-difference lg:flex"
+        className="pointer-events-none fixed left-0 top-0 z-[9998] hidden h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/50 bg-white/5 lg:flex"
       >
         {cursorText && (
-          <span className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.15em] text-black">
+          <span className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.15em] text-white">
             {cursorText}
           </span>
         )}
       </div>
 
-      {/* Dot */}
+      {/* Dot - removed mix-blend-mode for GPU compatibility */}
       <div
         ref={cursorDotRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9999] hidden h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white mix-blend-difference lg:block"
+        className="pointer-events-none fixed left-0 top-0 z-[9999] hidden h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white lg:block"
       />
     </>
   );

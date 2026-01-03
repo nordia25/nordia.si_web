@@ -242,7 +242,7 @@ body {
     width 0.5s var(--ease-apple),
     height 0.5s var(--ease-apple),
     opacity 0.3s ease;
-  mix-blend-mode: difference;
+  /* mix-blend-mode removed for GPU compatibility on Windows */
 }
 
 .cursor.hover {

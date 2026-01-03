@@ -12,14 +12,19 @@ export default function ParallaxVideo() {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    queueMicrotask(() => {
+    setTimeout(() => {
       setIsMounted(true);
-    });
+    }, 0);
 
-    // Check if mobile - skip animation
-    const isMobile =
-      window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
-      window.innerWidth < 768;
+    // Check if mobile - skip animation (with safe matchMedia)
+    let isMobile = false;
+    try {
+      isMobile =
+        window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
+        window.innerWidth < 768;
+    } catch {
+      isMobile = window.innerWidth < 768;
+    }
     if (isMobile) return;
 
     const ctx = gsap.context(() => {

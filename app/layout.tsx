@@ -120,8 +120,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sl" className={texGyreHeros.variable}>
+    <html lang="sl" className={`${texGyreHeros.variable} no-js`}>
       <head>
+        {/* Remove no-js class immediately when JS executes - enables CSS fallbacks if JS fails */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.remove('no-js')`,
+          }}
+        />
         <link
           rel="preload"
           href="/nordia-hero-bg.jpg"

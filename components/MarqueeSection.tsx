@@ -24,12 +24,24 @@ export default function MarqueeSection({
     const container = containerRef.current;
     if (!container) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.1 }
-    );
-    observer.observe(container);
-    return () => observer.disconnect();
+    // Feature detection for IntersectionObserver
+    if (typeof IntersectionObserver === 'undefined') {
+      // Fallback: always visible if IntersectionObserver not supported
+      setIsVisible(true);
+      return;
+    }
+
+    try {
+      const observer = new IntersectionObserver(
+        ([entry]) => setIsVisible(entry.isIntersecting),
+        { threshold: 0.1 }
+      );
+      observer.observe(container);
+      return () => observer.disconnect();
+    } catch {
+      // IntersectionObserver failed - assume visible
+      setIsVisible(true);
+    }
   }, []);
 
   // Pause/resume tween based on visibility

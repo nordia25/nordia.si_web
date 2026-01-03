@@ -239,7 +239,7 @@ function RotatingText({ words, className = "" }: RotatingTextProps) {
     if (!isComplete) return;
 
     const ctx = gsap.context(() => {
-      const wordElements = containerRef.current?.querySelectorAll('.rotating-word');
+      const wordElements = containerRef.current && containerRef.current.querySelectorAll('.rotating-word');
       if (!wordElements || wordElements.length === 0) return;
 
       // Reset to initial state - all dimmed except first
