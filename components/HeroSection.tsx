@@ -337,9 +337,9 @@ export default function HeroSection() {
 
             {/* CTAs - aligned with rotating text */}
             <div className="flex flex-col lg:flex-row lg:items-start lg:gap-6">
-              {/* Invisible spacer matching "Izdelujemo" width */}
+              {/* Invisible spacer matching "Izdelujemo" width - uses visibility:hidden for GPU compatibility */}
               <span
-                className="hidden lg:block text-[clamp(3rem,10vw,8rem)] font-medium leading-[0.95] opacity-0 select-none pointer-events-none"
+                className="hidden lg:block text-[clamp(3rem,10vw,8rem)] font-medium leading-[0.95] invisible select-none pointer-events-none"
                 aria-hidden="true"
                 style={{ letterSpacing: "-0.04em" }}
               >
