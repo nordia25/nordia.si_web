@@ -31,9 +31,9 @@ export default function Home() {
         {/* Spacer for fixed hero - maintains document flow */}
         <div className="h-screen" aria-hidden="true" />
         <MissionSection />
-        <SectionDivider />
+        <SectionDivider fromColor="#0f0f0f" toColor="#000000" />
         <WorksSection />
-        <SectionDivider />
+        <SectionDivider fromColor="#000000" toColor="#121212" />
         <TeamSection />
       </main>
       <Footer />

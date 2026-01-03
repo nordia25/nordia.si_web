@@ -183,7 +183,7 @@ export default function MissionSection() {
     <section
       id="why"
       ref={sectionRef}
-      className="relative z-30 overflow-hidden rounded-t-[2rem] bg-[#050505] md:rounded-t-[4rem]"
+      className="relative z-30 overflow-hidden rounded-t-[2rem] bg-[#0f0f0f] md:rounded-t-[4rem]"
       style={{
         boxShadow: "0 -30px 80px -20px rgba(255, 255, 255, 0.08)",
       }}
