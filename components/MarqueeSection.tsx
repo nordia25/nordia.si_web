@@ -2,9 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface MarqueeSectionProps {
   text?: string;
@@ -66,36 +63,7 @@ export default function MarqueeSection({
       repeat: -1,
     });
 
-    // Scroll velocity effect
-    let currentVelocity = 0;
-    let targetVelocity = 0;
-    let rafId: number;
-
-    ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: "top bottom",
-      end: "bottom top",
-      onUpdate: (self) => {
-        targetVelocity = self.getVelocity() / 1000;
-      },
-    });
-
-    const updateVelocity = () => {
-      currentVelocity += (targetVelocity - currentVelocity) * 0.1;
-      targetVelocity *= 0.9;
-
-      const skew = Math.min(Math.max(currentVelocity * 2, -15), 15);
-      gsap.to(marquee, {
-        skewX: skew,
-        duration: 0.3,
-      });
-
-      rafId = requestAnimationFrame(updateVelocity);
-    };
-    updateVelocity();
-
     return () => {
-      if (rafId) cancelAnimationFrame(rafId);
       if (tweenRef.current) tweenRef.current.kill();
     };
   }, [direction, speed]);

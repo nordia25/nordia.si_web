@@ -1,16 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const texGyreHeros = localFont({
   src: [
     {
-      path: "./fonts/texgyreheros-regular.otf",
+      path: "./fonts/texgyreheros-regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "./fonts/texgyreheros-bold.otf",
+      path: "./fonts/texgyreheros-bold.woff2",
       weight: "700",
       style: "normal",
     },
@@ -126,6 +127,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );

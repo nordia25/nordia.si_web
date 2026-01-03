@@ -13,7 +13,7 @@ export default function Header() {
 
   // Show after preloader
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 3200);
+    const timer = setTimeout(() => setIsVisible(true), 2300);
     return () => clearTimeout(timer);
   }, []);
 

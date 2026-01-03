@@ -8,11 +8,11 @@ export default function HeroBackground() {
       {/* Hero Image - static */}
       <div className="absolute inset-[-5%]">
         <Image
-          src="/nordia-hero-bg.png"
+          src="/nordia-hero-bg.jpg"
           alt=""
           fill
           priority
-          quality={90}
+          quality={75}
           className="scale-[1.03] object-cover"
           sizes="100vw"
           aria-hidden="true"

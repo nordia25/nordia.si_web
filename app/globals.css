@@ -33,13 +33,10 @@
    BASE — Clean & Minimal
    ============================================ */
 
-* {
-  cursor: none !important;
-}
-
-@media (max-width: 1024px) {
-  * {
-    cursor: auto !important;
+/* Hide cursor on desktop - optimized selector */
+@media (min-width: 1025px) {
+  body {
+    cursor: none;
   }
 }
 

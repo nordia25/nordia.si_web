@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, memo } from "react";
+import { useRef, useCallback, memo } from "react";
 import gsap from "gsap";
 import { useIsTouchDevice } from "@/hooks/useDeviceDetection";
 
@@ -23,7 +23,6 @@ function TiltCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const glareRef = useRef<HTMLDivElement>(null);
   const lastMoveTime = useRef(0);
-  const [isHovered, setIsHovered] = useState(false);
   const isTouch = useIsTouchDevice();
 
   const handleMouseMove = useCallback(
@@ -68,7 +67,6 @@ function TiltCard({
   );
 
   const handleMouseEnter = useCallback(() => {
-    setIsHovered(true);
     if (cardRef.current) {
       gsap.to(cardRef.current, {
         scale: 1.02,
@@ -79,14 +77,13 @@ function TiltCard({
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    setIsHovered(false);
     if (cardRef.current) {
       gsap.to(cardRef.current, {
         rotateX: 0,
         rotateY: 0,
         scale: 1,
-        duration: 0.6,
-        ease: "elastic.out(1, 0.5)",
+        duration: 0.4,
+        ease: "power2.out",
       });
     }
     if (glareRef.current) {
