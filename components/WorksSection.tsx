@@ -345,11 +345,11 @@ const FlipCard = memo(function FlipCard({ project, isSimple = false, className =
 
               {/* Title block - oversized, dramatic */}
               <div className="mb-3 lg:mb-4">
-                <h4 className="font-display text-[32px] font-bold uppercase leading-[0.85] tracking-[-0.02em] text-white lg:text-[42px]">
+                <h3 className="font-display text-[32px] font-bold uppercase leading-[0.85] tracking-[-0.02em] text-white lg:text-[42px]">
                   {project.title.split("|").map((line, i) => (
                     <span key={i} className="block">{line}</span>
                   ))}
-                </h4>
+                </h3>
               </div>
 
               {/* Pull quote section */}
@@ -405,7 +405,7 @@ const FlipCard = memo(function FlipCard({ project, isSimple = false, className =
               <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-3">
                 <button
                   onClick={handleClose}
-                  className="group/back flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.15em] text-white/35 transition-colors hover:text-white focus:outline-none lg:text-[12px]"
+                  className="group/back flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.15em] text-white/50 transition-colors hover:text-white focus:outline-none lg:text-[12px]"
                   aria-label="Zapri opis"
                 >
                   <svg

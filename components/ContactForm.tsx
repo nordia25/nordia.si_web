@@ -302,7 +302,7 @@ export default function ContactForm() {
                     <span
                       ref={(el) => { headlineRefs.current[index] = el; }}
                       className={`inline-block ${
-                        index === 0 ? "text-white" : "text-white/30"
+                        index === 0 ? "text-white" : "text-white/50"
                       }`}
                     >
                       {word}
@@ -411,7 +411,7 @@ export default function ContactForm() {
 
         {/* Footer hint */}
         <div className="hidden shrink-0 pb-8 text-center md:block">
-          <span className="text-sm text-white/30">
+          <span className="text-sm text-white/50">
             Lahko nas dosežete tudi na{" "}
             <a
               href="mailto:info@nordia.si"
