@@ -64,29 +64,7 @@ html.lenis body {
   contain: layout style paint;
 }
 
-/* GPU acceleration for work cards - improves transform performance */
-.work-card {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-/* Optimize horizontal scroll container */
-#works [style*="fit-content"] {
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-/* Smooth image scaling on hover */
-.work-card img {
-  transform: translateZ(0);
-}
-
-/* Optimize section transitions */
-section {
-  transform: translateZ(0);
-}
-
-/* Reduce paint on fixed elements */
+/* GPU acceleration for header - safe because it's always fixed */
 header {
   transform: translateZ(0);
   backface-visibility: hidden;
