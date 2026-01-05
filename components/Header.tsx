@@ -20,9 +20,38 @@ const MENU_ANIMATION = {
  */
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOnHero, setIsOnHero] = useState(true);
   const { isComplete } = usePreloader();
   const line1Ref = useRef<HTMLSpanElement>(null);
   const line2Ref = useRef<HTMLSpanElement>(null);
+
+  // Track scroll position to determine if we're on hero section
+  useEffect(() => {
+    let rafId: number;
+    let ticking = false;
+
+    const updateOnHero = () => {
+      const heroHeight = window.innerHeight;
+      const shouldBeOnHero = window.scrollY < heroHeight - 100;
+      // Only update state if value actually changed
+      setIsOnHero(prev => prev !== shouldBeOnHero ? shouldBeOnHero : prev);
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        rafId = requestAnimationFrame(updateOnHero);
+        ticking = true;
+      }
+    };
+
+    updateOnHero(); // Initial check
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   // Animate menu button lines
   useEffect(() => {
@@ -54,14 +83,16 @@ export default function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="group relative font-sans text-xl font-medium tracking-tighter text-white md:text-2xl"
+            className={`group relative font-sans text-xl font-medium tracking-tighter transition-colors duration-300 md:text-2xl ${
+              isOnHero ? "text-gray-900" : "text-white"
+            }`}
           >
             <span className="relative inline-block overflow-hidden">
               <span className="inline-block transition-transform duration-500 ease-out group-hover:-translate-y-full">
-                Nordia<span className="text-white/60">.</span>
+                Nordia<span className={isOnHero ? "text-gray-900/60" : "text-white/60"}>.</span>
               </span>
               <span className="absolute left-0 top-full inline-block transition-transform duration-500 ease-out group-hover:-translate-y-full">
-                Nordia<span className="text-white/60">.</span>
+                Nordia<span className={isOnHero ? "text-gray-900/60" : "text-white/60"}>.</span>
               </span>
             </span>
           </Link>
@@ -69,8 +100,8 @@ export default function Header() {
           {/* Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`group pointer-events-auto relative flex items-center gap-4 ${
-              isMenuOpen ? "text-[var(--foreground)]" : "text-white"
+            className={`group pointer-events-auto relative flex items-center gap-4 transition-colors duration-300 ${
+              isMenuOpen ? "text-[var(--foreground)]" : isOnHero ? "text-gray-900" : "text-white"
             }`}
             aria-label={isMenuOpen ? "Zapri meni" : "Odpri meni"}
             aria-expanded={isMenuOpen}
@@ -90,15 +121,15 @@ export default function Header() {
               <div className="absolute inset-0 flex flex-col items-center justify-center transition-transform duration-500 ease-out group-hover:-translate-y-full">
                 <span
                   ref={line1Ref}
-                  className={`absolute h-[1.5px] w-5 origin-center md:w-6 ${
-                    isMenuOpen ? "bg-[var(--foreground)]" : "bg-white"
+                  className={`absolute h-[1.5px] w-5 origin-center transition-colors duration-300 md:w-6 ${
+                    isMenuOpen ? "bg-[var(--foreground)]" : isOnHero ? "bg-gray-900" : "bg-white"
                   }`}
                   style={{ top: "calc(50% - 4px)" }}
                 />
                 <span
                   ref={line2Ref}
-                  className={`absolute h-[1.5px] w-5 origin-center md:w-6 ${
-                    isMenuOpen ? "bg-[var(--foreground)]" : "bg-white"
+                  className={`absolute h-[1.5px] w-5 origin-center transition-colors duration-300 md:w-6 ${
+                    isMenuOpen ? "bg-[var(--foreground)]" : isOnHero ? "bg-gray-900" : "bg-white"
                   }`}
                   style={{ top: "calc(50% + 4px)" }}
                 />
@@ -109,7 +140,7 @@ export default function Header() {
                   className={`duration-400 absolute h-[1.5px] w-5 origin-center transition-transform md:w-6 ${
                     isMenuOpen
                       ? "!top-1/2 rotate-45 bg-[var(--foreground)]"
-                      : "bg-white"
+                      : isOnHero ? "bg-gray-900" : "bg-white"
                   }`}
                   style={{ top: "calc(50% - 4px)" }}
                 />
@@ -117,7 +148,7 @@ export default function Header() {
                   className={`duration-400 absolute h-[1.5px] w-5 origin-center transition-transform md:w-6 ${
                     isMenuOpen
                       ? "!top-1/2 -rotate-45 bg-[var(--foreground)]"
-                      : "bg-white"
+                      : isOnHero ? "bg-gray-900" : "bg-white"
                   }`}
                   style={{ top: "calc(50% + 4px)" }}
                 />

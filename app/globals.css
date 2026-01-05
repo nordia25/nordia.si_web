@@ -23,20 +23,11 @@
   /* Apple-style timing */
   --ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-apple-out: cubic-bezier(0.22, 1, 0.36, 1);
-
-  /* Premium cursor */
-  --cursor-size: 12px;
-  --cursor-size-hover: 60px;
 }
 
 /* ============================================
    BASE — Clean & Minimal
    ============================================ */
-
-/* Custom cursor active - hide system cursor via JS class */
-body.custom-cursor-active {
-  cursor: none;
-}
 
 html {
   font-size: 16px;
@@ -46,6 +37,31 @@ html {
 html.lenis,
 html.lenis body {
   height: auto;
+}
+
+/* ============================================
+   PERFORMANCE — CSS Containment
+   ============================================ */
+
+/* Contain layout recalculations for major sections */
+#hero {
+  contain: layout style;
+}
+
+/* #works - NO containment - breaks GSAP ScrollTrigger pin */
+
+#about {
+  contain: layout style;
+}
+
+/* Strict containment for decorative elements */
+.noise {
+  contain: strict;
+}
+
+/* Contain flip cards for better paint performance */
+.flip-card-inner {
+  contain: layout style paint;
 }
 
 .lenis.lenis-smooth {
@@ -221,61 +237,6 @@ body {
 .section-padding {
   padding-top: clamp(8rem, 20vh, 16rem);
   padding-bottom: clamp(8rem, 20vh, 16rem);
-}
-
-/* ============================================
-   CURSOR — Minimal & Elegant
-   ============================================ */
-
-.cursor {
-  position: fixed;
-  width: var(--cursor-size);
-  height: var(--cursor-size);
-  background-color: var(--foreground);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  transition:
-    width 0.5s var(--ease-apple),
-    height 0.5s var(--ease-apple),
-    opacity 0.3s ease;
-  /* mix-blend-mode removed for GPU compatibility on Windows */
-}
-
-.cursor.hover {
-  width: var(--cursor-size-hover);
-  height: var(--cursor-size-hover);
-  opacity: 0.9;
-}
-
-.cursor.clicking {
-  transform: translate(-50%, -50%) scale(0.9);
-}
-
-.cursor.has-text {
-  width: 100px;
-  height: 100px;
-  background-color: var(--foreground);
-  mix-blend-mode: normal;
-}
-
-.cursor-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--background);
-  white-space: nowrap;
-}
-
-@media (max-width: 1024px) {
-  .cursor {
-    display: none !important;
-  }
 }
 
 /* ============================================

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useSimpleLayout, usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
+import { useContactForm } from "@/contexts/ContactFormContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -107,7 +108,7 @@ const SERVICE_ICONS: Record<string, React.FC<{ className?: string }>> = {
 const PROJECTS: readonly Project[] = [
   {
     slug: "premium-website",
-    title: "Premium Website",
+    title: "Premium|spletna stran",
     category: "Spletna stran",
     image: "/works/premium-website.jpg",
     number: "01",
@@ -125,7 +126,7 @@ const PROJECTS: readonly Project[] = [
   },
   {
     slug: "ecommerce",
-    title: "E-commerce",
+    title: "Spletna|trgovina",
     category: "Spletna trgovina",
     image: "/works/ecommerce.jpg",
     number: "02",
@@ -143,7 +144,7 @@ const PROJECTS: readonly Project[] = [
   },
   {
     slug: "ai-integracija",
-    title: "AI Integracija",
+    title: "AI|Avtomatizacija",
     category: "AI Avtomatizacija",
     image: "/works/ai_integration.jpg",
     number: "03",
@@ -161,7 +162,7 @@ const PROJECTS: readonly Project[] = [
   },
   {
     slug: "3d-tiskanje",
-    title: "3D Tiskanje",
+    title: "3D|Tiskanje",
     category: "3D Tiskanje",
     image: "/works/3d_printing.jpg",
     number: "04",
@@ -193,7 +194,7 @@ interface FlipCardProps {
   showGlow?: boolean;
 }
 
-function FlipCard({ project, isSimple = false, className = "", showNumber = false, showGlow = false }: FlipCardProps) {
+const FlipCard = memo(function FlipCard({ project, isSimple = false, className = "", showNumber = false, showGlow = false }: FlipCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -345,8 +346,8 @@ function FlipCard({ project, isSimple = false, className = "", showNumber = fals
               {/* Title block - oversized, dramatic */}
               <div className="mb-3 lg:mb-4">
                 <h4 className="font-display text-[32px] font-bold uppercase leading-[0.85] tracking-[-0.02em] text-white lg:text-[42px]">
-                  {project.title.split(" ").map((word, i) => (
-                    <span key={i} className="block">{word}</span>
+                  {project.title.split("|").map((line, i) => (
+                    <span key={i} className="block">{line}</span>
                   ))}
                 </h4>
               </div>
@@ -443,13 +444,13 @@ function FlipCard({ project, isSimple = false, className = "", showNumber = fals
           style={{ backgroundColor: project.color }}
           aria-hidden="true"
         />
-        <h3 className={`font-display leading-none text-[var(--foreground)] ${isSimple ? "text-[1.75rem]" : "text-[2.15rem] md:text-[2.6rem]"}`}>
+        <h3 className={`font-display leading-tight text-[var(--foreground)] ${isSimple ? "text-[1.75rem]" : "text-[2.15rem] md:text-[2.6rem]"}`}>
           {project.category}
         </h3>
       </div>
     </article>
   );
-}
+});
 
 /**
  * Vertical card layout for mobile/tablets/slow devices.
@@ -458,6 +459,7 @@ function FlipCard({ project, isSimple = false, className = "", showNumber = fals
 function SimpleWorksSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const { openContactForm } = useContactForm();
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -539,9 +541,9 @@ function SimpleWorksSection() {
 
         {/* CTA Section */}
         <div className="py-20 md:py-28">
-          <a
-            href="mailto:info@nordia.si"
-            className="group flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12"
+          <button
+            onClick={openContactForm}
+            className="group flex w-full flex-col gap-6 text-left lg:flex-row lg:items-center lg:justify-between lg:gap-12"
           >
             <h3 className="font-display text-[9vw] leading-[1.1] tracking-tight text-[var(--foreground)] md:text-[7vw] lg:text-[4.5vw]">
               <span className="inline-block transition-opacity duration-500 group-hover:opacity-40">
@@ -563,7 +565,7 @@ function SimpleWorksSection() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
               </svg>
             </span>
-          </a>
+          </button>
         </div>
 
       </div>
@@ -581,6 +583,7 @@ function HorizontalWorksSection() {
   const horizontalRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState(false);
+  const { openContactForm } = useContactForm();
 
   // Wait for component to mount and stabilize before initializing ScrollTrigger
   useEffect(() => {
@@ -695,9 +698,9 @@ function HorizontalWorksSection() {
 
       {/* CTA Section */}
       <div className="container-wide py-24 md:py-32 lg:py-40">
-        <a
-          href="mailto:info@nordia.si"
-          className="group flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12"
+        <button
+          onClick={openContactForm}
+          className="group flex w-full flex-col gap-6 text-left lg:flex-row lg:items-center lg:justify-between lg:gap-12"
         >
           <h3 className="font-display text-[9vw] leading-[1.1] tracking-tight text-[var(--foreground)] md:text-[7vw] lg:text-[4.5vw]">
             <span className="inline-block transition-opacity duration-500 group-hover:opacity-40">
@@ -719,7 +722,7 @@ function HorizontalWorksSection() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
           </span>
-        </a>
+        </button>
       </div>
 
     </section>

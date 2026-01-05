@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ArrowIcon from "./icons/ArrowIcon";
+import { useContactForm } from "@/contexts/ContactFormContext";
 
 // Animation timing constants
 const ANIMATION = {
@@ -25,8 +26,9 @@ interface NavigationProps {
 
 interface MenuItem {
   label: string;
-  href: string;
+  href?: string;
   description: string;
+  isContactTrigger?: boolean;
 }
 
 /** Navigation menu items */
@@ -34,7 +36,7 @@ const menuItems: MenuItem[] = [
   { label: "Filozofija", href: "#why", description: "Naš pristop" },
   { label: "Storitve", href: "#works", description: "Kaj ustvarjamo" },
   { label: "O nas", href: "#about", description: "Kdo smo" },
-  { label: "Pišite nam", href: "mailto:info@nordia.si", description: "Kontakt" },
+  { label: "Pišite nam", description: "Kontakt", isContactTrigger: true },
 ];
 
 /**
@@ -46,6 +48,7 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
   const bgRef = useRef<HTMLDivElement>(null);
   const menuItemsRef = useRef<(HTMLLIElement | null)[]>([]);
   const footerRef = useRef<HTMLDivElement>(null);
+  const { openContactForm } = useContactForm();
 
   useEffect(() => {
     // Scroll lock management
@@ -110,8 +113,14 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
     };
   }, [isOpen]);
 
-  const handleLinkClick = () => {
+  const handleLinkClick = (item: MenuItem) => {
     onClose();
+    if (item.isContactTrigger) {
+      // Small delay to let navigation close animation start
+      setTimeout(() => {
+        openContactForm();
+      }, 100);
+    }
   };
 
   return (
@@ -148,50 +157,96 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
                   }}
                   role="none"
                 >
-                  <a
-                    href={item.href}
-                    onClick={handleLinkClick}
-                    role="menuitem"
-                    aria-label={`${item.label} - ${item.description}`}
-                    className="group flex items-baseline gap-8 border-b border-[var(--border)] py-2 transition-colors duration-300 hover:border-[var(--border-strong)] md:py-4"
-                  >
-                    {/* Number */}
-                    <span
-                      className="font-mono text-sm text-[var(--foreground-subtle)] transition-opacity duration-300 group-hover:opacity-80"
-                      aria-hidden="true"
+                  {item.isContactTrigger ? (
+                    <button
+                      onClick={() => handleLinkClick(item)}
+                      role="menuitem"
+                      aria-label={`${item.label} - ${item.description}`}
+                      className="group flex w-full items-baseline gap-8 border-b border-[var(--border)] py-2 text-left transition-colors duration-300 hover:border-[var(--border-strong)] md:py-4"
                     >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-
-                    {/* Label */}
-                    <span className="relative overflow-hidden">
-                      <span className="inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight text-[var(--foreground)] transition-transform duration-500 group-hover:-translate-y-full">
-                        {item.label}
-                      </span>
+                      {/* Number */}
                       <span
-                        className="text-gradient-animated absolute left-0 top-full inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight transition-transform duration-500 group-hover:-translate-y-full"
+                        className="font-mono text-sm text-[var(--foreground-subtle)] transition-opacity duration-300 group-hover:opacity-80"
                         aria-hidden="true"
                       >
-                        {item.label}
+                        {String(index + 1).padStart(2, "0")}
                       </span>
-                    </span>
 
-                    {/* Description - shows on hover */}
-                    <span className="ml-auto hidden translate-x-4 text-sm opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:text-[var(--foreground-subtle)] group-hover:opacity-100 md:block">
-                      {item.description}
-                    </span>
+                      {/* Label */}
+                      <span className="relative overflow-hidden">
+                        <span className="inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight text-[var(--foreground)] transition-transform duration-500 group-hover:-translate-y-full">
+                          {item.label}
+                        </span>
+                        <span
+                          className="text-gradient-animated absolute left-0 top-full inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight transition-transform duration-500 group-hover:-translate-y-full"
+                          aria-hidden="true"
+                        >
+                          {item.label}
+                        </span>
+                      </span>
 
-                    {/* Arrow */}
-                    <span
-                      className="ml-8 hidden h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-[var(--foreground)] group-hover:bg-[var(--foreground)] md:flex"
-                      aria-hidden="true"
+                      {/* Description - shows on hover */}
+                      <span className="ml-auto hidden translate-x-4 text-sm opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:text-[var(--foreground-subtle)] group-hover:opacity-100 md:block">
+                        {item.description}
+                      </span>
+
+                      {/* Arrow */}
+                      <span
+                        className="ml-8 hidden h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-[var(--foreground)] group-hover:bg-[var(--foreground)] md:flex"
+                        aria-hidden="true"
+                      >
+                        <ArrowIcon
+                          className="h-5 w-5 -rotate-45 text-[var(--foreground-subtle)] transition-all duration-300 group-hover:rotate-0 group-hover:text-[var(--background)]"
+                          strokeWidth={1.5}
+                        />
+                      </span>
+                    </button>
+                  ) : (
+                    <a
+                      href={item.href}
+                      onClick={() => handleLinkClick(item)}
+                      role="menuitem"
+                      aria-label={`${item.label} - ${item.description}`}
+                      className="group flex items-baseline gap-8 border-b border-[var(--border)] py-2 transition-colors duration-300 hover:border-[var(--border-strong)] md:py-4"
                     >
-                      <ArrowIcon
-                        className="h-5 w-5 -rotate-45 text-[var(--foreground-subtle)] transition-all duration-300 group-hover:rotate-0 group-hover:text-[var(--background)]"
-                        strokeWidth={1.5}
-                      />
-                    </span>
-                  </a>
+                      {/* Number */}
+                      <span
+                        className="font-mono text-sm text-[var(--foreground-subtle)] transition-opacity duration-300 group-hover:opacity-80"
+                        aria-hidden="true"
+                      >
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+
+                      {/* Label */}
+                      <span className="relative overflow-hidden">
+                        <span className="inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight text-[var(--foreground)] transition-transform duration-500 group-hover:-translate-y-full">
+                          {item.label}
+                        </span>
+                        <span
+                          className="text-gradient-animated absolute left-0 top-full inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight transition-transform duration-500 group-hover:-translate-y-full"
+                          aria-hidden="true"
+                        >
+                          {item.label}
+                        </span>
+                      </span>
+
+                      {/* Description - shows on hover */}
+                      <span className="ml-auto hidden translate-x-4 text-sm opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:text-[var(--foreground-subtle)] group-hover:opacity-100 md:block">
+                        {item.description}
+                      </span>
+
+                      {/* Arrow */}
+                      <span
+                        className="ml-8 hidden h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-[var(--foreground)] group-hover:bg-[var(--foreground)] md:flex"
+                        aria-hidden="true"
+                      >
+                        <ArrowIcon
+                          className="h-5 w-5 -rotate-45 text-[var(--foreground-subtle)] transition-all duration-300 group-hover:rotate-0 group-hover:text-[var(--background)]"
+                          strokeWidth={1.5}
+                        />
+                      </span>
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -216,9 +271,12 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
               </nav>
 
               {/* Email */}
-              <a
-                href="mailto:info@nordia.si"
-                aria-label="Pošljite email na info@nordia.si"
+              <button
+                onClick={() => {
+                  onClose();
+                  setTimeout(() => openContactForm(), 100);
+                }}
+                aria-label="Odpri kontaktni obrazec"
                 className="group flex items-center gap-3 text-sm text-[var(--foreground-subtle)] transition-colors duration-300 hover:text-[var(--foreground)]"
               >
                 <span>info@nordia.si</span>
@@ -226,7 +284,7 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
                   className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
                   strokeWidth={1.5}
                 />
-              </a>
+              </button>
             </div>
           </div>
         </div>

@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Preloader from "./Preloader";
-import CustomCursor from "./CustomCursor";
 import NoiseOverlay from "./NoiseOverlay";
 import SmoothScrollProvider from "./SmoothScrollProvider";
 import ErrorBoundary from "./ErrorBoundary";
 import { PreloaderProvider, usePreloader } from "@/contexts/PreloaderContext";
+import { ContactFormProvider } from "@/contexts/ContactFormContext";
+import ContactForm from "./ContactForm";
 
 interface AppContentProps {
   children: React.ReactNode;
@@ -33,7 +34,6 @@ function AppContent({ children, showPreloader, isLoading, setIsLoading, isMounte
       {showPreloader && isLoading && (
         <Preloader onComplete={handlePreloaderComplete} />
       )}
-      {isMounted && <CustomCursor />}
       {isMounted && <NoiseOverlay />}
       <SmoothScrollProvider>
         {/* Content is always visible - preloader covers it with higher z-index */}
@@ -80,6 +80,14 @@ export default function AppWrapper({ children }: AppWrapperProps) {
   const [showPreloader, setShowPreloader] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Reset scroll position on page load to prevent browser scroll restoration
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.history.scrollRestoration = "manual";
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   // After hydration, check if we should show preloader
   useEffect(() => {
     setTimeout(() => {
@@ -95,14 +103,17 @@ export default function AppWrapper({ children }: AppWrapperProps) {
   return (
     <ErrorBoundary>
       <PreloaderProvider>
-        <AppContent
-          showPreloader={showPreloader}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          isMounted={isMounted}
-        >
-          {children}
-        </AppContent>
+        <ContactFormProvider>
+          <AppContent
+            showPreloader={showPreloader}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            isMounted={isMounted}
+          >
+            {children}
+          </AppContent>
+          <ContactForm />
+        </ContactFormProvider>
       </PreloaderProvider>
     </ErrorBoundary>
   );

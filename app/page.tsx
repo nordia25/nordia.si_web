@@ -30,13 +30,19 @@ export default function Home() {
         <HeroSection />
         {/* Spacer for fixed hero - maintains document flow */}
         <div className="h-screen" aria-hidden="true" />
-        <MissionSection />
-        <SectionDivider fromColor="#0f0f0f" toColor="#000000" />
-        <WorksSection />
-        <SectionDivider fromColor="#000000" toColor="#121212" />
-        <TeamSection />
+
+        {/* Content wrapper with dark background to cover fixed hero at bottom */}
+        <div className="relative z-10 bg-[#0a0a0a]">
+          <MissionSection />
+          <SectionDivider fromColor="#111111" toColor="#000000" />
+          <WorksSection />
+          <SectionDivider fromColor="#000000" toColor="#111111" />
+          <TeamSection />
+          <Footer />
+          {/* Floor to ensure hero is fully covered at bottom */}
+          <div className="h-1 bg-[#0a0a0a]" aria-hidden="true" />
+        </div>
       </main>
-      <Footer />
     </AppWrapper>
   );
 }

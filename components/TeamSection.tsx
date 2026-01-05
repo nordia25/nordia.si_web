@@ -121,7 +121,7 @@ export default function TeamSection() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative z-20 bg-[#121212] py-20 pt-40 md:py-32 md:pt-64 lg:py-40 lg:pt-80"
+      className="relative z-20 bg-[#111111] py-20 pt-40 md:py-32 md:pt-64 lg:py-40 lg:pt-80"
     >
       <div className="container-wide">
         {/* Desktop: Two-column layout - images left, content right */}
@@ -146,6 +146,7 @@ export default function TeamSection() {
                       fill
                       sizes="(max-width: 768px) 50vw, 25vw"
                       className="object-cover transition-transform duration-700 md:group-hover:scale-105"
+                      loading="lazy"
                       placeholder="blur"
                       blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQMDBAMBAAAAAAAAAAAAAQACAwQFERITITEGQWFx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAZEQACAwEAAAAAAAAAAAAAAAABEQACITH/2gAMAwEAAhEDEQA/AMv8cqKd1wrI5qiKJzXRkvkcQSNjucIi1WVBD//Z"
                     />
@@ -250,6 +251,8 @@ export default function TeamSection() {
           </header>
         </div>
       </div>
+      {/* Bela linija na dnu sekcije */}
+      <div className="absolute inset-x-0 bottom-0 h-px bg-white/20" />
     </section>
   );
 }

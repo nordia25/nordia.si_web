@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ArrowIcon from "./icons/ArrowIcon";
+import { useContactForm } from "@/contexts/ContactFormContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -87,6 +88,7 @@ export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const time = useLocalTime(companyInfo.timezone);
+  const { openContactForm } = useContactForm();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -151,17 +153,12 @@ export default function Footer() {
             Začnimo
           </p>
 
-          {/* Subtitle */}
-          <p className="footer-fade mb-12 max-w-xl text-base leading-relaxed text-[var(--foreground-muted)] md:text-lg">
-            En klik do klica ali briefa. Odgovorimo v 24–48h.
-          </p>
-
           {/* Giant CTA - Left aligned, single row on desktop */}
           <div ref={ctaRef}>
-            <a
-              href="mailto:info@nordia.si"
-              aria-label="Pošljite nam email za sodelovanje"
-              className="group flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12"
+            <button
+              onClick={openContactForm}
+              aria-label="Odpri kontaktni obrazec"
+              className="group flex w-full flex-col gap-8 text-left lg:flex-row lg:items-center lg:justify-between lg:gap-12"
             >
               <h2 className="font-display text-[11vw] leading-[1.1] tracking-tight text-[var(--foreground)] md:text-[8vw] lg:text-[5.5vw]">
                 <span className="inline-block overflow-hidden pb-2">
@@ -186,14 +183,14 @@ export default function Footer() {
                   strokeWidth={1.5}
                 />
               </span>
-            </a>
+            </button>
           </div>
 
           {/* Email - Premium style */}
           <div className="footer-fade mt-16">
-            <a
-              href="mailto:info@nordia.si"
-              aria-label="Pošljite email na info@nordia.si"
+            <button
+              onClick={openContactForm}
+              aria-label="Odpri kontaktni obrazec"
               className="group inline-flex items-center gap-6"
             >
               <span
@@ -227,7 +224,7 @@ export default function Footer() {
                   />
                 </span>
               </span>
-            </a>
+            </button>
           </div>
         </div>
       </div>

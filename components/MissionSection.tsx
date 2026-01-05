@@ -183,7 +183,7 @@ export default function MissionSection() {
     <section
       id="why"
       ref={sectionRef}
-      className="relative z-30 overflow-hidden rounded-t-[2rem] bg-[#0f0f0f] md:rounded-t-[4rem]"
+      className="relative z-30 overflow-hidden rounded-t-[2rem] bg-[#111111] md:rounded-t-[4rem]"
       style={{
         boxShadow: "0 -30px 80px -20px rgba(255, 255, 255, 0.08)",
       }}
@@ -203,7 +203,7 @@ export default function MissionSection() {
         aria-hidden="true"
       />
 
-      <div className="relative px-6 py-24 md:px-12 md:py-40 lg:py-48">
+      <div className="relative px-6 pt-24 pb-12 md:px-12 md:pt-40 md:pb-20 lg:pt-48 lg:pb-24">
         <div className="mx-auto max-w-7xl">
 
           {/* Editorial Header */}
@@ -255,7 +255,7 @@ export default function MissionSection() {
                 {/* Left item - spans 2 rows */}
                 <div
                   ref={(el) => { itemRefs.current[0] = el; }}
-                  className="relative row-span-2 py-16 pr-16 lg:py-20 lg:pr-24"
+                  className="relative row-span-2 py-10 pr-10 lg:py-12 lg:pr-16"
                   onMouseEnter={() => setHoveredModule(0)}
                   onMouseLeave={() => setHoveredModule(null)}
                 >
@@ -265,13 +265,11 @@ export default function MissionSection() {
                     style={{ backgroundColor: hoveredModule === 0 ? HOVER_BG : "transparent" }}
                   />
                   <div className="flex h-full flex-col">
-                    <span className="mb-8 inline-block font-mono text-sm text-cyan-400/60">01</span>
-
                     <h3 className="mb-6 font-display text-4xl font-medium tracking-tight text-[var(--foreground)] lg:text-5xl">
                       Čista koda
                     </h3>
 
-                    <p className="mb-12 max-w-lg text-lg leading-relaxed text-[var(--foreground-muted)] lg:text-xl">
+                    <p className="mb-8 max-w-lg text-lg leading-relaxed text-[var(--foreground-muted)] lg:text-xl">
                       Optimizirano za hitrost, SEO in prihodnje nadgradnje. Brez tehničnega dolga, brez kompromisov. Vaša stran bo naložila v trenutku.
                     </p>
 
@@ -284,7 +282,7 @@ export default function MissionSection() {
                 {/* Small item 1 - top right */}
                 <div
                   ref={(el) => { itemRefs.current[1] = el; }}
-                  className="relative flex flex-col py-16 pl-16 lg:py-20 lg:pl-24"
+                  className="relative flex flex-col py-10 pl-10 lg:py-12 lg:pl-16"
                   onMouseEnter={() => setHoveredModule(1)}
                   onMouseLeave={() => setHoveredModule(null)}
                 >
@@ -293,12 +291,9 @@ export default function MissionSection() {
                     className="pointer-events-none absolute inset-0 -right-[50vw] transition-colors duration-300"
                     style={{ backgroundColor: hoveredModule === 1 ? HOVER_BG : "transparent" }}
                   />
-                  <div className="relative mb-4 flex items-baseline gap-4">
-                    <span className="font-mono text-sm text-blue-400/60">02</span>
-                    <h3 className="font-display text-2xl font-medium tracking-tight text-[var(--foreground)] lg:text-3xl">
-                      Dober design
-                    </h3>
-                  </div>
+                  <h3 className="relative mb-4 font-display text-2xl font-medium tracking-tight text-[var(--foreground)] lg:text-3xl">
+                    Dober design
+                  </h3>
 
                   <p className="relative text-base leading-relaxed text-[var(--foreground-muted)]">
                     Vizualna identiteta, ki izstopa in gradi zaupanje pri vsaki interakciji.
@@ -315,7 +310,7 @@ export default function MissionSection() {
                 {/* Small item 2 - bottom right */}
                 <div
                   ref={(el) => { itemRefs.current[2] = el; }}
-                  className="relative flex flex-col py-16 pl-16 lg:py-20 lg:pl-24"
+                  className="relative flex flex-col py-10 pl-10 lg:py-12 lg:pl-16"
                   onMouseEnter={() => setHoveredModule(2)}
                   onMouseLeave={() => setHoveredModule(null)}
                 >
@@ -324,12 +319,9 @@ export default function MissionSection() {
                     className="pointer-events-none absolute inset-0 -right-[50vw] transition-colors duration-300"
                     style={{ backgroundColor: hoveredModule === 2 ? HOVER_BG : "transparent" }}
                   />
-                  <div className="relative mb-4 flex items-baseline gap-4">
-                    <span className="font-mono text-sm text-purple-400/60">03</span>
-                    <h3 className="font-display text-2xl font-medium tracking-tight text-[var(--foreground)] lg:text-3xl">
-                      Pametna avtomatizacija
-                    </h3>
-                  </div>
+                  <h3 className="relative mb-4 font-display text-2xl font-medium tracking-tight text-[var(--foreground)] lg:text-3xl">
+                    Pametna avtomatizacija
+                  </h3>
 
                   <p className="relative mb-8 text-base leading-relaxed text-[var(--foreground-muted)]">
                     Manj ročnega dela, več časa za tisto, kar šteje.
@@ -353,7 +345,6 @@ export default function MissionSection() {
                 ref={(el) => { if (!itemRefs.current[0]) itemRefs.current[0] = el; }}
                 className="pb-12"
               >
-                <span className="mb-4 inline-block font-mono text-xs text-cyan-400/60">01</span>
                 <h3 className="mb-3 font-display text-2xl font-medium tracking-tight text-[var(--foreground)]">
                   Čista koda
                 </h3>
@@ -370,7 +361,6 @@ export default function MissionSection() {
                 ref={(el) => { if (!itemRefs.current[1]) itemRefs.current[1] = el; }}
                 className="py-12"
               >
-                <span className="mb-4 inline-block font-mono text-xs text-blue-400/60">02</span>
                 <h3 className="mb-3 font-display text-2xl font-medium tracking-tight text-[var(--foreground)]">
                   Dober design
                 </h3>
@@ -386,7 +376,6 @@ export default function MissionSection() {
                 ref={(el) => { if (!itemRefs.current[2]) itemRefs.current[2] = el; }}
                 className="pt-12"
               >
-                <span className="mb-4 inline-block font-mono text-xs text-purple-400/60">03</span>
                 <h3 className="mb-3 font-display text-2xl font-medium tracking-tight text-[var(--foreground)]">
                   Pametna avtomatizacija
                 </h3>
