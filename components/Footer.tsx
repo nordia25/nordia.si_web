@@ -312,7 +312,7 @@ export default function Footer() {
                   <p className="text-sm text-[#666]">
                     {companyInfo.address}
                   </p>
-                  <p className="mt-1 text-sm text-[#999]">
+                  <p className="mt-1 text-sm text-[#666]">
                     {companyInfo.country}
                   </p>
                 </address>
@@ -321,7 +321,7 @@ export default function Footer() {
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-500 opacity-75" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-500" />
                   </span>
-                  <span className="text-xs text-[#999]">
+                  <span className="text-xs text-[#666]">
                     {companyInfo.city}
                   </span>
                   <time
@@ -357,7 +357,7 @@ export default function Footer() {
                   <a
                     key={link.label}
                     href={link.href}
-                    className="text-xs text-[#999] transition-colors hover:text-[#1a1a1a]"
+                    className="text-xs text-[#666] transition-colors hover:text-[#1a1a1a]"
                   >
                     {link.label}
                   </a>

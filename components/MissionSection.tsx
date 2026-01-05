@@ -59,9 +59,9 @@ function CodeBlock() {
         </div>
         <div>
           <span className="text-white/30">{"}"}</span>
-          <span className="text-white/40">;</span>
+          <span className="text-white/50">;</span>
         </div>
-        <div className="mt-4 text-white/25">// Your site, optimized.</div>
+        <div className="mt-4 text-white/50">// Your site, optimized.</div>
       </div>
     </div>
   );
@@ -81,7 +81,7 @@ function DesignVisual() {
       {/* Typography specimen */}
       <div className="space-y-1">
         <p className="font-display text-lg font-bold tracking-tight text-white/80">Aa Bb Cc</p>
-        <p className="font-display text-sm font-normal tracking-tight text-white/40">Regular · Medium · Bold</p>
+        <p className="font-display text-sm font-normal tracking-tight text-white/50">Regular · Medium · Bold</p>
       </div>
     </div>
   );
@@ -102,7 +102,7 @@ function AutomationVisual() {
             12%
           </span>
         </div>
-        <p className="text-xs text-white/40">avtomatiziranih opravil</p>
+        <p className="text-xs text-white/50">avtomatiziranih opravil</p>
       </div>
     </div>
   );

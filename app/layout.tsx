@@ -128,8 +128,13 @@ export default function RootLayout({
             __html: `document.documentElement.classList.remove('no-js')`,
           }}
         />
-        {/* Preconnect for Vercel Speed Insights */}
-        <link rel="preconnect" href="https://vitals.vercel-insights.com" />
+        {/* Preload hero image for faster LCP */}
+        <link
+          rel="preload"
+          as="image"
+          href="/works/nordia-hero-us.jpg"
+          fetchPriority="high"
+        />
       </head>
       <body className="font-sans antialiased">
         <script

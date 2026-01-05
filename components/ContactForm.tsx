@@ -49,7 +49,7 @@ function FormField({ label, name, type = "text", value, onChange, required }: Fo
           absolute left-0 transition-all duration-500 pointer-events-none
           ${isActive
             ? "top-0 text-xs md:text-sm text-white/50 -translate-y-6"
-            : "top-4 text-lg md:text-xl text-white/40"
+            : "top-4 text-lg md:text-xl text-white/50"
           }
         `}
       >

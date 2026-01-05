@@ -175,7 +175,7 @@ export default function PrivacyPage() {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-cyan-500/5 via-transparent to-transparent" />
 
         <div className="relative z-10 w-full max-w-5xl">
-          <p className="hero-label mb-4 font-mono text-xs uppercase tracking-[0.3em] text-white/40 opacity-0">
+          <p className="hero-label mb-4 font-mono text-xs uppercase tracking-[0.3em] text-white/50 opacity-0">
             Pravni dokument
           </p>
           <h1 className="hero-title mb-8 font-display text-5xl leading-[0.95] tracking-tight opacity-0 md:text-7xl lg:text-8xl">
