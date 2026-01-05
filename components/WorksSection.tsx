@@ -735,15 +735,18 @@ function HorizontalWorksSection() {
 /**
  * Services/works showcase section.
  * Renders horizontal scroll on desktop, vertical grid on mobile/slow devices.
+ * 
+ * SSR default is desktop (useSimpleLayout: false) to match most common case.
+ * Client will immediately re-render if device detection differs (rare flash acceptable).
  */
 export default function WorksSection() {
   const useSimple = useSimpleLayout();
 
-  // Use simple vertical layout for mobile/tablets/slow devices
+  // Use simple vertical layout for mobile/tablets/reduced motion
   if (useSimple) {
     return <SimpleWorksSection />;
   }
 
-  // Use horizontal scroll only on desktop with no reduced motion preference
+  // Use horizontal scroll on desktop
   return <HorizontalWorksSection />;
 }
