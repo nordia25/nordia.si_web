@@ -164,9 +164,9 @@ export default function HeroSection() {
               alt="Nordia Hero"
               fill
               className="object-cover"
-              sizes="50vw"
+              sizes="(min-width: 1024px) 50vw, 0px"
               priority
-              quality={85}
+              quality={80}
               fetchPriority="high"
             />
           </div>
@@ -182,8 +182,8 @@ export default function HeroSection() {
             alt="Nordia Hero"
             fill
             className="object-cover"
-            sizes="85vw"
-            quality={85}
+            sizes="(max-width: 1023px) 85vw, 0px"
+            quality={75}
             priority
             fetchPriority="high"
           />

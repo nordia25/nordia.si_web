@@ -14,7 +14,9 @@
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build --webpack",
+    "smoke": "npm run build && node scripts/smoke.mjs",
+    "perf:bundle": "node scripts/perf-bundle.mjs"
   },
   "dependencies": {
     "@vercel/speed-insights": "^1.3.1",

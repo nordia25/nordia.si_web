@@ -57,24 +57,33 @@ const navLinks = [
 
 const legalLinks = [{ label: "Zasebnost", href: "/zasebnost" }];
 
+/**
+ * Local time hook with 60-second update interval.
+ * Only shows hours:minutes, so 1s updates are unnecessary overhead.
+ * Reduces re-renders from 60/min to 1/min.
+ */
 function useLocalTime(timezone: string): string {
   const [time, setTime] = useState("");
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTime(
-        now.toLocaleTimeString("en-US", {
-          timeZone: timezone,
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })
-      );
+    const formatTime = () =>
+      new Date().toLocaleTimeString("en-US", {
+        timeZone: timezone,
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+
+    // Set initial time
+    setTime(formatTime());
+
+    // Update every 60 seconds (not 1 second - we only show minutes)
+    intervalRef.current = setInterval(() => setTime(formatTime()), 60000);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
   }, [timezone]);
 
   return time;

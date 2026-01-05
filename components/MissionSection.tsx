@@ -157,6 +157,9 @@ export default function MissionSection() {
           },
         });
 
+        // Individual ScrollTriggers for staggered per-item animations
+        // Note: ScrollTrigger.batch() is for elements that animate together,
+        // but we need individual triggers for staggered timing
         items.forEach((item, i) => {
           if (!item) return;
           ScrollTrigger.create({

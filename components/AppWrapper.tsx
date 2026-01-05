@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Preloader from "./Preloader";
 import NoiseOverlay from "./NoiseOverlay";
 import SmoothScrollProvider from "./SmoothScrollProvider";
 import ErrorBoundary from "./ErrorBoundary";
 import { PreloaderProvider, usePreloader } from "@/contexts/PreloaderContext";
 import { ContactFormProvider } from "@/contexts/ContactFormContext";
-import ContactForm from "./ContactForm";
+// Lazy-load ContactForm - only loads when actually opened
+const ContactForm = dynamic(() => import("./ContactForm"), { ssr: false });
 
 interface AppContentProps {
   children: React.ReactNode;
@@ -48,31 +50,24 @@ interface AppWrapperProps {
 }
 
 /**
- * Safe wrapper for window.matchMedia.
- * Note: This is intentionally duplicated from useDeviceDetection.ts because
- * shouldSkipPreloader() must run synchronously during mount, before hooks execute.
- */
-function safeMatchMedia(query: string): boolean {
-  try {
-    return window.matchMedia(query).matches;
-  } catch {
-    return false;
-  }
-}
-
-/**
  * Determines if preloader should be skipped.
+ * Uses device capability store for consistency with other components.
  * Skipped on: mobile devices, touch devices, or when user prefers reduced motion.
  */
 function shouldSkipPreloader(): boolean {
   if (typeof window === "undefined") return true;
-  const isMobile =
-    safeMatchMedia("(hover: none) and (pointer: coarse)") ||
-    window.innerWidth < 768;
-  const prefersReducedMotion = safeMatchMedia(
-    "(prefers-reduced-motion: reduce)"
-  );
-  return isMobile || prefersReducedMotion;
+  // Use the same detection logic as useDeviceDetection for consistency
+  try {
+    const isTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches ||
+      "ontouchstart" in window ||
+      (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+    const isSmallScreen = window.innerWidth < 768;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    return isTouch || isSmallScreen || prefersReducedMotion;
+  } catch {
+    // Conservative fallback: skip preloader if detection fails
+    return true;
+  }
 }
 
 export default function AppWrapper({ children }: AppWrapperProps) {
@@ -89,15 +84,14 @@ export default function AppWrapper({ children }: AppWrapperProps) {
   }, []);
 
   // After hydration, check if we should show preloader
+  // No setTimeout needed - device detection is synchronous and safe
   useEffect(() => {
-    setTimeout(() => {
-      setIsMounted(true);
-      const skipPreloader = shouldSkipPreloader();
-      if (!skipPreloader) {
-        setShowPreloader(true);
-        setIsLoading(true);
-      }
-    }, 0);
+    setIsMounted(true);
+    const skipPreloader = shouldSkipPreloader();
+    if (!skipPreloader) {
+      setShowPreloader(true);
+      setIsLoading(true);
+    }
   }, []);
 
   return (
@@ -112,6 +106,7 @@ export default function AppWrapper({ children }: AppWrapperProps) {
           >
             {children}
           </AppContent>
+          {/* ContactForm lazy-loaded and only renders when context says it's open */}
           <ContactForm />
         </ContactFormProvider>
       </PreloaderProvider>

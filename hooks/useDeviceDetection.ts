@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
 
 // Breakpoint constants
 const BREAKPOINTS = {
@@ -14,10 +14,28 @@ const MEDIA_QUERIES = {
   REDUCED_MOTION: "(prefers-reduced-motion: reduce)",
 } as const;
 
+type DeviceCapabilities = Readonly<{
+  isTouch: boolean;
+  isMobile: boolean;
+  isSlowDevice: boolean;
+  prefersReducedMotion: boolean;
+  useSimpleLayout: boolean;
+}>;
+
+const SERVER_SNAPSHOT: DeviceCapabilities = {
+  // Conservative defaults for SSR/hydration
+  isTouch: true,
+  isMobile: false,
+  isSlowDevice: false,
+  prefersReducedMotion: false,
+  useSimpleLayout: true,
+} as const;
+
 /**
  * Safe wrapper for window.matchMedia that handles errors on older browsers.
  */
 function safeMatchMedia(query: string): boolean {
+  if (typeof window === "undefined") return false;
   try {
     return window.matchMedia(query).matches;
   } catch {
@@ -29,6 +47,7 @@ function safeMatchMedia(query: string): boolean {
  * Checks if current device is touch-capable.
  */
 function checkIsTouch(): boolean {
+  if (typeof window === "undefined") return false;
   return (
     safeMatchMedia(MEDIA_QUERIES.TOUCH) ||
     "ontouchstart" in window ||
@@ -50,6 +69,7 @@ function checkPrefersReducedMotion(): boolean {
  * Detects: low CPU cores, low memory, or older Windows systems.
  */
 function checkIsLowEndDevice(): boolean {
+  if (typeof navigator === "undefined") return false;
   try {
     // Check CPU cores (older computers typically have 2-4 cores)
     const cores = navigator.hardwareConcurrency || 0;
@@ -66,27 +86,125 @@ function checkIsLowEndDevice(): boolean {
   }
 }
 
+function computeCapabilities(): DeviceCapabilities {
+  if (typeof window === "undefined") return SERVER_SNAPSHOT;
+
+  const isTouch = checkIsTouch();
+  const prefersReducedMotion = checkPrefersReducedMotion();
+  const isSmallScreen = window.innerWidth < BREAKPOINTS.MOBILE;
+  const isTabletOrSmaller = window.innerWidth < BREAKPOINTS.TABLET;
+  const isLowEnd = checkIsLowEndDevice();
+
+  return {
+    isTouch,
+    isMobile: isTouch || isSmallScreen,
+    isSlowDevice: prefersReducedMotion || isTouch || isSmallScreen || isLowEnd,
+    prefersReducedMotion,
+    useSimpleLayout: prefersReducedMotion || isTabletOrSmaller || isTouch,
+  };
+}
+
+function capabilitiesEqual(a: DeviceCapabilities, b: DeviceCapabilities): boolean {
+  return (
+    a.isTouch === b.isTouch &&
+    a.isMobile === b.isMobile &&
+    a.isSlowDevice === b.isSlowDevice &&
+    a.prefersReducedMotion === b.prefersReducedMotion &&
+    a.useSimpleLayout === b.useSimpleLayout
+  );
+}
+
+let currentSnapshot: DeviceCapabilities = SERVER_SNAPSHOT;
+let initialized = false;
+const listeners = new Set<() => void>();
+let stopListening: (() => void) | null = null;
+
+function ensureInitialized() {
+  if (initialized) return;
+  if (typeof window === "undefined") return;
+  currentSnapshot = computeCapabilities();
+  initialized = true;
+}
+
+function updateSnapshotAndNotify() {
+  ensureInitialized();
+  const next = computeCapabilities();
+  if (capabilitiesEqual(currentSnapshot, next)) return;
+  currentSnapshot = next;
+  listeners.forEach((l) => l());
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+
+  if (listeners.size === 1 && typeof window !== "undefined") {
+    ensureInitialized();
+
+    const onChange = () => updateSnapshotAndNotify();
+
+    // Resize affects breakpoints (mobile/tablet layout decisions)
+    window.addEventListener("resize", onChange);
+    window.addEventListener("orientationchange", onChange);
+
+    // Media query changes (reduced motion / touch-only devices)
+    const mqs: MediaQueryList[] = [];
+    try {
+      mqs.push(window.matchMedia(MEDIA_QUERIES.REDUCED_MOTION));
+      mqs.push(window.matchMedia(MEDIA_QUERIES.TOUCH));
+    } catch {
+      // ignore
+    }
+
+    mqs.forEach((mq) => {
+      try {
+        mq.addEventListener("change", onChange);
+      } catch {
+        // Older Safari
+        mq.addListener(onChange);
+      }
+    });
+
+    stopListening = () => {
+      window.removeEventListener("resize", onChange);
+      window.removeEventListener("orientationchange", onChange);
+      mqs.forEach((mq) => {
+        try {
+          mq.removeEventListener("change", onChange);
+        } catch {
+          mq.removeListener(onChange);
+        }
+      });
+    };
+  }
+
+  return () => {
+    listeners.delete(listener);
+    if (listeners.size === 0 && stopListening) {
+      stopListening();
+      stopListening = null;
+    }
+  };
+}
+
+function getSnapshot(): DeviceCapabilities {
+  ensureInitialized();
+  return currentSnapshot;
+}
+
+function getServerSnapshot(): DeviceCapabilities {
+  return SERVER_SNAPSHOT;
+}
+
+export function useDeviceCapabilities(): DeviceCapabilities {
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+}
+
 /**
  * Detects if user prefers reduced motion.
  * SSR-safe: returns false by default.
  */
 export function usePrefersReducedMotion(): boolean {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    setPrefersReducedMotion(checkPrefersReducedMotion());
-
-    try {
-      const mediaQuery = window.matchMedia(MEDIA_QUERIES.REDUCED_MOTION);
-      const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-      mediaQuery.addEventListener("change", handler);
-      return () => mediaQuery.removeEventListener("change", handler);
-    } catch {
-      // Fallback for browsers that don't support matchMedia
-    }
-  }, []);
-
-  return prefersReducedMotion;
+  return useDeviceCapabilities().prefersReducedMotion;
 }
 
 /**
@@ -94,15 +212,7 @@ export function usePrefersReducedMotion(): boolean {
  * SSR-safe: returns true by default to hide cursor initially.
  */
 export function useIsTouchDevice(): boolean {
-  const [isTouch, setIsTouch] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsTouch(checkIsTouch());
-    }, 0);
-  }, []);
-
-  return isTouch;
+  return useDeviceCapabilities().isTouch;
 }
 
 /**
@@ -110,18 +220,7 @@ export function useIsTouchDevice(): boolean {
  * SSR-safe: returns false by default.
  */
 export function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsMobile(
-        safeMatchMedia(MEDIA_QUERIES.TOUCH) ||
-          window.innerWidth < BREAKPOINTS.MOBILE
-      );
-    }, 0);
-  }, []);
-
-  return isMobile;
+  return useDeviceCapabilities().isMobile;
 }
 
 /**
@@ -129,19 +228,7 @@ export function useIsMobile(): boolean {
  * SSR-safe: returns false by default.
  */
 export function useIsSlowDevice(): boolean {
-  const [isSlow, setIsSlow] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      const isMobile =
-        safeMatchMedia(MEDIA_QUERIES.TOUCH) ||
-        window.innerWidth < BREAKPOINTS.MOBILE;
-      const isLowEnd = checkIsLowEndDevice();
-      setIsSlow(checkPrefersReducedMotion() || isMobile || isLowEnd);
-    }, 0);
-  }, []);
-
-  return isSlow;
+  return useDeviceCapabilities().isSlowDevice;
 }
 
 /**
@@ -150,35 +237,26 @@ export function useIsSlowDevice(): boolean {
  * SSR-safe: returns true by default (conservative approach).
  */
 export function useIsSlowDeviceConservative(): boolean {
-  const [isSlow, setIsSlow] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      const isMobile =
-        safeMatchMedia(MEDIA_QUERIES.TOUCH) ||
-        window.innerWidth < BREAKPOINTS.MOBILE;
-      const isLowEnd = checkIsLowEndDevice();
-      setIsSlow(checkPrefersReducedMotion() || isMobile || isLowEnd);
-    }, 0);
-  }, []);
-
-  return isSlow;
+  return useSyncExternalStore(
+    subscribe,
+    () => getSnapshot().isSlowDevice,
+    () => true
+  );
 }
 
 /**
- * Detects if we should use simple layout (mobile, touch, tablets, or prefers-reduced-motion).
+ * Detects if we should use simple layout (mobile, touch-only tablets, or prefers-reduced-motion).
  * SSR-safe: returns true by default (simple layout for SSR).
+ *
+ * Horizontal scroll is enabled for ALL desktop computers (old and new), including:
+ * - Any device with mouse/trackpad hover capability
+ * - Hybrid laptops with touch screens (they have hover from trackpad)
+ *
+ * Simple layout is used only for:
+ * - Touch-only devices (phones, tablets without mouse)
+ * - Small screens (< 1024px)
+ * - Users who prefer reduced motion
  */
 export function useSimpleLayout(): boolean {
-  const [isSimple, setIsSimple] = useState(true);
-
-  useEffect(() => {
-    setTimeout(() => {
-      const isMobile = safeMatchMedia(MEDIA_QUERIES.TOUCH);
-      const isSmallScreen = window.innerWidth < BREAKPOINTS.TABLET;
-      setIsSimple(checkPrefersReducedMotion() || isMobile || isSmallScreen);
-    }, 0);
-  }, []);
-
-  return isSimple;
+  return useDeviceCapabilities().useSimpleLayout;
 }

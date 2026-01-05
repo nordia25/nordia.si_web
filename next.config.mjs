@@ -17,7 +17,7 @@ const nextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    qualities: [75, 85],
+    qualities: [75, 80, 85],
     // Uncomment and configure if using remote images:
     // remotePatterns: [
     //   {
@@ -31,7 +31,8 @@ const nextConfig = {
   // Experimental features for performance
   experimental: {
     // Optimize package imports for smaller bundles
-    optimizePackageImports: ["gsap", "framer-motion", "lenis"],
+    // Note: framer-motion removed (not used in project)
+    optimizePackageImports: ["gsap", "lenis"],
   },
 
   // Compiler optimizations

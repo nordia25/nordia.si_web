@@ -64,6 +64,34 @@ html.lenis body {
   contain: layout style paint;
 }
 
+/* GPU acceleration for work cards - improves transform performance */
+.work-card {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize horizontal scroll container */
+#works [style*="fit-content"] {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Smooth image scaling on hover */
+.work-card img {
+  transform: translateZ(0);
+}
+
+/* Optimize section transitions */
+section {
+  transform: translateZ(0);
+}
+
+/* Reduce paint on fixed elements */
+header {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
@@ -565,30 +593,22 @@ body {
   position: absolute;
   inset: -200%;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  /* Slower animation = less main thread work */
-  animation: noise 2s steps(4) infinite;
-  /* will-change removed - causes GPU memory lock on Windows Intel/NVIDIA */
+  /* Slower animation (4s) = less CPU work. Steps(2) = fewer composites */
+  animation: noise 4s steps(2) infinite;
+}
+
+/* Pause noise animation when tab is not visible (toggled by JS) */
+.noise.noise--paused::before {
+  animation-play-state: paused;
 }
 
 @keyframes noise {
-  0%,
-  100% {
+  /* Simplified: 2-step animation instead of 6-step */
+  0%, 100% {
     transform: translate(0, 0);
   }
-  10% {
-    transform: translate(-5%, -10%);
-  }
-  30% {
-    transform: translate(7%, -25%);
-  }
   50% {
-    transform: translate(-15%, 10%);
-  }
-  70% {
-    transform: translate(0%, 15%);
-  }
-  90% {
-    transform: translate(-10%, 10%);
+    transform: translate(-5%, -8%);
   }
 }
 

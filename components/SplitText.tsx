@@ -68,8 +68,10 @@ export default function SplitText({
       );
     };
 
+    let trigger: ScrollTrigger | null = null;
+
     if (scrollTrigger) {
-      ScrollTrigger.create({
+      trigger = ScrollTrigger.create({
         trigger: container,
         start: "top 85%",
         onEnter: animateIn,
@@ -80,7 +82,10 @@ export default function SplitText({
     }
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      // Only kill this component's trigger, not all ScrollTriggers globally
+      if (trigger) {
+        trigger.kill();
+      }
     };
   }, [delay, stagger, scrollTrigger]);
 

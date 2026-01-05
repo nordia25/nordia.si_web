@@ -277,9 +277,10 @@ const FlipCard = memo(function FlipCard({ project, isSimple = false, className =
               src={project.image}
               alt={`${project.title} - ${project.category}`}
               fill
-              sizes={isSimple ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 1024px) 50vw, 40vw"}
+              sizes={isSimple ? "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw" : "(max-width: 1024px) 50vw, 40vw"}
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               loading="lazy"
+              quality={75}
               placeholder="blur"
               blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAYH/8QAIhAAAQMDBAMBAAAAAAAAAAAAAQACAwQFERITITEGQWFx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAZEQACAwEAAAAAAAAAAAAAAAABEQACITH/2gAMAwEAAhEDEQA/AMv8cqKd1wrI5qiKJzXRkvkcQSNjucIi1WVBD//Z"
             />
@@ -644,6 +645,8 @@ function HorizontalWorksSection() {
           pin: true,
           scrub: ANIMATION.scrub,
           anticipatePin: 1,
+          fastScrollEnd: true, // Better performance on fast scroll
+          preventOverlaps: true, // Prevent animation overlap issues
         },
       });
     }, section);
