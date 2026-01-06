@@ -1,11 +1,10 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import Image from "next/image";
 import MagneticButton from "./MagneticButton";
 import ArrowIcon from "./icons/ArrowIcon";
-import { usePreloader } from "@/contexts/PreloaderContext";
 import { useContactForm } from "@/contexts/ContactFormContext";
 import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 import type { Service } from "@/lib/data";
@@ -20,11 +19,15 @@ interface HeroSectionClientProps {
  */
 function ServiceStripes({ services }: { services: readonly Service[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { isComplete } = usePreloader();
+  const [isMounted, setIsMounted] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
-    if (!containerRef.current || !isComplete) return;
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!containerRef.current || !isMounted) return;
 
     const items = containerRef.current.querySelectorAll(".service-item");
 
@@ -41,17 +44,18 @@ function ServiceStripes({ services }: { services: readonly Service[] }) {
       {
         opacity: 1,
         y: 0,
-        duration: 0.7, // OPTIMIZED: Slightly faster
+        duration: 0.7,
         stagger: 0.1,
         ease: "power3.out",
+        delay: 0.3, // Small delay for page load
       }
     );
 
-    // OPTIMIZED: Cleanup on unmount
+    // Cleanup on unmount
     return () => {
       tween.kill();
     };
-  }, [isComplete, prefersReducedMotion]);
+  }, [isMounted, prefersReducedMotion]);
 
   return (
     <div ref={containerRef} className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-0">

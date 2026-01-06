@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import Navigation from "./Navigation";
-import { usePreloader } from "@/contexts/PreloaderContext";
 
 // Animation timing
 const MENU_ANIMATION = {
@@ -16,12 +15,10 @@ const MENU_ANIMATION = {
 
 /**
  * Site header with animated logo and hamburger menu.
- * Visibility synced with preloader completion.
  */
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOnHero, setIsOnHero] = useState(true);
-  const { isComplete } = usePreloader();
   const line1Ref = useRef<HTMLSpanElement>(null);
   const line2Ref = useRef<HTMLSpanElement>(null);
 
@@ -81,9 +78,9 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-0 py-6 transition-opacity duration-700 md:py-8 ${
-          isComplete ? "opacity-100" : "opacity-0"
-        } ${isMenuOpen ? "pointer-events-none z-[101]" : "z-40"}`}
+        className={`fixed left-0 right-0 top-0 py-6 md:py-8 ${
+          isMenuOpen ? "pointer-events-none z-[101]" : "z-40"
+        }`}
       >
         <div className="container-wide flex items-center justify-between">
           {/* Logo */}
