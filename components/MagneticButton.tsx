@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, ReactNode, useCallback, memo } from "react";
+import { useRef, ReactNode, useCallback, memo, useEffect } from "react";
 import gsap from "gsap";
 import { useIsTouchDevice } from "@/hooks/useDeviceDetection";
 
@@ -38,6 +38,16 @@ function MagneticButton({
   const textRef = useRef<HTMLSpanElement>(null);
   const lastMoveTime = useRef(0);
   const isTouch = useIsTouchDevice();
+
+  // OPTIMIZED: Kill any running tweens on unmount to prevent memory leaks
+  useEffect(() => {
+    const button = buttonRef.current;
+    const text = textRef.current;
+    return () => {
+      if (button) gsap.killTweensOf(button);
+      if (text) gsap.killTweensOf(text);
+    };
+  }, []);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {

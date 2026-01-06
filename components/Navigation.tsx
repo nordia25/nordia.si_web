@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ArrowIcon from "./icons/ArrowIcon";
 import { useContactForm } from "@/contexts/ContactFormContext";
+import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 
 // Animation timing constants
 const ANIMATION = {
@@ -48,7 +49,9 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
   const bgRef = useRef<HTMLDivElement>(null);
   const menuItemsRef = useRef<(HTMLLIElement | null)[]>([]);
   const footerRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const { openContactForm } = useContactForm();
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     // Scroll lock management
@@ -58,9 +61,23 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
       // Non-critical - ignore errors
     }
 
+    // OPTIMIZED: Kill any existing timeline
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+
     if (isOpen) {
+      // OPTIMIZED: Skip animations for users who prefer reduced motion
+      if (prefersReducedMotion) {
+        gsap.set(bgRef.current, { opacity: 1 });
+        gsap.set(menuItemsRef.current, { yPercent: 0, opacity: 1 });
+        gsap.set(footerRef.current, { opacity: 1, y: 0 });
+        return;
+      }
+
       // Animate in
       const tl = gsap.timeline();
+      timelineRef.current = tl;
 
       tl.to(bgRef.current, {
         opacity: 1,
@@ -88,8 +105,15 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
         "-=0.3"
       );
     } else {
+      // OPTIMIZED: Skip close animation for reduced motion
+      if (prefersReducedMotion) {
+        gsap.set([menuItemsRef.current, footerRef.current, bgRef.current], { opacity: 0 });
+        return;
+      }
+
       // Animate out
       const tl = gsap.timeline();
+      timelineRef.current = tl;
 
       tl.to([menuItemsRef.current, footerRef.current], {
         opacity: 0,
@@ -110,8 +134,13 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
       } catch {
         // Non-critical - ignore errors
       }
+      // OPTIMIZED: Cleanup timeline on unmount
+      if (timelineRef.current) {
+        timelineRef.current.kill();
+        timelineRef.current = null;
+      }
     };
-  }, [isOpen]);
+  }, [isOpen, prefersReducedMotion]);
 
   const handleLinkClick = (item: MenuItem) => {
     onClose();

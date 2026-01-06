@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, FormEvent } from "react";
 import gsap from "gsap";
 import { useContactForm } from "@/contexts/ContactFormContext";
 import ArrowIcon from "./icons/ArrowIcon";
+import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 
 // Animation timing constants
 const ANIMATION = {
@@ -109,6 +110,8 @@ export default function ContactForm() {
   const fieldRefs = useRef<(HTMLDivElement | null)[]>([]);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -147,7 +150,24 @@ export default function ContactForm() {
       setIsSuccess(false);
       setFormData({ name: "", email: "", message: "" });
 
+      // OPTIMIZED: Kill any existing timeline before creating new one
+      if (timelineRef.current) {
+        timelineRef.current.kill();
+      }
+
+      // OPTIMIZED: Skip animations for users who prefer reduced motion
+      if (prefersReducedMotion) {
+        gsap.set(bgRef.current, { opacity: 1 });
+        gsap.set(contentRef.current, { opacity: 1 });
+        gsap.set(closeRef.current, { opacity: 1, y: 0 });
+        gsap.set(headlineRefs.current.filter(Boolean), { yPercent: 0, opacity: 1 });
+        gsap.set(fieldRefs.current.filter(Boolean), { y: 0, opacity: 1 });
+        gsap.set(buttonRef.current, { y: 0, opacity: 1 });
+        return;
+      }
+
       const tl = gsap.timeline();
+      timelineRef.current = tl;
 
       // Reset all element opacities
       gsap.set(contentRef.current, { opacity: 1 });
@@ -209,6 +229,18 @@ export default function ContactForm() {
         "-=0.3"
       );
     } else if (isVisible) {
+      // OPTIMIZED: Kill any existing timeline
+      if (timelineRef.current) {
+        timelineRef.current.kill();
+      }
+
+      // OPTIMIZED: Skip close animation for reduced motion
+      if (prefersReducedMotion) {
+        gsap.set([contentRef.current, bgRef.current], { opacity: 0 });
+        setIsVisible(false);
+        return;
+      }
+
       // Only animate out if currently visible
       const tl = gsap.timeline({
         onComplete: () => {
@@ -216,6 +248,7 @@ export default function ContactForm() {
           setIsVisible(false);
         },
       });
+      timelineRef.current = tl;
 
       // Fade out all content elements together
       tl.to(
@@ -234,8 +267,13 @@ export default function ContactForm() {
       } catch {
         // Non-critical
       }
+      // OPTIMIZED: Cleanup timeline on unmount
+      if (timelineRef.current) {
+        timelineRef.current.kill();
+        timelineRef.current = null;
+      }
     };
-  }, [isOpen, isVisible]);
+  }, [isOpen, isVisible, prefersReducedMotion]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

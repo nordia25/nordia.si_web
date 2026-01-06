@@ -2,20 +2,21 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 
 interface PreloaderProps {
   onComplete: () => void;
 }
 
-// Animation timing constants
+// Animation timing constants - OPTIMIZED for faster perceived load
 const TIMING = {
-  SAFETY_TIMEOUT: 5000,
-  TAGLINE_FADE: 0.4,
-  STROKE_DRAW: 1.6,
-  FILL_REVEAL: 0.6,
-  STROKE_FADE: 0.3,
-  HOLD: 0.2,
-  SLIDE_OUT: 0.6,
+  SAFETY_TIMEOUT: 4000,
+  TAGLINE_FADE: 0.35,
+  STROKE_DRAW: 1.4,
+  FILL_REVEAL: 0.5,
+  STROKE_FADE: 0.25,
+  HOLD: 0.15,
+  SLIDE_OUT: 0.5,
 } as const;
 
 export default function Preloader({ onComplete }: PreloaderProps) {
@@ -25,6 +26,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   const taglineRef = useRef<HTMLDivElement>(null);
   const taglineFillRef = useRef<HTMLDivElement>(null);
   const hasCompletedRef = useRef(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   // Helper function to force hide the preloader element (with error handling)
   const forceHidePreloader = () => {
@@ -64,6 +66,19 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         safeComplete();
       }
     }, TIMING.SAFETY_TIMEOUT);
+
+    // OPTIMIZED: Skip animation for users who prefer reduced motion
+    // Show briefly, then complete immediately
+    if (prefersReducedMotion) {
+      // Brief display so user sees the brand, then complete
+      const quickTimeout = setTimeout(() => {
+        safeComplete();
+      }, 500);
+      return () => {
+        clearTimeout(safetyTimeout);
+        clearTimeout(quickTimeout);
+      };
+    }
 
     let ctx: gsap.Context | null = null;
 
@@ -180,7 +195,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         ctx.revert();
       }
     };
-  }, [onComplete]);
+  }, [onComplete, prefersReducedMotion]);
 
   return (
     <div

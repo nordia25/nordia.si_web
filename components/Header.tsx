@@ -58,18 +58,24 @@ export default function Header() {
     const targetRotate = isMenuOpen ? 45 : 0;
     const targetY = isMenuOpen ? MENU_ANIMATION.lineOffset : 0;
 
-    gsap.to(line1Ref.current, {
+    const tween1 = gsap.to(line1Ref.current, {
       rotate: targetRotate,
       y: targetY,
       duration: MENU_ANIMATION.duration,
       ease: MENU_ANIMATION.ease,
     });
-    gsap.to(line2Ref.current, {
+    const tween2 = gsap.to(line2Ref.current, {
       rotate: -targetRotate,
       y: -targetY,
       duration: MENU_ANIMATION.duration,
       ease: MENU_ANIMATION.ease,
     });
+
+    // OPTIMIZED: Cleanup tweens on unmount
+    return () => {
+      tween1.kill();
+      tween2.kill();
+    };
   }, [isMenuOpen]);
 
   return (

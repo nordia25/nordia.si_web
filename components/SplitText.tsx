@@ -3,13 +3,14 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Animation timing constants
+// Animation timing constants - OPTIMIZED for snappier feel
 const ANIMATION = {
   /** Default animation duration */
-  duration: 1,
+  duration: 0.8,
   /** Default stagger between elements */
   defaultStagger: 0.02,
 } as const;
@@ -39,12 +40,20 @@ export default function SplitText({
 }: SplitTextProps) {
   const containerRef = useRef<HTMLElement>(null);
   const hasAnimated = useRef(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container || hasAnimated.current) return;
 
     const elements = container.querySelectorAll(".split-item");
+
+    // OPTIMIZED: Skip animations for users who prefer reduced motion
+    if (prefersReducedMotion) {
+      hasAnimated.current = true;
+      gsap.set(elements, { y: "0%", opacity: 1 });
+      return;
+    }
 
     const animateIn = () => {
       if (hasAnimated.current) return;
@@ -87,7 +96,7 @@ export default function SplitText({
         trigger.kill();
       }
     };
-  }, [delay, stagger, scrollTrigger]);
+  }, [delay, stagger, scrollTrigger, prefersReducedMotion]);
 
   const renderContent = () => {
     if (animation === "chars") {
