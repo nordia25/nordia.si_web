@@ -70,6 +70,39 @@ header {
   backface-visibility: hidden;
 }
 
+/* ============================================
+   HORIZONTAL SCROLL OPTIMIZATIONS
+   ============================================ */
+
+/*
+ * CRITICAL: Do NOT add transforms to #works section or its parent elements!
+ * ScrollTrigger uses position:fixed for pinning, and transforms create
+ * a new containing block that breaks fixed positioning.
+ *
+ * Safe optimizations are applied only to the scrolling CONTENT,
+ * not the pinned container.
+ */
+
+/* Optimize the horizontal scrolling content (the flex container) */
+#works [style*="fit-content"] {
+  /* will-change hint for transform animation */
+  will-change: transform;
+  /* Force GPU layer for smooth animation */
+  backface-visibility: hidden;
+}
+
+/* Optimize individual work cards for smooth hover effects */
+#works .work-card {
+  /* GPU layer for transform animations (hover scale, flip) */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize card images for smooth scale transitions */
+#works .work-card img {
+  backface-visibility: hidden;
+}
+
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }

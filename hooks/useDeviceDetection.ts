@@ -10,10 +10,9 @@ const BREAKPOINTS = {
 
 // Media query constants
 const MEDIA_QUERIES = {
-  TOUCH: "(hover: none) and (pointer: coarse)",
+  /** Touch-only device (no mouse/trackpad) */
+  TOUCH_ONLY: "(hover: none) and (pointer: coarse)",
   REDUCED_MOTION: "(prefers-reduced-motion: reduce)",
-  /** Detects devices with precise pointing device (mouse/trackpad) */
-  HAS_HOVER: "(hover: hover) and (pointer: fine)",
 } as const;
 
 type DeviceCapabilities = Readonly<{
@@ -25,9 +24,8 @@ type DeviceCapabilities = Readonly<{
 }>;
 
 const SERVER_SNAPSHOT: DeviceCapabilities = {
-  // Conservative defaults for SSR/hydration
-  // Default to desktop layout (useSimpleLayout: false) to render HorizontalWorksSection
-  // Client will update after mount if device detection differs
+  // Default to desktop layout for SSR - horizontal scroll will render
+  // Client updates immediately after hydration if needed
   isTouch: false,
   isMobile: false,
   isSlowDevice: false,
@@ -48,17 +46,14 @@ function safeMatchMedia(query: string): boolean {
 }
 
 /**
- * Checks if current device is touch-capable.
+ * Checks if device is touch-only (no mouse/trackpad).
+ * Returns false for hybrid devices (touchscreen laptops with trackpad).
  */
-function checkIsTouch(): boolean {
+function checkIsTouchOnly(): boolean {
   if (typeof window === "undefined") return false;
-  return (
-    safeMatchMedia(MEDIA_QUERIES.TOUCH) ||
-    "ontouchstart" in window ||
-    (typeof navigator !== "undefined" &&
-      "maxTouchPoints" in navigator &&
-      navigator.maxTouchPoints > 0)
-  );
+  // Only true if device has NO hover capability AND coarse pointer
+  // This excludes hybrid laptops with touchscreens
+  return safeMatchMedia(MEDIA_QUERIES.TOUCH_ONLY);
 }
 
 /**
@@ -69,29 +64,20 @@ function checkPrefersReducedMotion(): boolean {
 }
 
 /**
- * Checks if device has a precise pointing device (mouse/trackpad).
- * This is more reliable than checking for touch capability,
- * as hybrid devices (touchscreen laptops) will still report hover support.
+ * Checks if device is very low-end (for disabling expensive effects like noise).
+ * Very conservative - only flags truly limited devices.
  */
-function checkHasHover(): boolean {
-  return safeMatchMedia(MEDIA_QUERIES.HAS_HOVER);
-}
-
-/**
- * Checks if device has low hardware capabilities (older computer).
- * Detects: low CPU cores, low memory, or older Windows systems.
- */
-function checkIsLowEndDevice(): boolean {
+function checkIsVeryLowEnd(): boolean {
   if (typeof navigator === "undefined") return false;
   try {
-    // Check CPU cores (older computers typically have 2-4 cores)
+    // Only flag devices with 2 or fewer cores (single/dual core)
     const cores = navigator.hardwareConcurrency || 0;
-    if (cores > 0 && cores <= 4) return true;
+    if (cores > 0 && cores <= 2) return true;
 
-    // Check device memory if available (Chrome/Edge only)
-    // @ts-expect-error - deviceMemory is not in all browsers
+    // Only flag devices with 2GB or less RAM
+    // @ts-expect-error - deviceMemory is Chrome/Edge only
     const memory = navigator.deviceMemory;
-    if (memory && memory <= 4) return true;
+    if (memory && memory <= 2) return true;
 
     return false;
   } catch {
@@ -102,34 +88,24 @@ function checkIsLowEndDevice(): boolean {
 function computeCapabilities(): DeviceCapabilities {
   if (typeof window === "undefined") return SERVER_SNAPSHOT;
 
-  const isTouch = checkIsTouch();
+  const isTouchOnly = checkIsTouchOnly();
   const prefersReducedMotion = checkPrefersReducedMotion();
-  const hasHover = checkHasHover();
   const isSmallScreen = window.innerWidth < BREAKPOINTS.MOBILE;
-  const isTabletOrSmaller = window.innerWidth < BREAKPOINTS.TABLET;
-  const isLowEnd = checkIsLowEndDevice();
-
-  // Desktop detection - >= 1024px is considered desktop
   const isDesktopSize = window.innerWidth >= BREAKPOINTS.TABLET;
+  const isVeryLowEnd = checkIsVeryLowEnd();
 
-  // For useSimpleLayout: determine if we should use simple vertical layout
-  // Horizontal scroll is used for:
-  // - Desktop screens (>= 1024px) regardless of touch/hover detection
-  //   (some browsers/environments report hover incorrectly)
-  // 
-  // Simple layout is used for:
-  // - Small screens (< 1024px) - tablets and phones
-  // - Users who prefer reduced motion
+  // useSimpleLayout: ONLY based on screen size and reduced motion
+  // All desktops >= 1024px get horizontal scroll (including old computers)
+  // Touch detection is NOT used - hybrid laptops should get horizontal scroll
   const shouldUseSimpleLayout = prefersReducedMotion || !isDesktopSize;
 
-  // For isSlowDevice: on desktop, don't consider touch as slow
-  // (hybrid laptops with touchscreens are not slow)
-  // Only consider truly slow indicators: reduced motion, small screen, low-end hardware
-  const shouldConsiderSlow = prefersReducedMotion || isSmallScreen || isLowEnd || (!isDesktopSize && isTouch);
+  // isSlowDevice: Only for disabling expensive decorative effects (noise overlay)
+  // NOT used for layout decisions
+  const shouldConsiderSlow = prefersReducedMotion || isTouchOnly || isSmallScreen || isVeryLowEnd;
 
   return {
-    isTouch,
-    isMobile: isTouch || isSmallScreen,
+    isTouch: isTouchOnly,
+    isMobile: isTouchOnly || isSmallScreen,
     isSlowDevice: shouldConsiderSlow,
     prefersReducedMotion,
     useSimpleLayout: shouldUseSimpleLayout,
@@ -178,12 +154,11 @@ function subscribe(listener: () => void) {
     window.addEventListener("resize", onChange);
     window.addEventListener("orientationchange", onChange);
 
-    // Media query changes (reduced motion / hover capability)
+    // Media query changes (reduced motion / touch-only)
     const mqs: MediaQueryList[] = [];
     try {
       mqs.push(window.matchMedia(MEDIA_QUERIES.REDUCED_MOTION));
-      mqs.push(window.matchMedia(MEDIA_QUERIES.TOUCH));
-      mqs.push(window.matchMedia(MEDIA_QUERIES.HAS_HOVER));
+      mqs.push(window.matchMedia(MEDIA_QUERIES.TOUCH_ONLY));
     } catch {
       // ignore
     }

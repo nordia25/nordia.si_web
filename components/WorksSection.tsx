@@ -17,10 +17,8 @@ const ANIMATION = {
   full: 0.8,
   /** Stagger delay between items */
   stagger: 0.1,
-  /** Horizontal scroll scrub factor */
-  scrub: 1.5,
-  /** Ready state delay in ms */
-  readyDelay: 100,
+  /** Horizontal scroll scrub - lower = more responsive (0.5-1 is snappy) */
+  scrub: 0.8,
 } as const;
 
 interface Project {
@@ -577,47 +575,30 @@ function SimpleWorksSection() {
 /**
  * Horizontal scroll layout for desktop.
  * Uses GSAP ScrollTrigger for smooth horizontal scrolling effect.
+ *
+ * Optimized for performance on all desktop computers:
+ * - Uses invalidateOnRefresh for responsive behavior
+ * - Lightweight scrub value for snappy response
+ * - No setTimeout delays - uses GSAP's built-in timing
  */
 function HorizontalWorksSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const horizontalRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const [isReady, setIsReady] = useState(false);
   const { openContactForm } = useContactForm();
 
-  // Wait for component to mount and stabilize before initializing ScrollTrigger
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsReady(true);
-    }, ANIMATION.readyDelay);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!isReady) return;
-
     const section = sectionRef.current;
     const horizontal = horizontalRef.current;
     const trigger = triggerRef.current;
     const header = headerRef.current;
 
-    if (!section || !horizontal || !trigger || !header)
-      return;
+    if (!section || !horizontal || !trigger || !header) return;
 
-    // Calculate scroll width once, after layout is stable
-    const scrollWidth = horizontal.scrollWidth - window.innerWidth;
-
-    // Don't initialize if scroll width is invalid
-    if (scrollWidth <= 0) {
-      console.warn(
-        "WorksSection: Invalid scroll width, skipping horizontal scroll"
-      );
-      return;
-    }
-
+    // Use GSAP context for proper cleanup
     const ctx = gsap.context(() => {
-      // Header fade in
+      // Header fade in animation
       gsap.fromTo(
         header,
         { opacity: 0, y: 40 },
@@ -634,25 +615,40 @@ function HorizontalWorksSection() {
         }
       );
 
-      // Horizontal scroll with fixed values (not functions)
+      // Calculate scroll distance dynamically
+      // Using a function ensures correct calculation on refresh/resize
+      const getScrollDistance = () => {
+        return -(horizontal.scrollWidth - window.innerWidth);
+      };
+
+      // Horizontal scroll animation
+      // Key optimizations:
+      // - invalidateOnRefresh: recalculates on resize
+      // - Lower scrub value = more responsive
+      // - anticipatePin: reduces jump when pinning starts
       gsap.to(horizontal, {
-        x: -scrollWidth,
+        x: getScrollDistance,
         ease: "none",
         scrollTrigger: {
           trigger: trigger,
           start: "top top",
-          end: `+=${scrollWidth}`,
+          // End is calculated as scroll distance
+          end: () => `+=${horizontal.scrollWidth - window.innerWidth}`,
           pin: true,
           scrub: ANIMATION.scrub,
           anticipatePin: 1,
-          fastScrollEnd: true, // Better performance on fast scroll
-          preventOverlaps: true, // Prevent animation overlap issues
+          // Recalculate on resize - critical for responsiveness
+          invalidateOnRefresh: true,
         },
       });
     }, section);
 
+    // Refresh ScrollTrigger after a frame to ensure proper measurements
+    // This replaces the setTimeout approach with GSAP's recommended method
+    ScrollTrigger.refresh();
+
     return () => ctx.revert();
-  }, [isReady]);
+  }, []);
 
   return (
     <section
