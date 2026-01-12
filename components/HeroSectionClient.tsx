@@ -151,6 +151,24 @@ export default function HeroSectionClient() {
                 prihodnosti.
               </span>
             </h1>
+
+            {/* Mobile CTA Button - under title */}
+            <div className="cta-hero-wrapper mt-10">
+              <button onClick={openContactForm} className="cta-hero group">
+                <span className="relative z-10 flex items-center justify-center gap-3">
+                  Pogovorimo se
+                  <svg
+                    className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* Services at bottom - vertical list */}
@@ -164,14 +182,19 @@ export default function HeroSectionClient() {
               </span>
             ))}
           </div>
+        </div>
 
-          {/* Mobile CTA Button */}
-          <div className="cta-hero-wrapper mt-8">
+        {/* Desktop CTA Button - next to PRIHODNOSTI text */}
+        <div
+          className="absolute right-[8%] z-20 hidden items-center lg:flex"
+          style={{ top: "58%", transform: "translateY(-50%)" }}
+        >
+          <div className="cta-hero-wrapper">
             <button onClick={openContactForm} className="cta-hero group">
-              <span className="relative z-10 flex items-center justify-center gap-3">
+              <span className="relative z-10 flex items-center gap-3">
                 Pogovorimo se
                 <svg
-                  className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                  className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -184,9 +207,9 @@ export default function HeroSectionClient() {
           </div>
         </div>
 
-        {/* Desktop services list + CTA - hidden on mobile */}
+        {/* Desktop services list - bottom */}
         <div
-          className="absolute bottom-8 left-[8%] right-[8%] z-20 hidden items-center justify-between lg:flex"
+          className="absolute bottom-8 left-[8%] z-20 hidden lg:flex"
         >
           <div className="flex items-center" style={{ height: "clamp(2rem, 4vw, 3.5rem)" }}>
             {services.map((service, i) => (
@@ -204,24 +227,6 @@ export default function HeroSectionClient() {
                 <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-white transition-all duration-300 ease-out group-hover/service:w-full" />
               </span>
             ))}
-          </div>
-
-          {/* CTA Button */}
-          <div className="cta-hero-wrapper">
-            <button onClick={openContactForm} className="cta-hero group">
-              <span className="relative z-10 flex items-center gap-3">
-                Pogovorimo se
-                <svg
-                  className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </span>
-            </button>
           </div>
         </div>
       </section>
