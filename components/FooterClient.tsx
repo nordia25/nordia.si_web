@@ -159,7 +159,7 @@ export default function FooterClient({
                   <span className="relative">
                     Začnimo
                     <span
-                      className="absolute -bottom-2 left-0 h-[8px] w-full origin-left scale-x-100 bg-blue-500 transition-transform duration-500 group-hover:scale-x-105 md:-bottom-3 md:h-[12px]"
+                      className="absolute -bottom-2 left-0 h-[5px] w-full origin-left scale-x-100 bg-blue-500 transition-transform duration-500 group-hover:scale-x-105 md:-bottom-3 md:h-[8px]"
                       aria-hidden="true"
                     />
                   </span>
