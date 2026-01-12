@@ -166,12 +166,22 @@ export default function HeroSectionClient() {
           </div>
 
           {/* Mobile CTA Button */}
-          <button
-            onClick={openContactForm}
-            className="mt-8 bg-blue-500 px-6 py-3 text-sm font-medium uppercase tracking-wider text-white transition-all duration-300 hover:bg-blue-600"
-          >
-            Pogovorimo se
-          </button>
+          <div className="cta-hero-wrapper mt-8">
+            <button onClick={openContactForm} className="cta-hero group">
+              <span className="relative z-10 flex items-center justify-center gap-3">
+                Pogovorimo se
+                <svg
+                  className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* Desktop services list + CTA - hidden on mobile */}
@@ -197,12 +207,22 @@ export default function HeroSectionClient() {
           </div>
 
           {/* CTA Button */}
-          <button
-            onClick={openContactForm}
-            className="bg-blue-500 px-8 py-3 text-sm font-medium uppercase tracking-wider text-white transition-all duration-300 hover:bg-blue-600"
-          >
-            Pogovorimo se
-          </button>
+          <div className="cta-hero-wrapper">
+            <button onClick={openContactForm} className="cta-hero group">
+              <span className="relative z-10 flex items-center gap-3">
+                Pogovorimo se
+                <svg
+                  className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </span>
+            </button>
+          </div>
         </div>
       </section>
     </>

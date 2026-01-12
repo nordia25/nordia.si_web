@@ -233,6 +233,13 @@ header {
   .noise::before {
     animation: none;
   }
+
+  .cta-hero,
+  .cta-hero::before,
+  .cta-hero::after,
+  .cta-hero-wrapper::before {
+    animation: none !important;
+  }
 }
 
 /* ============================================
@@ -242,4 +249,137 @@ header {
 .no-js [class*="opacity-0"] {
   opacity: 1 !important;
   transform: none !important;
+}
+
+/* ============================================
+   AWARD-WINNING CTA BUTTON
+   ============================================ */
+
+.cta-hero {
+  --glow-size: 0px;
+  --glow-spread: 20px;
+  --glow-opacity: 0.4;
+  --shimmer-pos: -100%;
+
+  position: relative;
+  padding: 1.25rem 3rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: white;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #3b82f6 100%);
+  background-size: 200% 200%;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s var(--ease-apple-out);
+  transform-style: preserve-3d;
+  animation: gradientShift 4s ease infinite;
+}
+
+.cta-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  transform: translateX(var(--shimmer-pos)) skewX(-20deg);
+  transition: transform 0.6s ease;
+}
+
+.cta-hero::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, #60a5fa, #3b82f6, #1d4ed8, #3b82f6);
+  background-size: 300% 300%;
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(var(--glow-spread));
+  transition: opacity 0.4s ease, filter 0.4s ease;
+  animation: gradientShift 4s ease infinite;
+}
+
+.cta-hero:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 20px 40px -15px rgba(59, 130, 246, 0.5),
+    0 0 60px -10px rgba(59, 130, 246, 0.3);
+}
+
+.cta-hero:hover::before {
+  transform: translateX(100%) skewX(-20deg);
+}
+
+.cta-hero:hover::after {
+  opacity: 0.6;
+  filter: blur(25px);
+}
+
+.cta-hero:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Pulsing glow animation */
+.cta-hero-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.cta-hero-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border-radius: 2px;
+  z-index: -1;
+  opacity: 0.4;
+  filter: blur(20px);
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+    filter: blur(20px);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+    filter: blur(25px);
+  }
+}
+
+/* Desktop larger size */
+@media (min-width: 1024px) {
+  .cta-hero {
+    padding: 1.5rem 4rem;
+    font-size: 1rem;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 1023px) {
+  .cta-hero {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    text-align: center;
+  }
+
+  .cta-hero-wrapper {
+    width: 100%;
+  }
 }
