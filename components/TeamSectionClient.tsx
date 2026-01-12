@@ -113,7 +113,7 @@ export default function TeamSectionClient({
           {/* Main headline */}
           <h2
             ref={headerRef}
-            className="max-w-5xl font-display text-[clamp(3rem,9.6vw,8.4rem)] font-medium leading-[0.9] tracking-tight text-white opacity-0"
+            className="max-w-5xl font-display text-[clamp(3rem,9.6vw,8.4rem)] font-medium leading-[0.9] tracking-tight text-white"
           >
             Dva razvijalca.
             <br />
@@ -154,7 +154,7 @@ export default function TeamSectionClient({
                 {teamMembers.map((member, index) => (
                   <article
                     key={member.name}
-                    className={`team-member group flex-1 opacity-0 ${
+                    className={`team-member group flex-1 ${
                       index === 1 ? "mt-12 lg:mt-16" : ""
                     }`}
                   >
