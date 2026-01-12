@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useContactForm } from "@/contexts/ContactFormContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,7 +12,6 @@ const services = [
   "Spletne strani",
   "Spletne trgovine",
   "AI avtomatizacije",
-  "3D tiskanje",
 ];
 
 /**
@@ -24,6 +24,7 @@ const services = [
 export default function HeroSectionClient() {
   const bgRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const { openContactForm } = useContactForm();
 
   // Parallax effect for background - desktop only
   useEffect(() => {
@@ -163,28 +164,45 @@ export default function HeroSectionClient() {
               </span>
             ))}
           </div>
+
+          {/* Mobile CTA Button */}
+          <button
+            onClick={openContactForm}
+            className="mt-8 bg-blue-500 px-6 py-3 text-sm font-medium uppercase tracking-wider text-white transition-all duration-300 hover:bg-blue-600"
+          >
+            Pogovorimo se
+          </button>
         </div>
 
-        {/* Desktop services list - hidden on mobile */}
+        {/* Desktop services list + CTA - hidden on mobile */}
         <div
-          className="absolute bottom-8 left-[8%] z-20 hidden items-center lg:flex"
-          style={{ height: "clamp(2rem, 4vw, 3.5rem)" }}
+          className="absolute bottom-8 left-[8%] right-[8%] z-20 hidden items-center justify-between lg:flex"
         >
-          {services.map((service, i) => (
-            <span
-              key={i}
-              className="group/service relative cursor-pointer font-display uppercase text-white/90 transition-colors duration-300 hover:text-white"
-              style={{
-                fontSize: "clamp(0.7rem, 1.68vw, 1.43rem)",
-                letterSpacing: "0.05em",
-                marginLeft: i === 0 ? 0 : "clamp(1rem, 4vw, 4rem)",
-                marginRight: "clamp(1rem, 4vw, 4rem)",
-              }}
-            >
-              {service.toUpperCase()}
-              <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-white transition-all duration-300 ease-out group-hover/service:w-full" />
-            </span>
-          ))}
+          <div className="flex items-center" style={{ height: "clamp(2rem, 4vw, 3.5rem)" }}>
+            {services.map((service, i) => (
+              <span
+                key={i}
+                className="group/service relative cursor-pointer font-display uppercase text-white/90 transition-colors duration-300 hover:text-white"
+                style={{
+                  fontSize: "clamp(0.7rem, 1.68vw, 1.43rem)",
+                  letterSpacing: "0.05em",
+                  marginLeft: i === 0 ? 0 : "clamp(1rem, 4vw, 4rem)",
+                  marginRight: "clamp(1rem, 4vw, 4rem)",
+                }}
+              >
+                {service.toUpperCase()}
+                <span className="absolute bottom-0 left-0 h-[1px] w-0 bg-white transition-all duration-300 ease-out group-hover/service:w-full" />
+              </span>
+            ))}
+          </div>
+
+          {/* CTA Button */}
+          <button
+            onClick={openContactForm}
+            className="bg-blue-500 px-8 py-3 text-sm font-medium uppercase tracking-wider text-white transition-all duration-300 hover:bg-blue-600"
+          >
+            Pogovorimo se
+          </button>
         </div>
       </section>
     </>
