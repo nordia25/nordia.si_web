@@ -137,7 +137,7 @@ export default function HeroSectionClient() {
               </p>
 
               {/* Main title */}
-              <h1 className="font-display font-bold uppercase leading-[0.95] tracking-tight">
+              <h1 className="font-display font-bold uppercase leading-[1.15] tracking-tight">
                 <span
                   className="block text-white"
                   style={{ fontSize: "clamp(2.5rem, 13vw, 5rem)" }}
