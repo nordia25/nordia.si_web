@@ -89,13 +89,28 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-0 py-6 transition-all duration-300 ease-out md:py-8 ${
+        className={`fixed left-0 right-0 top-0 py-5 transition-all duration-300 ease-out md:py-8 ${
           isMenuOpen ? "pointer-events-none z-[101] opacity-0" : "z-40 opacity-100"
         } ${isVisible || isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}
       >
         <div className="container-wide flex items-center justify-between">
-          {/* Left navigation */}
-          <nav className="flex items-center gap-6">
+          {/* Logo - left on mobile, center on desktop */}
+          <Link
+            href="/"
+            className="group font-sans text-xl font-medium tracking-tighter text-white transition-colors duration-300 md:absolute md:left-1/2 md:-translate-x-1/2 md:text-3xl"
+          >
+            <span className="relative inline-block overflow-hidden">
+              <span className="inline-block transition-transform duration-500 ease-out group-hover:-translate-y-full">
+                Nordia<span className="text-white/60">.</span>
+              </span>
+              <span className="absolute left-0 top-full inline-block transition-transform duration-500 ease-out group-hover:-translate-y-full">
+                Nordia<span className="text-white/60">.</span>
+              </span>
+            </span>
+          </Link>
+
+          {/* Desktop navigation - hidden on mobile */}
+          <nav className="hidden items-center gap-6 md:flex">
             <Link
               href="#kdo-smo"
               className="group/nav relative text-gray-400 text-sm font-medium tracking-tight uppercase"
@@ -126,68 +141,54 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Center Logo */}
-          <Link
-            href="/"
-            className="group absolute left-1/2 -translate-x-1/2 font-sans text-2xl font-medium tracking-tighter text-white transition-colors duration-300 md:text-3xl"
-          >
-            <span className="relative inline-block overflow-hidden">
-              <span className="inline-block transition-transform duration-500 ease-out group-hover:-translate-y-full">
-                Nordia<span className="text-white/60">.</span>
-              </span>
-              <span className="absolute left-0 top-full inline-block transition-transform duration-500 ease-out group-hover:-translate-y-full">
-                Nordia<span className="text-white/60">.</span>
-              </span>
-            </span>
-          </Link>
-
-          {/* CTA Section */}
+          {/* Right section */}
           <div className="flex items-center gap-6">
+            {/* Desktop only - email & CTA */}
             <a
               href="mailto:info@nordia.si"
-              className="group/mail relative text-white text-sm font-medium tracking-tight uppercase"
+              className="group/mail relative hidden text-white text-sm font-medium tracking-tight uppercase md:block"
             >
               info@nordia.si
               <span className="absolute left-0 bottom-0 h-[1px] w-0 bg-white transition-all duration-300 ease-out group-hover/mail:w-full" />
             </a>
             <button
               onClick={openContactForm}
-              className="bg-white text-black px-6 py-3 text-sm font-medium tracking-tight uppercase transition-colors duration-300 hover:bg-gray-300"
+              className="hidden bg-white text-black px-6 py-3 text-sm font-medium tracking-tight uppercase transition-colors duration-300 hover:bg-gray-300 md:block"
             >
               Pogovorimo se
             </button>
 
-            {/* Menu Button */}
+            {/* Menu Button - always visible */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="group pointer-events-auto relative"
-            aria-label={isMenuOpen ? "Zapri meni" : "Odpri meni"}
-            aria-expanded={isMenuOpen}
-            aria-controls="main-navigation"
-          >
-            {/* White circle background on hover */}
-            <div className="absolute inset-0 -m-2 rounded-full bg-white scale-0 transition-transform duration-300 ease-out group-hover:scale-100" />
-
-            {/* Hamburger icon */}
-            <div
-              className="relative h-7 w-7 md:h-8 md:w-8"
-              aria-hidden="true"
+              aria-label={isMenuOpen ? "Zapri meni" : "Odpri meni"}
+              aria-expanded={isMenuOpen}
+              aria-controls="main-navigation"
             >
-              <span
-                ref={line1Ref}
-                className={`absolute h-[1.5px] w-5 origin-center transition-colors duration-300 md:w-6 left-1/2 -translate-x-1/2 ${
-                  isMenuOpen ? "bg-[var(--foreground)]" : "bg-white group-hover:bg-black"
-                }`}
-                style={{ top: "calc(50% - 4px)" }}
-              />
-              <span
-                ref={line2Ref}
-                className={`absolute h-[1.5px] w-5 origin-center transition-colors duration-300 md:w-6 left-1/2 -translate-x-1/2 ${
-                  isMenuOpen ? "bg-[var(--foreground)]" : "bg-white group-hover:bg-black"
-                }`}
-                style={{ top: "calc(50% + 4px)" }}
-              />
-            </div>
+              {/* White circle background on hover */}
+              <div className="absolute inset-0 -m-2 rounded-full bg-white scale-0 transition-transform duration-300 ease-out group-hover:scale-100" />
+
+              {/* Hamburger icon */}
+              <div
+                className="relative h-7 w-7 md:h-8 md:w-8"
+                aria-hidden="true"
+              >
+                <span
+                  ref={line1Ref}
+                  className={`absolute h-[1.5px] w-5 origin-center transition-colors duration-300 md:w-6 left-1/2 -translate-x-1/2 ${
+                    isMenuOpen ? "bg-[var(--foreground)]" : "bg-white group-hover:bg-black"
+                  }`}
+                  style={{ top: "calc(50% - 4px)" }}
+                />
+                <span
+                  ref={line2Ref}
+                  className={`absolute h-[1.5px] w-5 origin-center transition-colors duration-300 md:w-6 left-1/2 -translate-x-1/2 ${
+                    isMenuOpen ? "bg-[var(--foreground)]" : "bg-white group-hover:bg-black"
+                  }`}
+                  style={{ top: "calc(50% + 4px)" }}
+                />
+              </div>
             </button>
           </div>
         </div>
