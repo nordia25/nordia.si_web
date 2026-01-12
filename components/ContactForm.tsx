@@ -121,6 +121,7 @@ export default function ContactForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Memoized onChange handlers to prevent FormField re-renders
   const handleNameChange = useCallback((value: string) => {
@@ -161,9 +162,8 @@ export default function ContactForm() {
       // Reset form state when opening
       // eslint-disable-next-line react-hooks/set-state-in-effect -- Valid pattern: responding to prop change, not causing infinite loop
       setIsSuccess(false);
-       
+      setError(null);
       setFormData({ name: "", email: "", message: "" });
-       
       setIsVisible(true);
     }
 
@@ -297,18 +297,32 @@ export default function ContactForm() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
-    // Simulate form submission (replace with actual API call)
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    console.log("Form submitted:", formData);
-    setIsSubmitting(false);
-    setIsSuccess(true);
+      const data = await response.json();
 
-    // Auto close after success
-    setTimeout(() => {
-      closeContactForm();
-    }, 2000);
+      if (!response.ok) {
+        throw new Error(data.error || "Napaka pri pošiljanju");
+      }
+
+      setIsSuccess(true);
+
+      // Auto close after success
+      setTimeout(() => {
+        closeContactForm();
+      }, 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Prišlo je do napake");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const headlineWords = ["Začnimo", "projekt."];
@@ -400,6 +414,11 @@ export default function ContactForm() {
               ) : (
                 // Form
                 <form ref={formRef} onSubmit={handleSubmit} className="space-y-10 md:space-y-12">
+                  {error && (
+                    <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+                      {error}
+                    </div>
+                  )}
                   <div
                     ref={(el) => { fieldRefs.current[0] = el; }}
                   >
