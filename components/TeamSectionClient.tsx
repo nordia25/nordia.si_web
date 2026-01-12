@@ -113,7 +113,7 @@ export default function TeamSectionClient({
           {/* Main headline */}
           <h2
             ref={headerRef}
-            className="max-w-5xl font-display text-[clamp(2.5rem,8vw,7rem)] font-medium leading-[0.9] tracking-tight text-white opacity-0"
+            className="max-w-5xl font-display text-[clamp(3rem,9.6vw,8.4rem)] font-medium leading-[0.9] tracking-tight text-white opacity-0"
           >
             Dva razvijalca.
             <br />
@@ -135,14 +135,14 @@ export default function TeamSectionClient({
                 >
                   &ldquo;
                 </span>
-                <p className="relative text-xl leading-[1.5] text-white/80 md:text-2xl">
+                <p className="relative text-2xl leading-[1.5] text-white/80 md:text-3xl">
                   Ne prodajava ur.
                   <br />
                   <span className="text-white/50">Prodajava rezultate.</span>
                 </p>
               </blockquote>
 
-              <p className="mt-6 text-base leading-[1.7] text-white/40">
+              <p className="mt-6 text-lg leading-[1.7] text-white/40 md:text-xl">
                 Vsak projekt obravnavava kot lasten izdelek. Pozornost do
                 detajla ni opcija — je standard.
               </p>
@@ -187,10 +187,10 @@ export default function TeamSectionClient({
 
                     {/* Caption */}
                     <div className="mt-4">
-                      <h3 className="font-display text-base font-medium text-white md:text-lg">
+                      <h3 className="font-display text-lg font-medium text-white md:text-xl">
                         {member.name}
                       </h3>
-                      <p className="mt-0.5 text-xs text-white/40 md:text-sm">
+                      <p className="mt-0.5 text-sm text-white/40 md:text-base">
                         {member.role}
                       </p>
                     </div>
