@@ -368,11 +368,11 @@ header {
   }
 }
 
-/* Desktop larger size */
+/* Desktop responsive size */
 @media (min-width: 1024px) {
   .cta-hero {
-    padding: 1.5rem 4rem;
-    font-size: 1rem;
+    padding: clamp(0.875rem, 1.5vw, 1.5rem) clamp(1.5rem, 3vw, 4rem);
+    font-size: clamp(0.7rem, 1vw, 1rem);
   }
 }
 
