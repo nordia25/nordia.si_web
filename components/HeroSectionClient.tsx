@@ -157,28 +157,18 @@ export default function HeroSectionClient() {
                   prihodnosti.
                 </span>
               </h1>
-
-              {/* Tagline */}
-              <p className="mt-8 text-sm text-white/50 max-w-[280px] leading-relaxed">
-                Ustvarjamo digitalne izkušnje, ki navdušujejo in pretvarjajo obiskovalce v stranke.
-              </p>
             </div>
 
-            {/* Services at bottom */}
-            <div className="space-y-3">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-white/30">
-                Storitve
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {services.map((service, i) => (
-                  <span
-                    key={i}
-                    className="text-xs text-white/70 px-3 py-1.5 border border-white/10 rounded-full"
-                  >
-                    {service}
-                  </span>
-                ))}
-              </div>
+            {/* Services at bottom - vertical list */}
+            <div className="flex flex-col gap-1">
+              {services.map((service, i) => (
+                <span
+                  key={i}
+                  className="text-xs text-white/50 uppercase tracking-[0.15em]"
+                >
+                  {service}
+                </span>
+              ))}
             </div>
           </div>
         )}
