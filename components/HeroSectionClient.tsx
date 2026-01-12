@@ -186,7 +186,7 @@ export default function HeroSectionClient() {
 
         {/* Desktop CTA Button - next to PRIHODNOSTI text */}
         <div
-          className="absolute right-[18%] z-20 hidden items-center lg:flex"
+          className="absolute right-[19%] z-20 hidden items-center lg:flex"
           style={{ top: "58%", transform: "translateY(-50%)" }}
         >
           <div className="cta-hero-wrapper">
