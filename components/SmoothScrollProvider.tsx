@@ -81,7 +81,10 @@ export default function SmoothScrollProvider({
         LENIS_CONFIG.lagMinFrameTime
       );
     } catch (error) {
-      console.warn("Lenis initialization failed:", error);
+      // Only log in development - production should fail silently
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Lenis initialization failed:", error);
+      }
     }
 
     return () => {

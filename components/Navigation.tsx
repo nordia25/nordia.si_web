@@ -287,7 +287,7 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
             {/* Right - Legal links */}
             <div className="flex flex-wrap items-center gap-4 md:gap-6">
               <a
-                href="/privacy"
+                href="/zasebnost"
                 className="text-xs uppercase tracking-wider text-white/40 transition-colors duration-300 hover:text-white"
               >
                 Zasebnost

@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useSimpleLayout, usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 import { useContactForm } from "@/contexts/ContactFormContext";
 import type { Project } from "@/lib/data";
+import { BLUR_DATA_URL_1PX } from "@/lib/imagePlaceholders";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -123,7 +124,7 @@ const FlipCard = memo(function FlipCard({ project, isSimple = false, className =
               loading="lazy"
               quality={75}
               placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAYH/8QAIhAAAQMDBAMBAAAAAAAAAAAAAQACAwQFERITITEGQWFx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAZEQACAwEAAAAAAAAAAAAAAAABEQACITH/2gAMAwEAAhEDEQA/AMv8cqKd1wrI5qiKJzXRkvkcQSNjucIi1WVBD//Z"
+              blurDataURL={BLUR_DATA_URL_1PX}
             />
 
             {/* Gradient overlay */}

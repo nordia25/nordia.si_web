@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import Navigation from "./Navigation";
@@ -86,13 +86,18 @@ export default function Header() {
     };
   }, [isMenuOpen]);
 
+  // Memoize header className to prevent unnecessary string concatenations
+  const headerClassName = useMemo(
+    () =>
+      `fixed left-0 right-0 top-0 py-5 transition-all duration-300 ease-out md:py-8 ${
+        isMenuOpen ? "pointer-events-none z-[101] opacity-0" : "z-40 opacity-100"
+      } ${isVisible || isMenuOpen ? "translate-y-0" : "-translate-y-full"}`,
+    [isMenuOpen, isVisible]
+  );
+
   return (
     <>
-      <header
-        className={`fixed left-0 right-0 top-0 py-5 transition-all duration-300 ease-out md:py-8 ${
-          isMenuOpen ? "pointer-events-none z-[101] opacity-0" : "z-40 opacity-100"
-        } ${isVisible || isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}
-      >
+      <header className={headerClassName}>
         <div className="container-wide flex items-center justify-between">
           {/* Logo - left on mobile, center on desktop */}
           <Link

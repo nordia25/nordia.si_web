@@ -1,6 +1,7 @@
 import type { CompanyInfo, SocialLink, NavLink, LegalLink } from "./types";
 
-const companyInfo: CompanyInfo = {
+/** Company contact and registration information */
+export const COMPANY_INFO: CompanyInfo = {
   city: "Nova Vas",
   timezone: "Europe/Ljubljana",
   coords: "45.8150° N, 14.5144° E",
@@ -8,48 +9,55 @@ const companyInfo: CompanyInfo = {
   country: "Slovenija",
   vatId: "SI96391766",
   regNumber: "7392508000",
-};
+} as const;
 
-const socialLinks: readonly SocialLink[] = [
+/** Social media profile links */
+export const SOCIAL_LINKS: readonly SocialLink[] = [
   { label: "LinkedIn", href: "https://linkedin.com/company/nordia" },
   { label: "Instagram", href: "https://instagram.com/nordia.si" },
   { label: "GitHub", href: "https://github.com/nordia" },
-];
+] as const;
 
-const navLinks: readonly NavLink[] = [
+/** Main navigation links */
+export const NAV_LINKS: readonly NavLink[] = [
   { label: "Filozofija", href: "#why" },
   { label: "Storitve", href: "#works" },
   { label: "O nas", href: "#about" },
-];
+] as const;
 
-const legalLinks: readonly LegalLink[] = [
+/** Footer legal links */
+export const LEGAL_LINKS: readonly LegalLink[] = [
   { label: "Zasebnost", href: "/zasebnost" },
-];
+] as const;
 
 /**
  * Get company information
+ * Async wrapper for future CMS/API integration
  */
 export async function getCompanyInfo(): Promise<CompanyInfo> {
-  return companyInfo;
+  return COMPANY_INFO;
 }
 
 /**
  * Get social media links
+ * Async wrapper for future CMS/API integration
  */
 export async function getSocialLinks(): Promise<readonly SocialLink[]> {
-  return socialLinks;
+  return SOCIAL_LINKS;
 }
 
 /**
  * Get navigation links
+ * Async wrapper for future CMS/API integration
  */
 export async function getNavLinks(): Promise<readonly NavLink[]> {
-  return navLinks;
+  return NAV_LINKS;
 }
 
 /**
  * Get legal/footer links
+ * Async wrapper for future CMS/API integration
  */
 export async function getLegalLinks(): Promise<readonly LegalLink[]> {
-  return legalLinks;
+  return LEGAL_LINKS;
 }

@@ -6,63 +6,51 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Security: Hide X-Powered-By header
+  // Security: Hide framework identifier
   poweredByHeader: false,
 
-  // Performance: Enable React strict mode for catching bugs
+  // Development: Catch React bugs early
   reactStrictMode: true,
 
-  // Images: Strict remote patterns (add domains as needed)
+  // Images: Modern formats with optimized sizes
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    qualities: [75, 80, 85],
-    // Uncomment and configure if using remote images:
+    // Uncomment for remote images:
     // remotePatterns: [
-    //   {
-    //     protocol: "https",
-    //     hostname: "example.com",
-    //     pathname: "/images/**",
-    //   },
+    //   { protocol: "https", hostname: "example.com", pathname: "/images/**" },
     // ],
   },
 
-  // Experimental features for performance
+  // Experimental: Package import optimization
   experimental: {
-    // Optimize package imports for smaller bundles
-    // Note: framer-motion removed (not used in project)
     optimizePackageImports: ["gsap", "lenis"],
   },
 
-  // Compiler optimizations
+  // Production: Strip console.log statements
   compiler: {
-    // Remove console.log in production
     removeConsole: process.env.NODE_ENV === "production",
   },
 
-  // Headers: Security headers
+  // Security headers
   async headers() {
     return [
       {
         source: "/(.*)",
         headers: [
-          {
-            key: "X-Content-Type-Options",
-            value: "nosniff",
-          },
-          {
-            key: "X-Frame-Options",
-            value: "DENY",
-          },
-          {
-            key: "X-XSS-Protection",
-            value: "1; mode=block",
-          },
-          {
-            key: "Referrer-Policy",
-            value: "strict-origin-when-cross-origin",
-          },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-XSS-Protection", value: "1; mode=block" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+      {
+        // Cache static assets aggressively
+        source: "/(.*).(jpg|jpeg|png|gif|webp|avif|svg|ico|woff|woff2)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
     ];

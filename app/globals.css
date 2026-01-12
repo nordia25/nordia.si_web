@@ -3,10 +3,13 @@
 @tailwind utilities;
 
 /* ============================================
-   NORDIA — OPTIMIZED STYLES
+   NORDIA — DESIGN SYSTEM
+   Premium digital agency styles
    ============================================ */
 
+/* === CSS Custom Properties === */
 :root {
+  /* Core colors */
   --background: #000000;
   --background-elevated: #111111;
   --foreground: #f5f5f7;
@@ -14,18 +17,21 @@
   --foreground-subtle: rgba(255, 255, 255, 0.4);
   --muted: #86868b;
   --accent: #0071e3;
+
+  /* Borders */
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.15);
+
+  /* Cards & surfaces */
   --card-bg: #111111;
   --glow-color: rgba(6, 182, 212, 0.15);
+
+  /* Easing curves */
   --ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-apple-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ============================================
-   BASE
-   ============================================ */
-
+/* === Base Styles === */
 html {
   font-size: 16px;
   scroll-behavior: smooth;
@@ -67,14 +73,8 @@ body {
   border-radius: 4px;
 }
 
-/* ============================================
-   PERFORMANCE — CSS Containment
-   ============================================ */
-
-#hero {
-  contain: layout style;
-}
-
+/* === Performance Optimizations === */
+#hero,
 #about {
   contain: layout style;
 }
@@ -88,10 +88,7 @@ header {
   backface-visibility: hidden;
 }
 
-/* ============================================
-   HORIZONTAL SCROLL OPTIMIZATIONS
-   ============================================ */
-
+/* Horizontal scroll optimizations */
 #works [style*="fit-content"] {
   will-change: transform;
   backface-visibility: hidden;
@@ -106,40 +103,14 @@ header {
   backface-visibility: hidden;
 }
 
-/* ============================================
-   SVG DRAW ANIMATION — Values Section Icons
-   ============================================ */
-
-.icon-draw path,
-.icon-draw rect,
-.icon-draw circle,
-.icon-draw line {
-  stroke-dasharray: 200;
-  stroke-dashoffset: 200;
-  transition: stroke-dashoffset 0.8s var(--ease-apple-out);
-}
-
-.icon-draw.active path,
-.icon-draw.active rect,
-.icon-draw.active circle,
-.icon-draw.active line {
-  stroke-dashoffset: 0;
-}
-
-/* ============================================
-   LAYOUT
-   ============================================ */
-
+/* === Layout Utilities === */
 .container-wide {
   max-width: 1600px;
   margin: 0 auto;
   padding: 0 clamp(1.5rem, 5vw, 6rem);
 }
 
-/* ============================================
-   NOISE OVERLAY
-   ============================================ */
-
+/* === Noise Overlay === */
 .noise {
   position: fixed;
   inset: 0;
@@ -165,10 +136,24 @@ header {
   50% { transform: translate(-5%, -8%); }
 }
 
-/* ============================================
-   MARQUEE
-   ============================================ */
+/* === SVG Draw Animation === */
+.icon-draw path,
+.icon-draw rect,
+.icon-draw circle,
+.icon-draw line {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  transition: stroke-dashoffset 0.8s var(--ease-apple-out);
+}
 
+.icon-draw.active path,
+.icon-draw.active rect,
+.icon-draw.active circle,
+.icon-draw.active line {
+  stroke-dashoffset: 0;
+}
+
+/* === Marquee Animation === */
 .marquee {
   display: flex;
   overflow: hidden;
@@ -198,10 +183,7 @@ header {
   animation-play-state: paused;
 }
 
-/* ============================================
-   CURSOR BLINK — Typewriter Effect
-   ============================================ */
-
+/* === Cursor Blink (Typewriter) === */
 @keyframes blink {
   0%, 50% { opacity: 1; }
   51%, 100% { opacity: 0; }
@@ -211,50 +193,27 @@ header {
   animation: blink 0.8s ease-in-out infinite;
 }
 
-/* ============================================
-   REDUCED MOTION — Accessibility
-   ============================================ */
+/* === Gradient Shift Animation === */
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+/* === Pulse Glow Animation === */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+    filter: blur(20px);
   }
-
-  [class*="opacity-0"] {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .noise::before {
-    animation: none;
-  }
-
-  .cta-hero,
-  .cta-hero::before,
-  .cta-hero::after,
-  .cta-hero-wrapper::before {
-    animation: none !important;
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+    filter: blur(25px);
   }
 }
 
-/* ============================================
-   NO-JS FALLBACK
-   ============================================ */
-
-.no-js [class*="opacity-0"] {
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* ============================================
-   AWARD-WINNING CTA BUTTON
-   ============================================ */
-
+/* === CTA Hero Button === */
 .cta-hero {
   position: relative;
   padding: 1.25rem 3rem;
@@ -279,12 +238,7 @@ header {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
   transform: translateX(-100%) skewX(-20deg);
   transition: transform 0.6s ease;
   pointer-events: none;
@@ -325,7 +279,7 @@ header {
   transform: translateY(-1px) scale(0.98);
 }
 
-/* Pulsing glow animation */
+/* CTA wrapper with glow */
 .cta-hero-wrapper {
   position: relative;
   display: inline-block;
@@ -348,25 +302,7 @@ header {
   animation: pulseGlow 3s ease-in-out infinite;
 }
 
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes pulseGlow {
-  0%, 100% {
-    opacity: 0.3;
-    transform: scale(1);
-    filter: blur(20px);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.05);
-    filter: blur(25px);
-  }
-}
-
-/* Desktop responsive size */
+/* Desktop CTA sizing */
 @media (min-width: 1024px) {
   .cta-hero {
     padding: clamp(0.875rem, 1.5vw, 1.5rem) clamp(1.5rem, 3vw, 4rem);
@@ -374,7 +310,7 @@ header {
   }
 }
 
-/* Mobile adjustments */
+/* Mobile CTA adjustments */
 @media (max-width: 1023px) {
   .cta-hero {
     width: 100%;
@@ -385,4 +321,38 @@ header {
   .cta-hero-wrapper {
     width: 100%;
   }
+}
+
+/* === Accessibility === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [class*="opacity-0"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .noise::before {
+    animation: none;
+  }
+
+  .cta-hero,
+  .cta-hero::before,
+  .cta-hero::after,
+  .cta-hero-wrapper::before {
+    animation: none !important;
+  }
+}
+
+/* === No-JS Fallback === */
+.no-js [class*="opacity-0"] {
+  opacity: 1 !important;
+  transform: none !important;
 }

@@ -160,7 +160,6 @@ export default function ContactForm() {
 
     if (justOpened) {
       // Reset form state when opening
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- Valid pattern: responding to prop change, not causing infinite loop
       setIsSuccess(false);
       setError(null);
       setFormData({ name: "", email: "", message: "" });

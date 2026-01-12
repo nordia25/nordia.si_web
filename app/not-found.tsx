@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import ArrowIcon from "@/components/icons/ArrowIcon";
 
 // Animation timing constants
 const ANIMATION = {
@@ -240,19 +241,7 @@ export default function NotFound() {
             className="group relative flex items-center gap-3 overflow-hidden rounded-full bg-white px-8 py-4 font-medium text-black transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(34,211,238,0.3)]"
           >
             <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-transform duration-500 ease-out group-hover:translate-x-0" />
-            <svg
-              className="relative z-10 h-4 w-4 rotate-180 transition-all duration-300 group-hover:-translate-x-1 group-hover:text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M14 5l7 7m0 0l-7 7m7-7H3"
-              />
-            </svg>
+            <ArrowIcon className="relative z-10 h-4 w-4 rotate-180 transition-all duration-300 group-hover:-translate-x-1 group-hover:text-white" />
             <span className="relative z-10 transition-colors duration-300 group-hover:text-white">
               Nazaj domov
             </span>
@@ -288,17 +277,6 @@ export default function NotFound() {
         <div className="h-px w-8 bg-gradient-to-l from-transparent to-white/20" />
       </div>
 
-      <style jsx>{`
-        @keyframes gradientShift {
-          0%,
-          100% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-        }
-      `}</style>
     </div>
   );
 }

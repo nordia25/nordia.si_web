@@ -1,6 +1,7 @@
 import type { Project } from "./types";
 
-const PROJECTS: readonly Project[] = [
+/** All service/project offerings */
+export const PROJECTS: readonly Project[] = [
   {
     slug: "premium-website",
     title: "Premium|spletna stran",
@@ -73,7 +74,7 @@ const PROJECTS: readonly Project[] = [
     ],
     closingText: "Vašo idejo spremenimo v izdelek, ki ga lahko preizkusite — hitro, natančno, brez tveganja.",
   },
-];
+] as const;
 
 /**
  * Get all projects data

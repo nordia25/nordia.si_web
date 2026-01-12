@@ -30,6 +30,7 @@ export default function KdoSmoSection() {
   const isTypingRef = useRef(false);
   const rafRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
+  const startTimeoutRef = useRef<number | null>(null);
 
   // Derived state: show cursor while typing is in progress
   const showCursor = charIndex > 0 && charIndex < FULL_TEXT.length;
@@ -69,6 +70,10 @@ export default function KdoSmoSection() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      if (startTimeoutRef.current) {
+        window.clearTimeout(startTimeoutRef.current);
+        startTimeoutRef.current = null;
+      }
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
@@ -99,7 +104,7 @@ export default function KdoSmoSection() {
           });
 
           // Start typewriter after delay
-          setTimeout(startTyping, 400);
+          startTimeoutRef.current = window.setTimeout(startTyping, 400);
 
           // Button fades in after text completes
           gsap.to(button, {

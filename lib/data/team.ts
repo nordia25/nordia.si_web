@@ -1,6 +1,7 @@
 import type { TeamMember } from "./types";
 
-const TEAM_MEMBERS: readonly TeamMember[] = [
+/** Team member profiles */
+export const TEAM_MEMBERS: readonly TeamMember[] = [
   {
     name: "Nikolaj Taras Fras",
     role: "CEO - Komercialni direktor",
@@ -21,10 +22,11 @@ const TEAM_MEMBERS: readonly TeamMember[] = [
       twitter: "https://twitter.com/izakivancic",
     },
   },
-];
+] as const;
 
 /**
  * Get all team members
+ * Async wrapper for future CMS/database integration
  */
 export async function getTeamMembers(): Promise<readonly TeamMember[]> {
   return TEAM_MEMBERS;

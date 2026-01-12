@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ArrowIcon from "@/components/icons/ArrowIcon";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -149,19 +150,7 @@ export default function PrivacyPage() {
           href="/"
           className="group inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/90 px-5 py-2.5 transition-all duration-300 hover:border-white/30 hover:bg-black"
         >
-          <svg
-            className="h-4 w-4 rotate-180 transition-transform duration-300 group-hover:-translate-x-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            />
-          </svg>
+          <ArrowIcon className="h-4 w-4 rotate-180 transition-transform duration-300 group-hover:-translate-x-1" />
           <span className="text-sm font-medium">Nazaj</span>
         </Link>
       </nav>
