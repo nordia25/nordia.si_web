@@ -8,17 +8,16 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const services = [
-  "SPLETNE STRANI",
-  "SPLETNE TRGOVINE",
-  "AI AVTOMATIZACIJE",
-  "3D TISKANJE",
+  "Spletne strani",
+  "Spletne trgovine",
+  "AI avtomatizacije",
+  "3D tiskanje",
 ];
 
 /**
  * Hero section with parallax background image
- * - Background image moves slower than scroll (parallax effect)
- * - Desktop: SVG mask cutout reveals the image
- * - Mobile: Simple overlay
+ * - Desktop: SVG mask cutout reveals the image with parallax
+ * - Mobile: Clean black background with blue accent, no image
  */
 export default function HeroSectionClient() {
   const [isDesktop, setIsDesktop] = useState(false);
@@ -32,14 +31,15 @@ export default function HeroSectionClient() {
     return () => window.removeEventListener("resize", checkDesktop);
   }, []);
 
-  // Parallax effect for background
+  // Parallax effect for background - desktop only
   useEffect(() => {
+    if (!isDesktop) return;
+
     const bg = bgRef.current;
     const section = sectionRef.current;
     if (!bg || !section) return;
 
     const ctx = gsap.context(() => {
-      // Parallax: background moves UP as you scroll down (opposite direction)
       gsap.to(bg, {
         yPercent: -20,
         ease: "none",
@@ -53,34 +53,36 @@ export default function HeroSectionClient() {
     }, section);
 
     return () => ctx.revert();
-  }, []);
+  }, [isDesktop]);
 
   return (
     <>
-      {/* Parallax background container - fixed but with parallax movement */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
-        <div
-          ref={bgRef}
-          className="absolute inset-0 will-change-transform"
-          style={{ top: "0", height: "120%" }}
-        >
-          <Image
-            src="/works/nordia-hero-bg.jpg"
-            alt=""
-            fill
-            priority
-            quality={85}
-            className="object-cover"
-            sizes="100vw"
-          />
+      {/* Parallax background - DESKTOP ONLY */}
+      {isDesktop && (
+        <div className="fixed inset-0 z-0 overflow-hidden">
+          <div
+            ref={bgRef}
+            className="absolute inset-0 will-change-transform"
+            style={{ top: "0", height: "120%" }}
+          >
+            <Image
+              src="/works/nordia-hero-bg.jpg"
+              alt=""
+              fill
+              priority
+              quality={85}
+              className="object-cover"
+              sizes="100vw"
+            />
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Hero section content - scrolls over the parallax image */}
+      {/* Hero section */}
       <section
         ref={sectionRef}
         id="hero"
-        className="relative z-10 min-h-screen"
+        className="relative z-10 min-h-screen bg-black lg:bg-transparent"
         style={{ contain: "layout style paint" }}
       >
         {/* Desktop: SVG mask cutout effect */}
@@ -125,44 +127,85 @@ export default function HeroSectionClient() {
             </text>
           </svg>
         ) : (
-          /* Mobile: Simple overlay without SVG mask */
-          <div className="absolute inset-0 bg-black/70 flex flex-col justify-center px-6">
-            <h1
-              className="font-display font-bold text-white uppercase"
-              style={{
-                fontSize: "clamp(2rem, 10vw, 4rem)",
-                letterSpacing: "-0.04em",
-                lineHeight: 1.1,
-              }}
-            >
-              DIGITALNE REŠITVE
-              <br />
-              <span className="text-white/60">PRIHODNOSTI</span>
-            </h1>
+          /* Mobile: Award-winning minimal design */
+          <div className="absolute inset-0 flex flex-col justify-between px-6 py-24">
+            {/* Main headline - centered vertically */}
+            <div className="flex-1 flex flex-col justify-center">
+              {/* Small label */}
+              <p className="text-[10px] uppercase tracking-[0.3em] text-white/40 mb-6">
+                Digitalna agencija
+              </p>
+
+              {/* Main title */}
+              <h1 className="font-display font-bold uppercase leading-[0.95] tracking-tight">
+                <span
+                  className="block text-white"
+                  style={{ fontSize: "clamp(2.5rem, 13vw, 5rem)" }}
+                >
+                  Digitalne
+                </span>
+                <span
+                  className="block text-white"
+                  style={{ fontSize: "clamp(2.5rem, 13vw, 5rem)" }}
+                >
+                  rešitve
+                </span>
+                <span
+                  className="block text-blue-500"
+                  style={{ fontSize: "clamp(2.5rem, 13vw, 5rem)" }}
+                >
+                  prihodnosti.
+                </span>
+              </h1>
+
+              {/* Tagline */}
+              <p className="mt-8 text-sm text-white/50 max-w-[280px] leading-relaxed">
+                Ustvarjamo digitalne izkušnje, ki navdušujejo in pretvarjajo obiskovalce v stranke.
+              </p>
+            </div>
+
+            {/* Services at bottom */}
+            <div className="space-y-3">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-white/30">
+                Storitve
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {services.map((service, i) => (
+                  <span
+                    key={i}
+                    className="text-xs text-white/70 px-3 py-1.5 border border-white/10 rounded-full"
+                  >
+                    {service}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
-        {/* Services list - hidden on small mobile */}
-        <div
-          className="absolute bottom-8 left-6 lg:left-[8%] z-20 hidden sm:flex items-center flex-wrap gap-y-2"
-          style={{ height: "clamp(2rem, 4vw, 3.5rem)" }}
-        >
-          {services.map((service, i) => (
-            <span
-              key={i}
-              className="group/service relative font-display text-white/90 uppercase cursor-pointer transition-colors duration-300 hover:text-white"
-              style={{
-                fontSize: "clamp(0.7rem, 1.68vw, 1.43rem)",
-                letterSpacing: "0.05em",
-                marginLeft: i === 0 ? 0 : "clamp(1rem, 4vw, 4rem)",
-                marginRight: "clamp(1rem, 4vw, 4rem)",
-              }}
-            >
-              {service}
-              <span className="absolute left-0 bottom-0 h-[1px] w-0 bg-white transition-all duration-300 ease-out group-hover/service:w-full" />
-            </span>
-          ))}
-        </div>
+        {/* Desktop services list */}
+        {isDesktop && (
+          <div
+            className="absolute bottom-8 left-[8%] z-20 flex items-center"
+            style={{ height: "clamp(2rem, 4vw, 3.5rem)" }}
+          >
+            {services.map((service, i) => (
+              <span
+                key={i}
+                className="group/service relative font-display text-white/90 uppercase cursor-pointer transition-colors duration-300 hover:text-white"
+                style={{
+                  fontSize: "clamp(0.7rem, 1.68vw, 1.43rem)",
+                  letterSpacing: "0.05em",
+                  marginLeft: i === 0 ? 0 : "clamp(1rem, 4vw, 4rem)",
+                  marginRight: "clamp(1rem, 4vw, 4rem)",
+                }}
+              >
+                {service.toUpperCase()}
+                <span className="absolute left-0 bottom-0 h-[1px] w-0 bg-white transition-all duration-300 ease-out group-hover/service:w-full" />
+              </span>
+            ))}
+          </div>
+        )}
       </section>
     </>
   );
