@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import Navigation from "./Navigation";
+import { useContactForm } from "@/contexts/ContactFormContext";
 
 // Animation timing
 const MENU_ANIMATION = {
@@ -22,6 +23,7 @@ export default function Header() {
   const lastScrollY = useRef(0);
   const line1Ref = useRef<HTMLSpanElement>(null);
   const line2Ref = useRef<HTMLSpanElement>(null);
+  const { openContactForm } = useContactForm();
 
   // Track scroll position and direction for header visibility
   useEffect(() => {
@@ -148,12 +150,12 @@ export default function Header() {
               info@nordia.si
               <span className="absolute left-0 bottom-0 h-[1px] w-0 bg-white transition-all duration-300 ease-out group-hover/mail:w-full" />
             </a>
-            <Link
-              href="#kontakt"
+            <button
+              onClick={openContactForm}
               className="bg-white text-black px-6 py-3 text-sm font-medium tracking-tight uppercase transition-colors duration-300 hover:bg-gray-300"
             >
               Pogovorimo se
-            </Link>
+            </button>
 
             {/* Menu Button */}
             <button
