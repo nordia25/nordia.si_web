@@ -1,9 +1,4 @@
-import {
-  getCompanyInfo,
-  getSocialLinks,
-  getNavLinks,
-  getLegalLinks,
-} from "@/lib/data";
+import { getSocialLinks, getLegalLinks } from "@/lib/data";
 import FooterClient from "./FooterClient";
 
 /**
@@ -11,19 +6,10 @@ import FooterClient from "./FooterClient";
  * Fetches data on server, passes to client for animations
  */
 export default async function Footer() {
-  const [companyInfo, socialLinks, navLinks, legalLinks] = await Promise.all([
-    getCompanyInfo(),
+  const [socialLinks, legalLinks] = await Promise.all([
     getSocialLinks(),
-    getNavLinks(),
     getLegalLinks(),
   ]);
 
-  return (
-    <FooterClient
-      companyInfo={companyInfo}
-      socialLinks={socialLinks}
-      navLinks={navLinks}
-      legalLinks={legalLinks}
-    />
-  );
+  return <FooterClient socialLinks={socialLinks} legalLinks={legalLinks} />;
 }

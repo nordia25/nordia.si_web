@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useContactForm } from "@/contexts/ContactFormContext";
 import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
-import type { CompanyInfo, SocialLink, NavLink, LegalLink } from "@/lib/data";
+import type { SocialLink, LegalLink } from "@/lib/data";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,40 +19,8 @@ const ANIMATION = {
   stagger: 0.08,
 } as const;
 
-/**
- * Format time for a given timezone.
- */
-function formatTime(timezone: string): string {
-  return new Date().toLocaleTimeString("en-US", {
-    timeZone: timezone,
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-}
-
-/**
- * Local time hook with 60-second update interval.
- * Only shows hours:minutes, so 1s updates are unnecessary overhead.
- * Reduces re-renders from 60/min to 1/min.
- */
-function useLocalTime(timezone: string): string {
-  // Initialize with current time (safe in "use client" component)
-  const [time, setTime] = useState(() => formatTime(timezone));
-
-  useEffect(() => {
-    // Update every 60 seconds (not 1 second - we only show minutes)
-    const interval = setInterval(() => setTime(formatTime(timezone)), 60000);
-    return () => clearInterval(interval);
-  }, [timezone]);
-
-  return time;
-}
-
 interface FooterClientProps {
-  companyInfo: CompanyInfo;
   socialLinks: readonly SocialLink[];
-  navLinks: readonly NavLink[];
   legalLinks: readonly LegalLink[];
 }
 
@@ -60,14 +28,11 @@ interface FooterClientProps {
  * Client component for footer animations and interactivity
  */
 export default function FooterClient({
-  companyInfo,
   socialLinks,
-  navLinks,
   legalLinks,
 }: FooterClientProps) {
   const footerRef = useRef<HTMLElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const time = useLocalTime(companyInfo.timezone);
   const { openContactForm } = useContactForm();
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -170,92 +135,48 @@ export default function FooterClient({
         </div>
       </div>
 
-      {/* Footer content - Minimal dark */}
-      <div className="footer-content border-t border-white/[0.08] px-6 py-12 md:px-12 md:py-16">
-        <div className="mx-auto max-w-7xl">
-          {/* Main footer grid */}
-          <div className="grid gap-12 md:grid-cols-12 md:gap-8">
-            {/* Left - Brand & Location */}
-            <div className="footer-fade md:col-span-4">
-              <p className="font-display text-lg font-medium text-white">
-                Nordia
-              </p>
-              <div className="mt-4 flex items-center gap-3">
-                <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                </span>
-                <span className="text-sm text-white/40">
-                  {companyInfo.city}
-                </span>
-                <time
-                  className="font-mono text-sm tabular-nums text-white/40"
-                  dateTime={time}
-                >
-                  {time}
-                </time>
-              </div>
-            </div>
-
-            {/* Center - Navigation */}
-            <div className="footer-fade md:col-span-4">
-              <nav
-                className="flex flex-wrap gap-x-6 gap-y-2"
-                aria-label="Footer navigacija"
+      {/* Footer bar - STRV style single row */}
+      <div className="footer-content border-t border-white/[0.08] px-6 py-6 md:px-12">
+        <div className="mx-auto flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          {/* Left - Copyright + Social */}
+          <div className="footer-fade flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="text-xs uppercase tracking-wider text-white/30">
+              © {new Date().getFullYear()} Nordia d.o.o.
+            </span>
+            <span className="text-white/20">/</span>
+            {socialLinks.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Obiščite Nordia na ${item.label} (odpre se v novem oknu)`}
+                className="text-xs uppercase tracking-wider text-white/30 transition-colors duration-300 hover:text-white"
               >
-                {navLinks.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className="text-sm text-white/40 transition-colors duration-300 hover:text-white"
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </nav>
-            </div>
-
-            {/* Right - Social */}
-            <div className="footer-fade md:col-span-4 md:text-right">
-              <nav
-                className="flex flex-wrap gap-x-6 gap-y-2 md:justify-end"
-                aria-label="Družbena omrežja"
-              >
-                {socialLinks.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Obiščite Nordia na ${item.label} (odpre se v novem oknu)`}
-                    className="text-sm text-white/40 transition-colors duration-300 hover:text-white"
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </nav>
-            </div>
+                {item.label === "LinkedIn" ? "LI" : item.label === "Instagram" ? "IG" : item.label === "GitHub" ? "GH" : item.label}
+              </a>
+            ))}
           </div>
 
-          {/* Bottom bar */}
-          <div className="mt-12 flex flex-col gap-4 border-t border-white/[0.06] pt-8 md:mt-16 md:flex-row md:items-center md:justify-between md:pt-10">
-            <p className="text-xs text-white/30">
-              © {new Date().getFullYear()} Nordia d.o.o.
-            </p>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-              {legalLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-xs text-white/30 transition-colors duration-300 hover:text-white/60"
-                >
-                  {link.label}
-                </a>
-              ))}
-              <span className="font-mono text-xs text-white/20">
-                {companyInfo.coords}
-              </span>
-            </div>
+          {/* Right - Legal + Back to top */}
+          <div className="footer-fade flex items-center gap-x-6">
+            {legalLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-xs uppercase tracking-wider text-white/30 transition-colors duration-300 hover:text-white"
+              >
+                {link.label}
+              </a>
+            ))}
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="flex items-center gap-2 text-xs uppercase tracking-wider text-white/30 transition-colors duration-300 hover:text-white"
+              aria-label="Pomakni se na vrh strani"
+            >
+              <span>↑</span>
+              <span>Na vrh</span>
+            </button>
           </div>
         </div>
       </div>
