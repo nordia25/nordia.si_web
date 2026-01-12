@@ -9,12 +9,10 @@ import type { SocialLink, LegalLink } from "@/lib/data";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Animation timing constants - OPTIMIZED for snappier feel
+// Animation timing constants
 const ANIMATION = {
   /** CTA word reveal duration */
   ctaDuration: 0.8,
-  /** Footer items animation duration */
-  itemsDuration: 0.7,
   /** Stagger delay between items */
   stagger: 0.08,
 } as const;
@@ -41,7 +39,6 @@ export default function FooterClient({
     if (prefersReducedMotion) {
       const words = ctaRef.current?.querySelectorAll(".word");
       if (words) gsap.set(words, { yPercent: 0, opacity: 1 });
-      gsap.set(".footer-fade", { opacity: 1, y: 0 });
       return;
     }
 
@@ -61,10 +58,9 @@ export default function FooterClient({
             scrollTrigger: {
               trigger: ctaRef.current,
               start: "top 85%",
-              once: true, // OPTIMIZED: Kill trigger after activation
+              once: true,
             },
             onComplete: () => {
-              // Clear inline styles so CSS hover effects work
               words.forEach((word) => {
                 gsap.set(word, { clearProps: "opacity" });
               });
@@ -72,24 +68,6 @@ export default function FooterClient({
           }
         );
       }
-
-      // Footer items
-      gsap.fromTo(
-        ".footer-fade",
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: ANIMATION.itemsDuration,
-          ease: "power3.out",
-          stagger: ANIMATION.stagger,
-          scrollTrigger: {
-            trigger: ".footer-content",
-            start: "top 85%",
-            once: true, // OPTIMIZED: Kill trigger after activation
-          },
-        }
-      );
     }, footerRef);
 
     return () => ctx.revert();
@@ -136,10 +114,10 @@ export default function FooterClient({
       </div>
 
       {/* Footer bar - STRV style single row */}
-      <div className="footer-content border-t border-white/[0.08] px-6 py-6 md:px-12">
+      <div className="border-t border-white/[0.08] px-6 py-6 md:px-12">
         <div className="mx-auto flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Left - Copyright + Social */}
-          <div className="footer-fade flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <span className="text-xs uppercase tracking-wider text-white/30">
               © {new Date().getFullYear()} Nordia d.o.o.
             </span>
@@ -159,7 +137,7 @@ export default function FooterClient({
           </div>
 
           {/* Right - Legal + Back to top */}
-          <div className="footer-fade flex items-center gap-x-6">
+          <div className="flex items-center gap-x-6">
             {legalLinks.map((link) => (
               <a
                 key={link.label}
