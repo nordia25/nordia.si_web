@@ -146,16 +146,6 @@ export default function TeamSectionClient({
                 Vsak projekt obravnavava kot lasten izdelek. Pozornost do
                 detajla ni opcija — je standard.
               </p>
-
-              {/* Location info */}
-              <div className="mt-10 flex gap-8">
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25">
-                  Ljubljana, SI
-                </p>
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25">
-                  Est. 2024
-                </p>
-              </div>
             </div>
 
             {/* Right - Team photos */}
