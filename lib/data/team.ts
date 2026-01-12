@@ -1,4 +1,4 @@
-import type { TeamMember, SocialPlatform } from "./types";
+import type { TeamMember } from "./types";
 
 const TEAM_MEMBERS: readonly TeamMember[] = [
   {
@@ -23,21 +23,9 @@ const TEAM_MEMBERS: readonly TeamMember[] = [
   },
 ];
 
-const SOCIAL_PLATFORMS: readonly SocialPlatform[] = [
-  { name: "LinkedIn", initial: "L" },
-  { name: "Twitter", initial: "X" },
-];
-
 /**
  * Get all team members
  */
 export async function getTeamMembers(): Promise<readonly TeamMember[]> {
   return TEAM_MEMBERS;
-}
-
-/**
- * Get social platforms configuration
- */
-export function getSocialPlatforms(): readonly SocialPlatform[] {
-  return SOCIAL_PLATFORMS;
 }

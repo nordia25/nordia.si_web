@@ -1,7 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { Bebas_Neue } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
+
+const bebasNeue = Bebas_Neue({
+  subsets: ["latin"],
+  variable: "--font-bebas",
+  display: "swap",
+  weight: "400",
+});
 
 const texGyreHeros = localFont({
   src: [
@@ -120,7 +128,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="sl" className={`${texGyreHeros.variable} no-js`} suppressHydrationWarning>
+    <html lang="sl" className={`${texGyreHeros.variable} ${bebasNeue.variable} no-js`} suppressHydrationWarning>
       <head>
         {/* Remove no-js class immediately when JS executes - enables CSS fallbacks if JS fails */}
         <script
@@ -132,7 +140,7 @@ export default function RootLayout({
         <link
           rel="preload"
           as="image"
-          href="/works/nordia-hero-us.jpg"
+          href="/works/nordia-hero-bg.jpg"
           fetchPriority="high"
         />
       </head>

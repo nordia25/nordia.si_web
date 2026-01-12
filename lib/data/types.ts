@@ -52,13 +52,3 @@ export interface LegalLink {
   label: string;
   href: string;
 }
-
-export interface Service {
-  name: string;
-  color: string;
-}
-
-export interface SocialPlatform {
-  name: string;
-  initial: string;
-}

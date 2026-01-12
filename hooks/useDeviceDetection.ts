@@ -213,7 +213,7 @@ function getServerSnapshot(): DeviceCapabilities {
   return SERVER_SNAPSHOT;
 }
 
-export function useDeviceCapabilities(): DeviceCapabilities {
+function useDeviceCapabilities(): DeviceCapabilities {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
@@ -223,30 +223,6 @@ export function useDeviceCapabilities(): DeviceCapabilities {
  */
 export function usePrefersReducedMotion(): boolean {
   return useDeviceCapabilities().prefersReducedMotion;
-}
-
-/**
- * Detects if the device is a touch device (mobile/tablet).
- * SSR-safe: returns true by default to hide cursor initially.
- */
-export function useIsTouchDevice(): boolean {
-  return useDeviceCapabilities().isTouch;
-}
-
-/**
- * Detects if the device is mobile (touch + small screen).
- * SSR-safe: returns false by default.
- */
-export function useIsMobile(): boolean {
-  return useDeviceCapabilities().isMobile;
-}
-
-/**
- * Detects if the device is likely slow (mobile, tablet, low-end hardware, or prefers reduced motion).
- * SSR-safe: returns false by default.
- */
-export function useIsSlowDevice(): boolean {
-  return useDeviceCapabilities().isSlowDevice;
 }
 
 /**
@@ -263,17 +239,8 @@ export function useIsSlowDeviceConservative(): boolean {
 }
 
 /**
- * Detects if we should use simple layout (mobile, touch-only tablets, or prefers-reduced-motion).
- * SSR-safe: returns true by default (simple layout for SSR).
- *
- * Horizontal scroll is enabled for ALL desktop computers (old and new), including:
- * - Any device with mouse/trackpad hover capability
- * - Hybrid laptops with touch screens (they have hover from trackpad)
- *
- * Simple layout is used only for:
- * - Touch-only devices (phones, tablets without mouse)
- * - Small screens (< 1024px)
- * - Users who prefer reduced motion
+ * Detects if we should use simple layout (mobile or prefers-reduced-motion).
+ * SSR-safe: returns false by default (horizontal scroll for SSR).
  */
 export function useSimpleLayout(): boolean {
   return useDeviceCapabilities().useSimpleLayout;

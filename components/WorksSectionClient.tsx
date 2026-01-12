@@ -22,74 +22,6 @@ const ANIMATION = {
   scrub: 0.8,
 } as const;
 
-// Service icons as React components
-function WebsiteIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="4" y="8" width="40" height="32" rx="4" />
-      <line x1="4" y1="16" x2="44" y2="16" />
-      <circle cx="10" cy="12" r="1.5" fill="currentColor" stroke="none" />
-      <circle cx="16" cy="12" r="1.5" fill="currentColor" stroke="none" />
-      <circle cx="22" cy="12" r="1.5" fill="currentColor" stroke="none" />
-      <rect x="10" y="22" width="12" height="12" rx="2" />
-      <line x1="28" y1="22" x2="38" y2="22" />
-      <line x1="28" y1="28" x2="38" y2="28" />
-      <line x1="28" y1="34" x2="34" y2="34" />
-    </svg>
-  );
-}
-
-function EcommerceIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M6 12h4l6 24h22l6-18H14" />
-      <circle cx="18" cy="42" r="3" />
-      <circle cx="34" cy="42" r="3" />
-      <path d="M20 22h8M24 18v8" />
-    </svg>
-  );
-}
-
-function AIIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <circle cx="24" cy="24" r="18" />
-      <circle cx="24" cy="24" r="8" />
-      <circle cx="24" cy="24" r="2" fill="currentColor" stroke="none" />
-      <line x1="24" y1="6" x2="24" y2="10" />
-      <line x1="24" y1="38" x2="24" y2="42" />
-      <line x1="6" y1="24" x2="10" y2="24" />
-      <line x1="38" y1="24" x2="42" y2="24" />
-      <line x1="11.27" y1="11.27" x2="14.1" y2="14.1" />
-      <line x1="33.9" y1="33.9" x2="36.73" y2="36.73" />
-      <line x1="11.27" y1="36.73" x2="14.1" y2="33.9" />
-      <line x1="33.9" y1="14.1" x2="36.73" y2="11.27" />
-    </svg>
-  );
-}
-
-function PrintingIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M12 36V24h24v12" />
-      <path d="M16 24V8h16v16" />
-      <path d="M8 40h32" />
-      <path d="M12 44h24" />
-      <line x1="20" y1="12" x2="28" y2="12" />
-      <line x1="20" y1="16" x2="28" y2="16" />
-      <line x1="20" y1="20" x2="24" y2="20" />
-    </svg>
-  );
-}
-
-const SERVICE_ICONS: Record<string, React.FC<{ className?: string }>> = {
-  "premium-website": WebsiteIcon,
-  "ecommerce": EcommerceIcon,
-  "ai-integracija": AIIcon,
-  "3d-tiskanje": PrintingIcon,
-};
-
-
 /**
  * Interactive card with 3D flip animation.
  * Shows project image on front, detailed info on back.
@@ -214,7 +146,7 @@ const FlipCard = memo(function FlipCard({ project, isSimple = false, className =
 
           {/* Back side - BOLD EDITORIAL DESIGN */}
           <div
-            className="absolute inset-0 overflow-hidden rounded-2xl bg-[#0a0a0a]"
+            className="absolute inset-0 overflow-hidden rounded-2xl bg-black"
             style={isSimple ? {
               // Simple visibility toggle for non-3D mode
               opacity: isFlipped ? 1 : 0,
@@ -427,22 +359,32 @@ function SimpleWorksSection({ projects }: { projects: readonly Project[] }) {
     <section
       id="works"
       ref={sectionRef}
-      className="relative z-20 bg-[var(--background)] py-20"
+      className="relative z-20 overflow-hidden bg-[var(--background)] py-20"
     >
-      <div className="container-wide">
-        {/* Header */}
+      {/* Watermark - desktop only, behind content */}
+      <span
+        className="pointer-events-none absolute right-6 top-8 z-0 hidden select-none font-display text-[18vw] font-bold uppercase leading-[0.8] tracking-tighter text-[#111] md:right-12 md:block"
+        aria-hidden="true"
+      >
+        Storitve
+      </span>
+
+      <div className="container-wide relative z-10">
+        {/* Header - Editorial style */}
         <div ref={headerRef} className="mb-16">
-          <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-[#a8a8a8]">
+          {/* Mobile label */}
+          <p className="mb-6 font-mono text-xs font-medium uppercase tracking-[0.2em] text-[#666] md:hidden">
             Storitve
           </p>
           <h2 className="mb-8 font-display text-[clamp(2.5rem,8vw,5rem)] font-medium leading-[0.95] tracking-tight text-[var(--foreground)]">
-            Kaj{" "}
-            <span className="text-[#9ca3af]">
-              ustvarjamo
+            Digitalne rešitve
+            <br />
+            <span className="text-[#666]">
+              za ambiciozne.
             </span>
           </h2>
-          <p className="max-w-2xl text-lg leading-relaxed text-[var(--foreground-muted)] md:text-xl">
-            Od ideje do implementacije — celovite digitalne rešitve, ki rastejo z vami.
+          <p className="max-w-xl text-base leading-relaxed text-[var(--foreground-muted)] md:text-lg">
+            Spletne strani. Trgovine. Avtomatizacije.
           </p>
         </div>
 
@@ -571,23 +513,29 @@ function HorizontalWorksSection({ projects }: { projects: readonly Project[] }) 
     <section
       id="works"
       ref={sectionRef}
-      className="relative z-20 bg-[var(--background)]"
+      className="relative z-20 overflow-hidden bg-[var(--background)]"
     >
-      {/* Header */}
-      <div className="pb-40 pt-8 md:pb-48 md:pt-12">
+      {/* Watermark - desktop only, behind content */}
+      <span
+        className="pointer-events-none absolute right-12 top-8 z-0 select-none font-display text-[18vw] font-bold uppercase leading-[0.8] tracking-tighter text-[#111]"
+        aria-hidden="true"
+      >
+        Storitve
+      </span>
+
+      {/* Header - Editorial style */}
+      <div className="relative z-10 pb-40 pt-8 md:pb-48 md:pt-12">
         <div ref={headerRef} className="container-wide">
           <div>
-            <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-[#a8a8a8]">
-              Storitve
-            </p>
             <h2 className="mb-8 font-display text-[clamp(2.5rem,8vw,7rem)] font-medium leading-[0.95] tracking-tight text-[var(--foreground)]">
-              Kaj{" "}
-              <span className="text-[#9ca3af]">
-                ustvarjamo
+              Digitalne rešitve
+              <br />
+              <span className="text-[#666]">
+                za ambiciozne.
               </span>
             </h2>
-            <p className="max-w-2xl text-lg leading-relaxed text-[var(--foreground-muted)] md:text-xl lg:text-2xl">
-              Od ideje do implementacije — celovite digitalne rešitve, ki rastejo z vami.
+            <p className="max-w-xl text-base leading-relaxed text-[var(--foreground-muted)] md:text-lg lg:text-xl">
+              Spletne strani. Trgovine. Avtomatizacije.
             </p>
           </div>
         </div>

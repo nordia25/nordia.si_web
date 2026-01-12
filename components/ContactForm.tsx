@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, FormEvent } from "react";
+import { useEffect, useRef, useState, FormEvent, memo, useCallback } from "react";
 import gsap from "gsap";
 import { useContactForm } from "@/contexts/ContactFormContext";
 import ArrowIcon from "./icons/ArrowIcon";
@@ -28,8 +28,9 @@ interface FormFieldProps {
 
 /**
  * Premium underline input with floating label animation
+ * Memoized to prevent re-renders when parent state changes but props remain same
  */
-function FormField({ label, name, type = "text", value, onChange, required }: FormFieldProps) {
+const FormField = memo(function FormField({ label, name, type = "text", value, onChange, required }: FormFieldProps) {
   const [isFocused, setIsFocused] = useState(false);
   const isActive = isFocused || value.length > 0;
 
@@ -94,7 +95,7 @@ function FormField({ label, name, type = "text", value, onChange, required }: Fo
       />
     </div>
   );
-}
+});
 
 /**
  * Premium full-screen contact form overlay.
@@ -120,8 +121,21 @@ export default function ContactForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  // Separate visibility state - stays true until close animation completes
+
+  // Memoized onChange handlers to prevent FormField re-renders
+  const handleNameChange = useCallback((value: string) => {
+    setFormData((prev) => ({ ...prev, name: value }));
+  }, []);
+  const handleEmailChange = useCallback((value: string) => {
+    setFormData((prev) => ({ ...prev, email: value }));
+  }, []);
+  const handleMessageChange = useCallback((value: string) => {
+    setFormData((prev) => ({ ...prev, message: value }));
+  }, []);
+  // Visibility state - stays true during close animation for smooth exit
   const [isVisible, setIsVisible] = useState(false);
+  // Track previous open state to detect open/close transitions
+  const wasOpenRef = useRef(false);
 
   // Handle escape key
   useEffect(() => {
@@ -134,21 +148,26 @@ export default function ContactForm() {
     return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen, closeContactForm]);
 
-  // GSAP animations
+  // GSAP animations - handles both open and close transitions
   useEffect(() => {
     // Scroll lock
-    try {
-      document.body.style.overflow = isOpen ? "hidden" : "";
-    } catch {
-      // Non-critical
+    document.body.style.overflow = isOpen ? "hidden" : "";
+
+    // Detect open transition
+    const justOpened = isOpen && !wasOpenRef.current;
+    wasOpenRef.current = isOpen;
+
+    if (justOpened) {
+      // Reset form state when opening
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Valid pattern: responding to prop change, not causing infinite loop
+      setIsSuccess(false);
+       
+      setFormData({ name: "", email: "", message: "" });
+       
+      setIsVisible(true);
     }
 
     if (isOpen) {
-      // Make visible immediately when opening
-      setIsVisible(true);
-      // Reset success state when opening
-      setIsSuccess(false);
-      setFormData({ name: "", email: "", message: "" });
 
       // OPTIMIZED: Kill any existing timeline before creating new one
       if (timelineRef.current) {
@@ -388,7 +407,7 @@ export default function ContactForm() {
                       label="Ime"
                       name="name"
                       value={formData.name}
-                      onChange={(value) => setFormData((prev) => ({ ...prev, name: value }))}
+                      onChange={handleNameChange}
                       required
                     />
                   </div>
@@ -401,7 +420,7 @@ export default function ContactForm() {
                       name="email"
                       type="email"
                       value={formData.email}
-                      onChange={(value) => setFormData((prev) => ({ ...prev, email: value }))}
+                      onChange={handleEmailChange}
                       required
                     />
                   </div>
@@ -414,7 +433,7 @@ export default function ContactForm() {
                       name="message"
                       type="textarea"
                       value={formData.message}
-                      onChange={(value) => setFormData((prev) => ({ ...prev, message: value }))}
+                      onChange={handleMessageChange}
                       required
                     />
                   </div>

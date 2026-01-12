@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ============================================
-   NORDIA — PREMIUM APPLE-INSPIRED STYLES
+   NORDIA — OPTIMIZED STYLES
    ============================================ */
 
 :root {
@@ -13,20 +13,17 @@
   --foreground-muted: rgba(255, 255, 255, 0.7);
   --foreground-subtle: rgba(255, 255, 255, 0.4);
   --muted: #86868b;
-  --muted-light: #a1a1a6;
   --accent: #0071e3;
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.15);
   --card-bg: #111111;
   --glow-color: rgba(6, 182, 212, 0.15);
-
-  /* Apple-style timing */
   --ease-apple: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-apple-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ============================================
-   BASE — Clean & Minimal
+   BASE
    ============================================ */
 
 html {
@@ -37,70 +34,6 @@ html {
 html.lenis,
 html.lenis body {
   height: auto;
-}
-
-/* ============================================
-   PERFORMANCE — CSS Containment
-   ============================================ */
-
-/* Contain layout recalculations for major sections */
-#hero {
-  contain: layout style;
-}
-
-/* #works - NO containment - breaks GSAP ScrollTrigger pin */
-
-#about {
-  contain: layout style;
-}
-
-/* Strict containment for decorative elements */
-.noise {
-  contain: strict;
-}
-
-/* Contain flip cards for better paint performance */
-.flip-card-inner {
-  contain: layout style paint;
-}
-
-/* GPU acceleration for header - safe because it's always fixed */
-header {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-/* ============================================
-   HORIZONTAL SCROLL OPTIMIZATIONS
-   ============================================ */
-
-/*
- * CRITICAL: Do NOT add transforms to #works section or its parent elements!
- * ScrollTrigger uses position:fixed for pinning, and transforms create
- * a new containing block that breaks fixed positioning.
- *
- * Safe optimizations are applied only to the scrolling CONTENT,
- * not the pinned container.
- */
-
-/* Optimize the horizontal scrolling content (the flex container) */
-#works [style*="fit-content"] {
-  /* will-change hint for transform animation */
-  will-change: transform;
-  /* Force GPU layer for smooth animation */
-  backface-visibility: hidden;
-}
-
-/* Optimize individual work cards for smooth hover effects */
-#works .work-card {
-  /* GPU layer for transform animations (hover scale, flip) */
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-/* Optimize card images for smooth scale transitions */
-#works .work-card img {
-  backface-visibility: hidden;
 }
 
 .lenis.lenis-smooth {
@@ -121,9 +54,6 @@ body {
   overflow-x: hidden;
   font-weight: 400;
   letter-spacing: -0.01em;
-  transition:
-    background-color 0.4s var(--ease-apple),
-    color 0.4s var(--ease-apple);
 }
 
 ::selection {
@@ -138,125 +68,62 @@ body {
 }
 
 /* ============================================
-   TYPOGRAPHY — Apple-Inspired
+   PERFORMANCE — CSS Containment
    ============================================ */
 
-.text-gradient {
-  background: linear-gradient(90deg, var(--foreground) 0%, var(--muted) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+#hero {
+  contain: layout style;
 }
 
-.text-gradient-hero {
-  background: linear-gradient(
-    135deg,
-    #f5f5f7 0%,
-    #a1a1a6 25%,
-    #f5f5f7 50%,
-    #a1a1a6 75%,
-    #f5f5f7 100%
-  );
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  /* OPTIMIZED: 12s instead of 8s reduces CPU cycles by 33% */
-  animation: shimmer 12s ease-in-out infinite;
+#about {
+  contain: layout style;
 }
 
-.text-gradient-animated {
-  background: linear-gradient(
-    90deg,
-    #f5f5f7 0%,
-    #22d3ee 20%,
-    #0ea5e9 40%,
-    #f5f5f7 60%,
-    #3b82f6 80%,
-    #f5f5f7 100%
-  );
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  /* OPTIMIZED: 10s instead of 6s reduces CPU cycles */
-  animation: gradientFlow 10s ease-in-out infinite;
+.noise {
+  contain: strict;
 }
 
-@keyframes shimmer {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+header {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
-/* Hero gradient text hover effect */
-.hero-gradient-text {
-  background-position: 0% 50%;
-  transition:
-    background-position 0.8s ease,
-    transform 0.5s ease,
-    filter 0.5s ease;
+/* ============================================
+   HORIZONTAL SCROLL OPTIMIZATIONS
+   ============================================ */
+
+#works [style*="fit-content"] {
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
-.hero-gradient-text:hover {
-  background-position: 100% 50%;
-  transform: scale(1.02);
-  filter: drop-shadow(0 0 30px rgba(34, 211, 238, 0.4));
+#works .work-card {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
-@keyframes gradientFlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+#works .work-card img {
+  backface-visibility: hidden;
 }
 
-/* Scroll mouse animation */
-@keyframes scrollMouse {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  50% {
-    opacity: 0.4;
-    transform: translateY(12px);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(12px);
-  }
+/* ============================================
+   SVG DRAW ANIMATION — Values Section Icons
+   ============================================ */
+
+.icon-draw path,
+.icon-draw rect,
+.icon-draw circle,
+.icon-draw line {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  transition: stroke-dashoffset 0.8s var(--ease-apple-out);
 }
 
-.animate-scroll-mouse {
-  animation: scrollMouse 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-
-/* Floating bubble animation */
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-12px) rotate(2deg);
-  }
-}
-
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-.text-balance {
-  text-wrap: balance;
+.icon-draw.active path,
+.icon-draw.active rect,
+.icon-draw.active circle,
+.icon-draw.active line {
+  stroke-dashoffset: 0;
 }
 
 /* ============================================
@@ -269,331 +136,8 @@ body {
   padding: 0 clamp(1.5rem, 5vw, 6rem);
 }
 
-.container-narrow {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 clamp(1.5rem, 5vw, 6rem);
-}
-
-.section-padding {
-  padding-top: clamp(8rem, 20vh, 16rem);
-  padding-bottom: clamp(8rem, 20vh, 16rem);
-}
-
 /* ============================================
-   PRELOADER — Simple & Clean
-   ============================================ */
-
-.preloader {
-  position: fixed;
-  inset: 0;
-  background-color: var(--background);
-  z-index: 9998;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ============================================
-   SCROLL INDICATOR — Minimal
-   ============================================ */
-
-.scroll-indicator {
-  position: absolute;
-  bottom: 3rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.scroll-indicator span {
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.scroll-line {
-  width: 1px;
-  height: 48px;
-  background-color: var(--border);
-  position: relative;
-  overflow: hidden;
-}
-
-.scroll-line::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 50%;
-  background-color: var(--muted);
-  animation: scrollLine 2s ease-in-out infinite;
-  /* GPU acceleration - prevents layout thrashing */
-  will-change: transform;
-}
-
-/* OPTIMIZED: Uses transform instead of top to avoid layout recalculation */
-@keyframes scrollLine {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(300%);
-  }
-}
-
-/* ============================================
-   BUTTONS — Apple Style
-   ============================================ */
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  font-weight: 500;
-  color: white;
-  background: linear-gradient(135deg, #0071e3 0%, #0077ed 100%);
-  border-radius: 980px;
-  border: none;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s var(--ease-apple);
-  box-shadow: 0 4px 20px -4px rgba(0, 113, 227, 0.4);
-}
-
-.btn-primary::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, #0077ed 0%, #0084ff 100%);
-  opacity: 0;
-  transition: opacity 0.4s var(--ease-apple);
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px -4px rgba(0, 113, 227, 0.5);
-}
-
-.btn-primary:hover::before {
-  opacity: 1;
-}
-
-.btn-primary span,
-.btn-primary svg {
-  position: relative;
-  z-index: 1;
-}
-
-.btn-primary:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--foreground);
-  background-color: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 980px;
-  transition: all 0.4s var(--ease-apple);
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-secondary::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.05) 100%
-  );
-  opacity: 0;
-  transition: opacity 0.4s var(--ease-apple);
-}
-
-.btn-secondary:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-}
-
-.btn-secondary:hover::before {
-  opacity: 1;
-}
-
-.btn-secondary:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.btn-text {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.125rem;
-  font-weight: 400;
-  color: var(--accent);
-  transition: all 0.4s var(--ease-apple);
-  position: relative;
-}
-
-.btn-text::after {
-  content: "";
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background-color: var(--accent);
-  transition: width 0.4s var(--ease-apple);
-}
-
-.btn-text:hover {
-  gap: 0.75rem;
-}
-
-.btn-text:hover::after {
-  width: calc(100% - 1.75rem);
-}
-
-.btn-text svg {
-  transition: transform 0.4s var(--ease-apple);
-}
-
-.btn-text:hover svg {
-  transform: translateX(4px);
-}
-
-/* ============================================
-   ANIMATIONS — Subtle & Elegant
-   ============================================ */
-
-.fade-up {
-  opacity: 0;
-  transform: translateY(40px);
-}
-
-.fade-up.active {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 0.8s var(--ease-apple),
-    transform 0.8s var(--ease-apple);
-}
-
-.scale-in {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.scale-in.active {
-  opacity: 1;
-  transform: scale(1);
-  transition:
-    opacity 1s var(--ease-apple),
-    transform 1s var(--ease-apple);
-}
-
-.stagger-children > * {
-  opacity: 0;
-  transform: translateY(24px);
-}
-
-.stagger-children.active > * {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 0.6s var(--ease-apple),
-    transform 0.6s var(--ease-apple);
-}
-
-.stagger-children.active > *:nth-child(1) {
-  transition-delay: 0.1s;
-}
-.stagger-children.active > *:nth-child(2) {
-  transition-delay: 0.2s;
-}
-.stagger-children.active > *:nth-child(3) {
-  transition-delay: 0.3s;
-}
-.stagger-children.active > *:nth-child(4) {
-  transition-delay: 0.4s;
-}
-.stagger-children.active > *:nth-child(5) {
-  transition-delay: 0.5s;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* ============================================
-   LINKS — Elegant Underline
-   ============================================ */
-
-.link-underline {
-  position: relative;
-  display: inline-block;
-}
-
-.link-underline::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background-color: currentColor;
-  opacity: 0.3;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.4s var(--ease-apple);
-}
-
-.link-underline:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-/* ============================================
-   DIVIDERS
-   ============================================ */
-
-.divider {
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--border) 50%,
-    transparent 100%
-  );
-}
-
-.divider-solid {
-  height: 1px;
-  background-color: var(--border);
-}
-
-/* ============================================
-   NOISE OVERLAY — Very Subtle
+   NOISE OVERLAY
    ============================================ */
 
 .noise {
@@ -609,52 +153,20 @@ body {
   position: absolute;
   inset: -200%;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  /* Slower animation (4s) = less CPU work. Steps(2) = fewer composites */
   animation: noise 4s steps(2) infinite;
 }
 
-/* Pause noise animation when tab is not visible (toggled by JS) */
 .noise.noise--paused::before {
   animation-play-state: paused;
 }
 
 @keyframes noise {
-  /* Simplified: 2-step animation instead of 6-step */
-  0%, 100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(-5%, -8%);
-  }
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-5%, -8%); }
 }
 
 /* ============================================
-   PROJECT CARDS
-   ============================================ */
-
-.project-card {
-  position: relative;
-  aspect-ratio: 16/10;
-  overflow: hidden;
-  border-radius: 16px;
-  background-color: #111;
-}
-
-.project-card-media {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.8s var(--ease-apple);
-}
-
-.project-card:hover .project-card-media {
-  transform: scale(1.05);
-}
-
-/* ============================================
-   MARQUEE — Clean
+   MARQUEE
    ============================================ */
 
 .marquee {
@@ -663,98 +175,40 @@ body {
   user-select: none;
 }
 
-.marquee-content {
-  display: flex;
-  flex-shrink: 0;
-  /* OPTIMIZED: 25s instead of 40s - faster perceived motion */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.animate-marquee {
   animation: marquee 25s linear infinite;
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+.animate-marquee-reverse {
+  animation: marquee-reverse 25s linear infinite;
+}
+
+.animate-marquee:hover,
+.animate-marquee-reverse:hover {
+  animation-play-state: paused;
 }
 
 /* ============================================
-   STICKY SECTIONS
+   CURSOR BLINK — Typewriter Effect
    ============================================ */
 
-.sticky-section {
-  position: sticky;
-  top: 0;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
-/* ============================================
-   ACCORDION
-   ============================================ */
-
-.accordion-item {
-  border-bottom: 1px solid var(--border);
-}
-
-.accordion-trigger {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2rem 0;
-  text-align: left;
-  background: none;
-  border: none;
-  color: inherit;
-  font: inherit;
-  transition: opacity 0.3s ease;
-}
-
-.accordion-trigger:hover {
-  opacity: 0.7;
-}
-
-.accordion-content {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s var(--ease-apple);
-}
-
-.accordion-content[data-state="open"] {
-  grid-template-rows: 1fr;
-}
-
-.accordion-content-inner {
-  overflow: hidden;
-}
-
-/* ============================================
-   FOOTER
-   ============================================ */
-
-.footer-link {
-  font-size: 1rem;
-  color: var(--muted);
-  transition: color 0.3s ease;
-}
-
-.footer-link:hover {
-  color: var(--foreground);
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-
-@media (max-width: 768px) {
-  .section-padding {
-    padding-top: clamp(4rem, 10vh, 8rem);
-    padding-bottom: clamp(4rem, 10vh, 8rem);
-  }
+.cursor-blink {
+  animation: blink 0.8s ease-in-out infinite;
 }
 
 /* ============================================
@@ -771,120 +225,21 @@ body {
     scroll-behavior: auto !important;
   }
 
-  /* Ensure content is visible if JS fails or animations are disabled */
-  .fade-in,
-  .fade-up,
-  .scale-in,
-  .stagger-children > *,
   [class*="opacity-0"] {
     opacity: 1 !important;
     transform: none !important;
-    filter: none !important;
   }
 
-  /* Disable parallax and complex transforms */
-  .hero-gradient-text:hover {
-    transform: none;
-    filter: none;
-  }
-
-  /* Disable marquee */
-  .marquee-content {
-    animation: none;
-  }
-
-  /* Disable noise effect */
   .noise::before {
     animation: none;
   }
 }
 
 /* ============================================
-   NO-JS FALLBACK — Ensure visibility
+   NO-JS FALLBACK
    ============================================ */
 
-.no-js .fade-in,
-.no-js .fade-up,
-.no-js .scale-in,
-.no-js .stagger-children > *,
 .no-js [class*="opacity-0"] {
   opacity: 1 !important;
   transform: none !important;
 }
-
-/* ============================================
-   FALLBACKS — Ensure visibility on all browsers
-   ============================================ */
-
-/* Force preloader hidden after animation (CSS backup for JS) */
-.preloader-complete,
-[data-preloader-complete="true"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-/* Gradient text fallback - solid color if background-clip unsupported */
-.text-gradient,
-.text-gradient-hero,
-.text-gradient-animated {
-  color: #22d3ee;
-}
-
-@supports (-webkit-background-clip: text) or (background-clip: text) {
-  .text-gradient,
-  .text-gradient-hero,
-  .text-gradient-animated {
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-  }
-}
-
-/* ============================================
-   PERFORMANCE — GPU Acceleration (safe optimizations only)
-   ============================================ */
-
-/* GPU acceleration hints removed - causes issues on Windows Intel/NVIDIA */
-/* .service-accordion, .team-member - no longer using will-change */
-
-/* Reduce paint areas for fixed elements */
-.preloader {
-  contain: layout paint;
-}
-
-.noise {
-  contain: strict;
-}
-
-
-/* ============================================
-   ADDITIONAL ANIMATIONS
-   ============================================ */
-
-@keyframes marquee-reverse {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
-}
-
-.animate-marquee {
-  animation: marquee 25s linear infinite;
-}
-
-.animate-marquee-reverse {
-  animation: marquee-reverse 25s linear infinite;
-}
-
-.animate-marquee:hover,
-.animate-marquee-reverse:hover {
-  animation-play-state: paused;
-}
-
-@keyframes scrollIndicator {
-  0%, 100% { transform: translateY(-100%); opacity: 0; }
-  50% { transform: translateY(100%); opacity: 1; }
-}
-
-.animate-scroll-indicator {
-  animation: scrollIndicator 2s ease-in-out infinite;
-}
-

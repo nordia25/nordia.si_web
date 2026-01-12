@@ -18,31 +18,40 @@ const MENU_ANIMATION = {
  */
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isOnHero, setIsOnHero] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const line1Ref = useRef<HTMLSpanElement>(null);
   const line2Ref = useRef<HTMLSpanElement>(null);
 
-  // Track scroll position to determine if we're on hero section
+  // Track scroll position and direction for header visibility
   useEffect(() => {
     let rafId: number;
     let ticking = false;
 
-    const updateOnHero = () => {
-      const heroHeight = window.innerHeight;
-      const shouldBeOnHero = window.scrollY < heroHeight - 100;
-      // Only update state if value actually changed
-      setIsOnHero(prev => prev !== shouldBeOnHero ? shouldBeOnHero : prev);
+    const updateScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Determine header visibility based on scroll direction
+      if (currentScrollY < 100) {
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY.current) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
       ticking = false;
     };
 
     const handleScroll = () => {
       if (!ticking) {
-        rafId = requestAnimationFrame(updateOnHero);
+        rafId = requestAnimationFrame(updateScroll);
         ticking = true;
       }
     };
 
-    updateOnHero(); // Initial check
+    updateScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -78,86 +87,107 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-0 py-6 md:py-8 ${
-          isMenuOpen ? "pointer-events-none z-[101]" : "z-40"
-        }`}
+        className={`fixed left-0 right-0 top-0 py-6 transition-all duration-300 ease-out md:py-8 ${
+          isMenuOpen ? "pointer-events-none z-[101] opacity-0" : "z-40 opacity-100"
+        } ${isVisible || isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}
       >
         <div className="container-wide flex items-center justify-between">
-          {/* Logo */}
+          {/* Left navigation */}
+          <nav className="flex items-center gap-6">
+            <Link
+              href="#kdo-smo"
+              className="group/nav relative text-gray-400 text-sm font-medium tracking-tight uppercase"
+            >
+              Kdo smo
+              <span className="absolute left-0 bottom-0 h-[1px] w-0 bg-gray-400 transition-all duration-300 ease-out group-hover/nav:w-full" />
+            </Link>
+            <Link
+              href="#vrednote"
+              className="group/nav relative text-gray-400 text-sm font-medium tracking-tight uppercase"
+            >
+              Vrednote
+              <span className="absolute left-0 bottom-0 h-[1px] w-0 bg-gray-400 transition-all duration-300 ease-out group-hover/nav:w-full" />
+            </Link>
+            <Link
+              href="#works"
+              className="group/nav relative text-gray-400 text-sm font-medium tracking-tight uppercase"
+            >
+              Storitve
+              <span className="absolute left-0 bottom-0 h-[1px] w-0 bg-gray-400 transition-all duration-300 ease-out group-hover/nav:w-full" />
+            </Link>
+            <Link
+              href="#about"
+              className="group/nav relative text-gray-400 text-sm font-medium tracking-tight uppercase"
+            >
+              O nas
+              <span className="absolute left-0 bottom-0 h-[1px] w-0 bg-gray-400 transition-all duration-300 ease-out group-hover/nav:w-full" />
+            </Link>
+          </nav>
+
+          {/* Center Logo */}
           <Link
             href="/"
-            className={`group relative font-sans text-xl font-medium tracking-tighter transition-colors duration-300 md:text-2xl ${
-              isOnHero ? "text-gray-900" : "text-white"
-            }`}
+            className="group absolute left-1/2 -translate-x-1/2 font-sans text-2xl font-medium tracking-tighter text-white transition-colors duration-300 md:text-3xl"
           >
             <span className="relative inline-block overflow-hidden">
               <span className="inline-block transition-transform duration-500 ease-out group-hover:-translate-y-full">
-                Nordia<span className={isOnHero ? "text-gray-900/60" : "text-white/60"}>.</span>
+                Nordia<span className="text-white/60">.</span>
               </span>
               <span className="absolute left-0 top-full inline-block transition-transform duration-500 ease-out group-hover:-translate-y-full">
-                Nordia<span className={isOnHero ? "text-gray-900/60" : "text-white/60"}>.</span>
+                Nordia<span className="text-white/60">.</span>
               </span>
             </span>
           </Link>
 
-          {/* Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`group pointer-events-auto relative flex items-center gap-4 transition-colors duration-300 ${
-              isMenuOpen ? "text-[var(--foreground)]" : isOnHero ? "text-gray-900" : "text-white"
-            }`}
+          {/* CTA Section */}
+          <div className="flex items-center gap-6">
+            <a
+              href="mailto:info@nordia.si"
+              className="group/mail relative text-white text-sm font-medium tracking-tight uppercase"
+            >
+              info@nordia.si
+              <span className="absolute left-0 bottom-0 h-[1px] w-0 bg-white transition-all duration-300 ease-out group-hover/mail:w-full" />
+            </a>
+            <Link
+              href="#kontakt"
+              className="bg-white text-black px-6 py-3 text-sm font-medium tracking-tight uppercase transition-colors duration-300 hover:bg-gray-300"
+            >
+              Pogovorimo se
+            </Link>
+
+            {/* Menu Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="group pointer-events-auto relative"
             aria-label={isMenuOpen ? "Zapri meni" : "Odpri meni"}
             aria-expanded={isMenuOpen}
             aria-controls="main-navigation"
           >
-            {/* Menu text - slightly smaller than logo */}
-            <span className="text-[15px] font-medium uppercase tracking-tighter md:text-[19px]">
-              {isMenuOpen ? "Zapri" : "Meni"}
-            </span>
+            {/* White circle background on hover */}
+            <div className="absolute inset-0 -m-2 rounded-full bg-white scale-0 transition-transform duration-300 ease-out group-hover:scale-100" />
 
-            {/* Hamburger icon with slide effect */}
+            {/* Hamburger icon */}
             <div
-              className="relative h-7 w-7 overflow-hidden md:h-8 md:w-8"
+              className="relative h-7 w-7 md:h-8 md:w-8"
               aria-hidden="true"
             >
-              {/* First set of lines */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center transition-transform duration-500 ease-out group-hover:-translate-y-full">
-                <span
-                  ref={line1Ref}
-                  className={`absolute h-[1.5px] w-5 origin-center transition-colors duration-300 md:w-6 ${
-                    isMenuOpen ? "bg-[var(--foreground)]" : isOnHero ? "bg-gray-900" : "bg-white"
-                  }`}
-                  style={{ top: "calc(50% - 4px)" }}
-                />
-                <span
-                  ref={line2Ref}
-                  className={`absolute h-[1.5px] w-5 origin-center transition-colors duration-300 md:w-6 ${
-                    isMenuOpen ? "bg-[var(--foreground)]" : isOnHero ? "bg-gray-900" : "bg-white"
-                  }`}
-                  style={{ top: "calc(50% + 4px)" }}
-                />
-              </div>
-              {/* Duplicate lines for hover */}
-              <div className="absolute inset-0 flex translate-y-full flex-col items-center justify-center transition-transform duration-500 ease-out group-hover:translate-y-0">
-                <span
-                  className={`duration-400 absolute h-[1.5px] w-5 origin-center transition-transform md:w-6 ${
-                    isMenuOpen
-                      ? "!top-1/2 rotate-45 bg-[var(--foreground)]"
-                      : isOnHero ? "bg-gray-900" : "bg-white"
-                  }`}
-                  style={{ top: "calc(50% - 4px)" }}
-                />
-                <span
-                  className={`duration-400 absolute h-[1.5px] w-5 origin-center transition-transform md:w-6 ${
-                    isMenuOpen
-                      ? "!top-1/2 -rotate-45 bg-[var(--foreground)]"
-                      : isOnHero ? "bg-gray-900" : "bg-white"
-                  }`}
-                  style={{ top: "calc(50% + 4px)" }}
-                />
-              </div>
+              <span
+                ref={line1Ref}
+                className={`absolute h-[1.5px] w-5 origin-center transition-colors duration-300 md:w-6 left-1/2 -translate-x-1/2 ${
+                  isMenuOpen ? "bg-[var(--foreground)]" : "bg-white group-hover:bg-black"
+                }`}
+                style={{ top: "calc(50% - 4px)" }}
+              />
+              <span
+                ref={line2Ref}
+                className={`absolute h-[1.5px] w-5 origin-center transition-colors duration-300 md:w-6 left-1/2 -translate-x-1/2 ${
+                  isMenuOpen ? "bg-[var(--foreground)]" : "bg-white group-hover:bg-black"
+                }`}
+                style={{ top: "calc(50% + 4px)" }}
+              />
             </div>
-          </button>
+            </button>
+          </div>
         </div>
       </header>
 

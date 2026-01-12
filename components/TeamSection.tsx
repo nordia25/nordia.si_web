@@ -1,4 +1,4 @@
-import { getTeamMembers, getSocialPlatforms } from "@/lib/data";
+import { getTeamMembers } from "@/lib/data";
 import TeamSectionClient from "./TeamSectionClient";
 
 /**
@@ -7,12 +7,6 @@ import TeamSectionClient from "./TeamSectionClient";
  */
 export default async function TeamSection() {
   const teamMembers = await getTeamMembers();
-  const socialPlatforms = getSocialPlatforms();
 
-  return (
-    <TeamSectionClient
-      teamMembers={teamMembers}
-      socialPlatforms={socialPlatforms}
-    />
-  );
+  return <TeamSectionClient teamMembers={teamMembers} />;
 }

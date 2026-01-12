@@ -1,212 +1,169 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import gsap from "gsap";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-import MagneticButton from "./MagneticButton";
-import ArrowIcon from "./icons/ArrowIcon";
-import { useContactForm } from "@/contexts/ContactFormContext";
-import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
-import type { Service } from "@/lib/data";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-interface HeroSectionClientProps {
-  services: readonly Service[];
-}
+gsap.registerPlugin(ScrollTrigger);
+
+const services = [
+  "SPLETNE STRANI",
+  "SPLETNE TRGOVINE",
+  "AI AVTOMATIZACIJE",
+  "3D TISKANJE",
+];
 
 /**
- * ServiceStripes component - Premium editorial design
- * Refined typography with subtle interactions
+ * Hero section with parallax background image
+ * - Background image moves slower than scroll (parallax effect)
+ * - Desktop: SVG mask cutout reveals the image
+ * - Mobile: Simple overlay
  */
-function ServiceStripes({ services }: { services: readonly Service[] }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isMounted, setIsMounted] = useState(false);
-  const prefersReducedMotion = usePrefersReducedMotion();
+export default function HeroSectionClient() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    setIsMounted(true);
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop, { passive: true });
+    return () => window.removeEventListener("resize", checkDesktop);
   }, []);
 
+  // Parallax effect for background
   useEffect(() => {
-    if (!containerRef.current || !isMounted) return;
+    const bg = bgRef.current;
+    const section = sectionRef.current;
+    if (!bg || !section) return;
 
-    const items = containerRef.current.querySelectorAll(".service-item");
+    const ctx = gsap.context(() => {
+      // Parallax: background moves UP as you scroll down (opposite direction)
+      gsap.to(bg, {
+        yPercent: -20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    }, section);
 
-    // OPTIMIZED: Skip animations for users who prefer reduced motion
-    if (prefersReducedMotion) {
-      gsap.set(items, { opacity: 1, y: 0 });
-      return;
-    }
-
-    // Premium stagger entrance
-    const tween = gsap.fromTo(
-      items,
-      { opacity: 0, y: 12 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: "power3.out",
-        delay: 0.3, // Small delay for page load
-      }
-    );
-
-    // Cleanup on unmount
-    return () => {
-      tween.kill();
-    };
-  }, [isMounted, prefersReducedMotion]);
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <div ref={containerRef} className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 lg:gap-0">
-      {services.map((service) => (
+    <>
+      {/* Parallax background container - fixed but with parallax movement */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
         <div
-          key={service.name}
-          className="service-item group relative flex items-center cursor-pointer opacity-0"
+          ref={bgRef}
+          className="absolute inset-0 will-change-transform"
+          style={{ top: "0", height: "120%" }}
         >
-          {/* Service name */}
-          <span className="text-base md:text-lg font-normal text-gray-600 tracking-wide transition-all duration-500 group-hover:text-gray-900">
-            {service.name}
-          </span>
-
-          {/* Underline accent */}
-          <span
-            className="absolute -bottom-1 left-0 h-px w-0 transition-all duration-500 ease-out group-hover:w-full"
-            style={{ backgroundColor: service.color }}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/**
- * Client component for hero section animations and interactions
- */
-export default function HeroSectionClient({ services }: HeroSectionClientProps) {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { openContactForm } = useContactForm();
-
-  return (
-    <section
-      id="hero"
-      ref={heroRef}
-      className="fixed left-0 right-0 top-0 z-0 flex min-h-screen overflow-hidden bg-[#e8e8e8]"
-    >
-      {/* Split Layout Container */}
-      <div className="flex w-full min-h-screen">
-
-        {/* Left Side - Editorial Content */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center">
-          <div className="w-full px-8 md:px-16 lg:px-20 xl:px-28 py-20 lg:py-0">
-            <div className="max-w-xl">
-
-              {/* Main Headline - Bold Editorial Asymmetric */}
-              <h1 className="font-display font-bold text-[clamp(3rem,8vw,6rem)] tracking-[-0.04em] text-gray-900 mb-10">
-                <span
-                  className="block text-[#2563eb]"
-                  style={{ lineHeight: 1.1 }}
-                >
-                  Ustvarjeno
-                </span>
-                <span
-                  className="block text-gray-900 ml-[2em]"
-                  style={{ marginTop: "-0.15em", lineHeight: 1.1 }}
-                >
-                  drugače.
-                </span>
-              </h1>
-
-              {/* Subtitle */}
-              <div className="mb-10 ml-[2em] max-w-lg">
-                <p className="text-xl md:text-2xl lg:text-3xl font-light leading-snug">
-                  <span className="text-gray-900">Slovensko</span>{" "}
-                  <span className="text-gray-900">podjetje</span>{" "}
-                  <span className="text-gray-700">za</span>{" "}
-                  <span className="text-gray-700">digitalne</span>{" "}
-                  <span className="text-gray-700">rešitve</span>
-                </p>
-                <p className="mt-2 text-lg md:text-xl text-gray-600 font-light italic text-center">
-                  Od zasnove do izvedbe, brez kompromisov.
-                </p>
-              </div>
-
-              {/* Services - Editorial Stripes */}
-              <div className="mb-12 ml-[2em] max-w-lg">
-                <ServiceStripes services={services} />
-              </div>
-
-              {/* CTAs - Premium Style */}
-              <div className="flex flex-row items-center justify-center gap-6 ml-[2em] max-w-lg">
-                {/* Primary CTA - Refined */}
-                <MagneticButton
-                  onClick={openContactForm}
-                  className="group/cta relative !overflow-hidden !rounded-full !border-0 !bg-transparent !p-0"
-                  strength={0.25}
-                >
-                  <span className="relative flex items-center gap-4 rounded-full bg-gray-900 px-8 py-4 transition-all duration-500 group-hover/cta:bg-gray-800">
-                    <span className="text-[15px] font-medium text-white tracking-wide">
-                      Začnimo projekt
-                    </span>
-                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 transition-all duration-500 group-hover/cta:bg-white/20">
-                      <ArrowIcon
-                        className="h-4 w-4 text-white transition-transform duration-500 group-hover/cta:translate-x-0.5"
-                        strokeWidth={2}
-                      />
-                    </span>
-                  </span>
-                </MagneticButton>
-
-                {/* Secondary CTA - Minimal */}
-                <a
-                  href="#works"
-                  className="group/secondary flex items-center gap-3 py-4 text-gray-500 hover:text-gray-900 transition-all duration-500"
-                >
-                  <span className="text-[15px] font-medium tracking-wide">Naše delo</span>
-                  <ArrowIcon
-                    className="h-4 w-4 transition-all duration-500 group-hover/secondary:translate-x-1"
-                    strokeWidth={2}
-                  />
-                </a>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        {/* Right Side - Image */}
-        <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-6">
-          <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-xl">
-            <Image
-              src="/works/nordia-hero-us.jpg"
-              alt="Nordia Hero"
-              fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 50vw, 0px"
-              priority
-              quality={80}
-              fetchPriority="high"
-            />
-          </div>
-        </div>
-
-      </div>
-
-      {/* Mobile Image - Shows below content on mobile */}
-      <div className="lg:hidden absolute bottom-0 left-0 right-0 h-[40vh] flex items-center justify-center p-6">
-        <div className="relative w-[85%] max-w-md h-full rounded-2xl overflow-hidden shadow-xl">
           <Image
-            src="/works/nordia-hero-us.jpg"
-            alt="Nordia Hero"
+            src="/works/nordia-hero-bg.jpg"
+            alt=""
             fill
-            className="object-cover"
-            sizes="(max-width: 1023px) 85vw, 0px"
-            quality={75}
             priority
-            fetchPriority="high"
+            quality={85}
+            className="object-cover"
+            sizes="100vw"
           />
         </div>
       </div>
-    </section>
+
+      {/* Hero section content - scrolls over the parallax image */}
+      <section
+        ref={sectionRef}
+        id="hero"
+        className="relative z-10 min-h-screen"
+        style={{ contain: "layout style paint" }}
+      >
+        {/* Desktop: SVG mask cutout effect */}
+        {isDesktop ? (
+          <svg className="absolute inset-0 w-full h-full">
+            <defs>
+              <mask id="textCutout">
+                <rect width="100%" height="100%" fill="white" />
+                <rect x="5%" y="34%" width="1.5%" height="66%" fill="black" />
+                <text
+                  x="8%"
+                  y="58%"
+                  textAnchor="start"
+                  dominantBaseline="middle"
+                  className="font-display font-bold"
+                  style={{
+                    fontSize: "clamp(2.8rem, 9vw, 10rem)",
+                    letterSpacing: "-0.04em",
+                    fill: "black",
+                  }}
+                >
+                  PRIHODNOSTI
+                </text>
+              </mask>
+            </defs>
+
+            <rect width="100%" height="100%" fill="black" mask="url(#textCutout)" />
+
+            <text
+              x="8%"
+              y="42%"
+              textAnchor="start"
+              dominantBaseline="middle"
+              className="font-display font-bold"
+              style={{
+                fontSize: "clamp(2.8rem, 9vw, 10rem)",
+                letterSpacing: "-0.04em",
+                fill: "white",
+              }}
+            >
+              DIGITALNE REŠITVE
+            </text>
+          </svg>
+        ) : (
+          /* Mobile: Simple overlay without SVG mask */
+          <div className="absolute inset-0 bg-black/70 flex flex-col justify-center px-6">
+            <h1
+              className="font-display font-bold text-white uppercase"
+              style={{
+                fontSize: "clamp(2rem, 10vw, 4rem)",
+                letterSpacing: "-0.04em",
+                lineHeight: 1.1,
+              }}
+            >
+              DIGITALNE REŠITVE
+              <br />
+              <span className="text-white/60">PRIHODNOSTI</span>
+            </h1>
+          </div>
+        )}
+
+        {/* Services list - hidden on small mobile */}
+        <div
+          className="absolute bottom-8 left-6 lg:left-[8%] z-20 hidden sm:flex items-center flex-wrap gap-y-2"
+          style={{ height: "clamp(2rem, 4vw, 3.5rem)" }}
+        >
+          {services.map((service, i) => (
+            <span
+              key={i}
+              className="group/service relative font-display text-white/90 uppercase cursor-pointer transition-colors duration-300 hover:text-white"
+              style={{
+                fontSize: "clamp(0.7rem, 1.68vw, 1.43rem)",
+                letterSpacing: "0.05em",
+                marginLeft: i === 0 ? 0 : "clamp(1rem, 4vw, 4rem)",
+                marginRight: "clamp(1rem, 4vw, 4rem)",
+              }}
+            >
+              {service}
+              <span className="absolute left-0 bottom-0 h-[1px] w-0 bg-white transition-all duration-300 ease-out group-hover/service:w-full" />
+            </span>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }

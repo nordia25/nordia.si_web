@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import NoiseOverlay from "./NoiseOverlay";
 import SmoothScrollProvider from "./SmoothScrollProvider";
@@ -15,21 +15,17 @@ interface AppWrapperProps {
 }
 
 export default function AppWrapper({ children }: AppWrapperProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
   // Reset scroll position on page load to prevent browser scroll restoration
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.history.scrollRestoration = "manual";
-      window.scrollTo(0, 0);
-    }
-    setIsMounted(true);
+    window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
   }, []);
 
   return (
     <ErrorBoundary>
       <ContactFormProvider>
-        {isMounted && <NoiseOverlay />}
+        {/* NoiseOverlay handles SSR internally via useIsSlowDeviceConservative */}
+        <NoiseOverlay />
         <SmoothScrollProvider>
           <div style={{ isolation: "isolate" }}>{children}</div>
         </SmoothScrollProvider>

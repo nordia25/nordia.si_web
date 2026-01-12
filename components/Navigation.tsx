@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import gsap from "gsap";
-import ArrowIcon from "./icons/ArrowIcon";
 import { useContactForm } from "@/contexts/ContactFormContext";
 import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 
@@ -13,7 +13,7 @@ const ANIMATION = {
   /** Menu items animation duration */
   itemsDuration: 0.6,
   /** Stagger delay between menu items */
-  itemsStagger: 0.08,
+  itemsStagger: 0.06,
   /** Footer animation duration */
   footerDuration: 0.5,
   /** Close animation duration */
@@ -28,16 +28,22 @@ interface NavigationProps {
 interface MenuItem {
   label: string;
   href?: string;
-  description: string;
   isContactTrigger?: boolean;
 }
 
-/** Navigation menu items */
+/** Navigation menu items - STRV style grid */
 const menuItems: MenuItem[] = [
-  { label: "Filozofija", href: "#why", description: "Naš pristop" },
-  { label: "Storitve", href: "#works", description: "Kaj ustvarjamo" },
-  { label: "O nas", href: "#about", description: "Kdo smo" },
-  { label: "Pišite nam", description: "Kontakt", isContactTrigger: true },
+  { label: "Kdo smo", href: "#kdo-smo" },
+  { label: "Storitve", href: "#works" },
+  { label: "Vrednote", href: "#vrednote" },
+  { label: "O nas", href: "#about" },
+  { label: "Kontakt", isContactTrigger: true },
+];
+
+/** Social links */
+const socialLinks = [
+  { label: "LI", href: "https://linkedin.com/company/nordia", full: "LinkedIn" },
+  { label: "IG", href: "https://instagram.com/nordia.si", full: "Instagram" },
 ];
 
 /**
@@ -161,23 +167,59 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
       aria-label="Glavna navigacija"
       className={`pointer-events-none fixed inset-0 z-[100] ${isOpen ? "pointer-events-auto" : ""}`}
     >
-      {/* Background - visibility:hidden when closed prevents black screen on GPU failures */}
+      {/* Background */}
       <div
         ref={bgRef}
-        className={`absolute inset-0 bg-[var(--background)] opacity-0 ${isOpen ? "" : "invisible"}`}
+        className={`absolute inset-0 bg-black opacity-0 ${isOpen ? "" : "invisible"}`}
       />
 
-      {/* Content - hidden by default, GSAP animates in */}
+      {/* Content */}
       <div
         className={`relative flex h-full flex-col ${isOpen ? "" : "invisible"}`}
       >
-        {/* Spacer for header */}
-        <div className="h-20 shrink-0 md:h-24" />
+        {/* Header with logo and close button */}
+        <header className="relative z-10 px-6 py-6 md:px-12 md:py-8">
+          <div className="flex items-center justify-between">
+            {/* Empty spacer for balance */}
+            <div className="w-24" />
 
-        {/* Menu items */}
-        <nav className="flex flex-1 flex-col justify-center py-4 md:py-8" aria-label="Glavni meni">
-          <div className="container-wide">
-            <ul className="space-y-1 md:space-y-2" role="menu">
+            {/* Center Logo */}
+            <Link
+              href="/"
+              onClick={onClose}
+              className="font-sans text-2xl font-medium tracking-tighter text-white md:text-3xl"
+            >
+              Nordia<span className="text-white/60">.</span>
+            </Link>
+
+            {/* Close button - STRV style */}
+            <button
+              onClick={onClose}
+              className="group flex items-center gap-3"
+              aria-label="Zapri meni"
+            >
+              <span className="hidden text-xs font-medium uppercase tracking-widest text-white/60 transition-colors duration-300 group-hover:text-white md:block">
+                Zapri
+              </span>
+              <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-white/20 transition-all duration-300 group-hover:border-white group-hover:bg-white">
+                <svg
+                  className="h-4 w-4 text-white transition-colors duration-300 group-hover:text-black"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </header>
+
+        {/* Menu items - STRV style grid */}
+        <nav className="flex flex-1 items-center justify-center px-6 md:px-12" aria-label="Glavni meni">
+          <div className="w-full max-w-6xl">
+            <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 md:gap-x-16 md:gap-y-6" role="menu">
               {menuItems.map((item, index) => (
                 <li
                   key={item.label}
@@ -185,95 +227,32 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
                     menuItemsRef.current[index] = el;
                   }}
                   role="none"
+                  className="opacity-0"
                 >
                   {item.isContactTrigger ? (
                     <button
                       onClick={() => handleLinkClick(item)}
                       role="menuitem"
-                      aria-label={`${item.label} - ${item.description}`}
-                      className="group flex w-full items-baseline gap-8 border-b border-[var(--border)] py-2 text-left transition-colors duration-300 hover:border-[var(--border-strong)] md:py-4"
+                      className="group relative"
                     >
-                      {/* Number */}
-                      <span
-                        className="font-mono text-sm text-[var(--foreground-subtle)] transition-opacity duration-300 group-hover:opacity-80"
-                        aria-hidden="true"
-                      >
-                        {String(index + 1).padStart(2, "0")}
+                      <span className="font-display text-[clamp(2.5rem,10vw,7rem)] font-bold uppercase leading-[0.9] tracking-tight text-white transition-all duration-300 group-hover:text-white/60">
+                        {item.label}
                       </span>
-
-                      {/* Label */}
-                      <span className="relative overflow-hidden">
-                        <span className="inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight text-[var(--foreground)] transition-transform duration-500 group-hover:-translate-y-full">
-                          {item.label}
-                        </span>
-                        <span
-                          className="text-gradient-animated absolute left-0 top-full inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight transition-transform duration-500 group-hover:-translate-y-full"
-                          aria-hidden="true"
-                        >
-                          {item.label}
-                        </span>
-                      </span>
-
-                      {/* Description - shows on hover */}
-                      <span className="ml-auto hidden translate-x-4 text-sm opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:text-[var(--foreground-subtle)] group-hover:opacity-100 md:block">
-                        {item.description}
-                      </span>
-
-                      {/* Arrow */}
-                      <span
-                        className="ml-8 hidden h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-[var(--foreground)] group-hover:bg-[var(--foreground)] md:flex"
-                        aria-hidden="true"
-                      >
-                        <ArrowIcon
-                          className="h-5 w-5 -rotate-45 text-[var(--foreground-subtle)] transition-all duration-300 group-hover:rotate-0 group-hover:text-[var(--background)]"
-                          strokeWidth={1.5}
-                        />
-                      </span>
+                      {/* Underline */}
+                      <span className="absolute -bottom-1 left-0 h-[3px] w-full origin-left bg-white transition-transform duration-500 group-hover:scale-x-110 md:-bottom-2 md:h-[4px]" />
                     </button>
                   ) : (
                     <a
                       href={item.href}
                       onClick={() => handleLinkClick(item)}
                       role="menuitem"
-                      aria-label={`${item.label} - ${item.description}`}
-                      className="group flex items-baseline gap-8 border-b border-[var(--border)] py-2 transition-colors duration-300 hover:border-[var(--border-strong)] md:py-4"
+                      className="group relative"
                     >
-                      {/* Number */}
-                      <span
-                        className="font-mono text-sm text-[var(--foreground-subtle)] transition-opacity duration-300 group-hover:opacity-80"
-                        aria-hidden="true"
-                      >
-                        {String(index + 1).padStart(2, "0")}
+                      <span className="font-display text-[clamp(2.5rem,10vw,7rem)] font-bold uppercase leading-[0.9] tracking-tight text-white transition-all duration-300 group-hover:text-white/60">
+                        {item.label}
                       </span>
-
-                      {/* Label */}
-                      <span className="relative overflow-hidden">
-                        <span className="inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight text-[var(--foreground)] transition-transform duration-500 group-hover:-translate-y-full">
-                          {item.label}
-                        </span>
-                        <span
-                          className="text-gradient-animated absolute left-0 top-full inline-block font-display text-[clamp(2rem,8vw,6rem)] uppercase leading-none tracking-tight transition-transform duration-500 group-hover:-translate-y-full"
-                          aria-hidden="true"
-                        >
-                          {item.label}
-                        </span>
-                      </span>
-
-                      {/* Description - shows on hover */}
-                      <span className="ml-auto hidden translate-x-4 text-sm opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:text-[var(--foreground-subtle)] group-hover:opacity-100 md:block">
-                        {item.description}
-                      </span>
-
-                      {/* Arrow */}
-                      <span
-                        className="ml-8 hidden h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] transition-all duration-300 group-hover:border-[var(--foreground)] group-hover:bg-[var(--foreground)] md:flex"
-                        aria-hidden="true"
-                      >
-                        <ArrowIcon
-                          className="h-5 w-5 -rotate-45 text-[var(--foreground-subtle)] transition-all duration-300 group-hover:rotate-0 group-hover:text-[var(--background)]"
-                          strokeWidth={1.5}
-                        />
-                      </span>
+                      {/* Underline */}
+                      <span className="absolute -bottom-1 left-0 h-[3px] w-full origin-left bg-white transition-transform duration-500 group-hover:scale-x-110 md:-bottom-2 md:h-[4px]" />
                     </a>
                   )}
                 </li>
@@ -282,41 +261,46 @@ export default function Navigation({ isOpen, onClose }: NavigationProps) {
           </div>
         </nav>
 
-        {/* Footer */}
-        <div ref={footerRef} className="mt-auto shrink-0 pb-6 md:pb-10">
-          <div className="container-wide">
-            <div className="flex flex-col gap-8 border-t border-[var(--border)] pt-8 md:flex-row md:items-center md:justify-between">
-              {/* Socials */}
-              <nav className="flex gap-8" aria-label="Družbena omrežja">
+        {/* Footer - STRV style */}
+        <footer ref={footerRef} className="px-6 pb-6 md:px-12 md:pb-8">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            {/* Left - Copyright & Social */}
+            <div className="flex flex-wrap items-center gap-4 md:gap-6">
+              <span className="text-xs uppercase tracking-wider text-white/40">
+                © {new Date().getFullYear()} Nordia d.o.o.
+              </span>
+              <span className="hidden text-white/20 md:inline">/</span>
+              {socialLinks.map((link) => (
                 <a
-                  href="https://linkedin.com/company/nordia"
+                  key={link.label}
+                  href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Obiščite Nordia na LinkedIn (odpre se v novem oknu)"
-                  className="text-sm text-[var(--foreground-subtle)] transition-colors duration-300 hover:text-[var(--foreground)]"
+                  aria-label={`Obiščite Nordia na ${link.full} (odpre se v novem oknu)`}
+                  className="text-xs uppercase tracking-wider text-white/40 transition-colors duration-300 hover:text-white"
                 >
-                  LinkedIn
+                  {link.label}
                 </a>
-              </nav>
+              ))}
+            </div>
 
-              {/* Email */}
-              <button
-                onClick={() => {
-                  onClose();
-                  setTimeout(() => openContactForm(), 100);
-                }}
-                aria-label="Odpri kontaktni obrazec"
-                className="group flex items-center gap-3 text-sm text-[var(--foreground-subtle)] transition-colors duration-300 hover:text-[var(--foreground)]"
+            {/* Right - Legal links */}
+            <div className="flex flex-wrap items-center gap-4 md:gap-6">
+              <a
+                href="/privacy"
+                className="text-xs uppercase tracking-wider text-white/40 transition-colors duration-300 hover:text-white"
               >
-                <span>info@nordia.si</span>
-                <ArrowIcon
-                  className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-                  strokeWidth={1.5}
-                />
-              </button>
+                Zasebnost
+              </a>
+              <a
+                href="mailto:info@nordia.si"
+                className="text-xs uppercase tracking-wider text-white/40 transition-colors duration-300 hover:text-white"
+              >
+                info@nordia.si
+              </a>
             </div>
           </div>
-        </div>
+        </footer>
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
-import type { TeamMember, SocialPlatform } from "@/lib/data";
+import type { TeamMember } from "@/lib/data";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,15 +19,13 @@ const ANIMATION = {
 
 interface TeamSectionClientProps {
   teamMembers: readonly TeamMember[];
-  socialPlatforms: readonly SocialPlatform[];
 }
 
 /**
- * Client component for team section animations
+ * Client component for team section animations - STRV inspired
  */
 export default function TeamSectionClient({
   teamMembers,
-  socialPlatforms,
 }: TeamSectionClientProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -94,139 +92,115 @@ export default function TeamSectionClient({
     <section
       id="about"
       ref={sectionRef}
-      className="relative z-20 bg-[#111111] py-20 pt-40 md:py-32 md:pt-64 lg:py-40 lg:pt-80"
+      className="relative z-20 overflow-hidden bg-black"
     >
-      <div className="container-wide">
-        {/* Desktop: Two-column layout - images left, content right */}
-        <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
+      {/* Watermark - desktop only */}
+      <span
+        className="pointer-events-none absolute left-6 top-20 hidden select-none font-display text-[20vw] font-bold uppercase leading-[0.8] tracking-tighter text-[#111] md:left-12 md:block"
+        aria-hidden="true"
+      >
+        O nas
+      </span>
 
-          {/* Left side: Team member images side by side */}
-          <div
-            ref={gridRef}
-            className="flex gap-4 md:gap-6 lg:w-1/2"
-          >
-            {teamMembers.map((member) => (
-              <article
-                key={member.name}
-                className="team-member group flex-1 opacity-0"
-              >
-                {/* Image container with hover effects */}
-                <div className="relative overflow-hidden rounded-2xl bg-[var(--card-bg)]">
-                  <div className="aspect-[3/4]">
-                    <Image
-                      src={member.image}
-                      alt={`${member.name} - ${member.role}`}
-                      fill
-                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      className="object-cover transition-transform duration-700 md:group-hover:scale-105"
-                      loading="lazy"
-                      quality={75}
-                      placeholder="blur"
-                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQMDBAMBAAAAAAAAAAAAAQACAwQFERITITEGQWFx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAZEQACAwEAAAAAAAAAAAAAAAABEQACITH/2gAMAwEAAhEDEQA/AMv8cqKd1wrI5qiKJzXRkvkcQSNjucIi1WVBD//Z"
-                    />
-                  </div>
+      {/* Hero headline with editorial number */}
+      <div className="relative px-6 pb-12 pt-24 md:px-12 md:pb-16 md:pt-32 lg:pb-20 lg:pt-40">
+        <div className="relative">
+          {/* Mobile label */}
+          <p className="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-white/30 md:hidden">
+            O nas
+          </p>
 
-                  {/* Hover overlay - gradient from bottom for contrast */}
-                  <div
-                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                    aria-hidden="true"
-                  />
-
-                  {/* Content appears on hover */}
-                  <div className="absolute inset-x-0 bottom-0 flex flex-col p-4 text-white opacity-0 transition-all duration-500 group-hover:opacity-100 md:p-6">
-                    <h3 className="mb-1 font-display text-base font-medium tracking-tight md:mb-2 md:text-xl">
-                      {member.name}
-                    </h3>
-                    <p className="text-xs text-white/80 md:text-sm">
-                      {member.role}
-                    </p>
-                    <p className="hidden text-xs text-white/60 md:block">
-                      {member.subRole}
-                    </p>
-
-                    {/* Social links - hidden on small screens */}
-                    <nav
-                      className="mt-3 hidden gap-2 md:flex"
-                      aria-label={`Družbena omrežja - ${member.name}`}
-                    >
-                      {socialPlatforms.map((social) => {
-                        const href =
-                          social.name === "LinkedIn"
-                            ? (member.socials && member.socials.linkedin)
-                            : (member.socials && member.socials.twitter);
-                        return (
-                          <a
-                            key={social.name}
-                            href={href || "#"}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`${member.name} na ${social.name}`}
-                            className="pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full border border-white/20 bg-white/20 text-white/80 transition-all duration-200 hover:bg-white hover:text-black"
-                          >
-                            <span className="text-xs font-medium">
-                              {social.initial}
-                            </span>
-                          </a>
-                        );
-                      })}
-                    </nav>
-                  </div>
-                </div>
-
-                {/* Mobile: Content below image */}
-                <div className="mt-3 md:hidden">
-                  <h3 className="mb-1 font-display text-base font-medium tracking-tight text-[var(--foreground)]">
-                    {member.name}
-                  </h3>
-                  <p className="text-xs text-[var(--foreground-muted)]">
-                    {member.role}
-                  </p>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {/* Right side: Content */}
-          <header
+          {/* Main headline */}
+          <h2
             ref={headerRef}
-            className="opacity-0 lg:w-1/2 lg:flex lg:flex-col"
+            className="max-w-5xl font-display text-[clamp(2.5rem,8vw,7rem)] font-medium leading-[0.9] tracking-tight text-white opacity-0"
           >
-            {/* Title section */}
-            <div>
-              <p className="mb-6 text-sm font-medium uppercase tracking-[0.3em] text-[#a8a8a8]">
-                O nas
-              </p>
-              <h2 className="font-display text-[clamp(2.5rem,8vw,7rem)] font-medium leading-[0.95] tracking-tight text-[var(--foreground)]">
-                O{" "}
-                <span className="text-[#9ca3af]">
-                  Nordii
-                </span>
-              </h2>
-            </div>
-
-            {/* Content section - pushed to bottom on desktop */}
-            <div className="mt-8 space-y-5 lg:mt-auto">
-              <p className="text-lg leading-relaxed text-[var(--foreground-muted)] md:text-xl">
-                Nordio vodiva Taras in Izak. Delava kot usklajena ekipa — najprej
-                razumeva vaš cilj, nato zgradiva sistem, ki deluje tiho in zanesljivo.
-              </p>
-              <p className="text-lg leading-relaxed text-[var(--foreground-muted)] md:text-xl">
-                Detajl ni samo estetika. Je način, kako zmanjšujeva trenje,
-                gradiva zaupanje in dostaviva rešitve, ki zdržijo rast.
-              </p>
-              <div className="flex flex-wrap gap-4 pt-4 text-sm text-[var(--foreground-subtle)] md:gap-6">
-                <span>Manj besed, več jasnosti.</span>
-                <span className="hidden md:inline">·</span>
-                <span>Sistem pred improvizacijo.</span>
-                <span className="hidden md:inline">·</span>
-                <span>Vsak piksel šteje.</span>
-              </div>
-            </div>
-          </header>
+            Dva razvijalca.
+            <br />
+            <span className="text-white/40">Ena filozofija.</span>
+          </h2>
         </div>
       </div>
-      {/* Bela linija na dnu sekcije */}
-      <div className="absolute inset-x-0 bottom-0 h-px bg-white/20" />
+
+      {/* Main content - editorial grid */}
+      <div className="px-6 pb-16 md:px-12 md:pb-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+            {/* Left - Pull quote */}
+            <div className="lg:col-span-5">
+              <blockquote className="relative">
+                <span
+                  className="absolute -left-2 -top-4 font-serif text-6xl text-blue-500/20 md:-left-4 md:text-7xl"
+                  aria-hidden="true"
+                >
+                  &ldquo;
+                </span>
+                <p className="relative text-xl leading-[1.5] text-white/80 md:text-2xl">
+                  Ne prodajava ur.
+                  <br />
+                  <span className="text-white/50">Prodajava rezultate.</span>
+                </p>
+              </blockquote>
+
+              <p className="mt-6 text-base leading-[1.7] text-white/40">
+                Vsak projekt obravnavava kot lasten izdelek. Pozornost do
+                detajla ni opcija — je standard.
+              </p>
+
+              {/* Location info */}
+              <div className="mt-10 flex gap-8">
+                <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25">
+                  Ljubljana, SI
+                </p>
+                <p className="font-mono text-xs uppercase tracking-[0.2em] text-white/25">
+                  Est. 2024
+                </p>
+              </div>
+            </div>
+
+            {/* Right - Team photos */}
+            <div ref={gridRef} className="lg:col-span-7">
+              <div className="flex gap-4 md:gap-5">
+                {teamMembers.map((member, index) => (
+                  <article
+                    key={member.name}
+                    className={`team-member group flex-1 opacity-0 ${
+                      index === 1 ? "mt-12 lg:mt-16" : ""
+                    }`}
+                  >
+                    {/* Image */}
+                    <div className="relative overflow-hidden rounded-xl bg-white/5 md:rounded-2xl">
+                      <div className="aspect-[3/4]">
+                        <Image
+                          src={member.image}
+                          alt={`${member.name} - ${member.role}`}
+                          fill
+                          sizes="(max-width: 768px) 45vw, 30vw"
+                          className="object-cover"
+                          loading="lazy"
+                          quality={85}
+                          placeholder="blur"
+                          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAAUH/8QAIhAAAQMDBAMBAAAAAAAAAAAAAQACAwQFERITITEGQWFx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAZEQACAwEAAAAAAAAAAAAAAAABEQACITH/2gAMAwEAAhEDEQA/AMv8cqKd1wrI5qiKJzXRkvkcQSNjucIi1WVBD//Z"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Caption */}
+                    <div className="mt-4">
+                      <h3 className="font-display text-base font-medium text-white md:text-lg">
+                        {member.name}
+                      </h3>
+                      <p className="mt-0.5 text-xs text-white/40 md:text-sm">
+                        {member.role}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

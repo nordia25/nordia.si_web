@@ -19,7 +19,7 @@ function readFileSafe(p) {
 function main() {
   const chunksDir = path.resolve(".next", "static", "chunks");
   if (!fs.existsSync(chunksDir)) {
-    // eslint-disable-next-line no-console
+     
     console.error(
       `[perf:bundle] Missing ${chunksDir}. Run \`npm run build\` first.`
     );
@@ -66,19 +66,19 @@ function main() {
     .sort((a, b) => b.brotli - a.brotli)
     .slice(0, 10);
 
-  // eslint-disable-next-line no-console
+   
   console.log(`[perf:bundle] Files: ${rows.length}`);
-  // eslint-disable-next-line no-console
+   
   console.log(
     `[perf:bundle] Total (raw):    ${formatBytes(totals.raw)}\n` +
       `[perf:bundle] Total (gzip):   ${formatBytes(totals.gzip)}\n` +
       `[perf:bundle] Total (brotli): ${formatBytes(totals.brotli)}`
   );
 
-  // eslint-disable-next-line no-console
+   
   console.log("\n[perf:bundle] Top 10 by brotli size:");
   for (const r of top) {
-    // eslint-disable-next-line no-console
+     
     console.log(
       `- ${r.file}: raw ${formatBytes(r.raw)}, gzip ${formatBytes(
         r.gzip

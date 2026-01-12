@@ -27,7 +27,7 @@ function isPortFree(port) {
 
 async function findFreePort(start, end) {
   for (let port = start; port <= end; port += 1) {
-    // eslint-disable-next-line no-await-in-loop
+     
     if (await isPortFree(port)) return port;
   }
   throw new Error(`No free port found in range ${start}-${end}`);
@@ -35,7 +35,7 @@ async function findFreePort(start, end) {
 
 async function waitForHttpOk(url, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
-  // eslint-disable-next-line no-constant-condition
+   
   while (true) {
     if (Date.now() > deadline) {
       throw new Error(`Timeout waiting for server: ${url}`);
@@ -46,7 +46,7 @@ async function waitForHttpOk(url, timeoutMs) {
     } catch {
       // ignore and retry
     }
-    // eslint-disable-next-line no-await-in-loop
+     
     await sleep(250);
   }
 }
@@ -115,7 +115,7 @@ async function main() {
 }
 
 main().catch((err) => {
-  // eslint-disable-next-line no-console
+   
   console.error(`[smoke] FAILED: ${err instanceof Error ? err.message : String(err)}`);
   process.exit(1);
 });
