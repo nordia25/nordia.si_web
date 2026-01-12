@@ -118,10 +118,10 @@ export default function FooterClient({
         <div className="mx-auto flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           {/* Left - Copyright + Social */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span className="text-xs uppercase tracking-wider text-white/30">
+            <span className="text-xs uppercase tracking-wider text-white">
               © {new Date().getFullYear()} Nordia d.o.o.
             </span>
-            <span className="text-white/20">/</span>
+            <span className="text-white/40">/</span>
             {socialLinks.map((item) => (
               <a
                 key={item.label}
@@ -129,7 +129,7 @@ export default function FooterClient({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Obiščite Nordia na ${item.label} (odpre se v novem oknu)`}
-                className="text-xs uppercase tracking-wider text-white/30 transition-colors duration-300 hover:text-white"
+                className="text-xs uppercase tracking-wider text-white transition-opacity duration-300 hover:opacity-60"
               >
                 {item.label === "LinkedIn" ? "LI" : item.label === "Instagram" ? "IG" : item.label === "GitHub" ? "GH" : item.label}
               </a>
@@ -142,14 +142,14 @@ export default function FooterClient({
               <a
                 key={link.label}
                 href={link.href}
-                className="text-xs uppercase tracking-wider text-white/30 transition-colors duration-300 hover:text-white"
+                className="text-xs uppercase tracking-wider text-white transition-opacity duration-300 hover:opacity-60"
               >
                 {link.label}
               </a>
             ))}
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="flex items-center gap-2 text-xs uppercase tracking-wider text-white/30 transition-colors duration-300 hover:text-white"
+              className="flex items-center gap-2 text-xs uppercase tracking-wider text-white transition-opacity duration-300 hover:opacity-60"
               aria-label="Pomakni se na vrh strani"
             >
               <span>↑</span>
