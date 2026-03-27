@@ -75,7 +75,10 @@ body {
 
 /* === Performance Optimizations === */
 #hero,
-#about {
+#about,
+#works,
+#vrednote,
+#kdo-smo {
   contain: layout style;
 }
 
@@ -153,36 +156,6 @@ header {
   stroke-dashoffset: 0;
 }
 
-/* === Marquee Animation === */
-.marquee {
-  display: flex;
-  overflow: hidden;
-  user-select: none;
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@keyframes marquee-reverse {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(0); }
-}
-
-.animate-marquee {
-  animation: marquee 25s linear infinite;
-}
-
-.animate-marquee-reverse {
-  animation: marquee-reverse 25s linear infinite;
-}
-
-.animate-marquee:hover,
-.animate-marquee-reverse:hover {
-  animation-play-state: paused;
-}
-
 /* === Cursor Blink (Typewriter) === */
 @keyframes blink {
   0%, 50% { opacity: 1; }
@@ -218,7 +191,7 @@ header {
   position: relative;
   padding: 1.25rem 3rem;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: white;
@@ -230,7 +203,6 @@ header {
   overflow: hidden;
   transition: transform 0.4s var(--ease-apple-out), box-shadow 0.4s var(--ease-apple-out);
   will-change: transform;
-  animation: gradientShift 4s ease infinite;
   contain: layout style;
 }
 
@@ -320,6 +292,14 @@ header {
 
   .cta-hero-wrapper {
     width: 100%;
+  }
+}
+
+/* === Mobile: Disable noise animation to save battery === */
+@media (max-width: 1023px) {
+  .noise::before {
+    animation: none;
+    opacity: 0;
   }
 }
 

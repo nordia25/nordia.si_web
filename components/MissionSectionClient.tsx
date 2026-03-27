@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
-
-gsap.registerPlugin(ScrollTrigger);
 
 /** Value data structure */
 interface Value {
@@ -149,12 +146,17 @@ export default function MissionSectionClient() {
     if (!el || prefersReducedMotion) return;
 
     if (expand) {
-      // Expand with GSAP
+      // Pre-calculate target height to avoid layout thrashing
+      const targetHeight = el.scrollHeight;
       gsap.to(el, {
-        height: "auto",
+        height: targetHeight,
         opacity: 1,
         duration: 0.5,
         ease: "power2.out",
+        onComplete: () => {
+          // Set to auto after animation for responsive behavior
+          gsap.set(el, { height: "auto" });
+        },
       });
       // Animate text up
       const textEl = el.querySelector('p');

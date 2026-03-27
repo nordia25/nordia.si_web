@@ -19,6 +19,7 @@ const texGyreHeros = localFont({
   variable: "--font-helvetica",
   display: "swap",
   preload: true,
+  adjustFontFallback: "Arial",
 });
 
 export const metadata: Metadata = {
@@ -28,18 +29,22 @@ export const metadata: Metadata = {
     template: "%s | Nordia",
   },
   description:
-    "High-end studio za spletne strani, aplikacije in digitalne produkte. Storytelling, motion in vrhunski UX/UI. Začnimo projekt.",
+    "Premium studio za spletne strani, spletne trgovine in AI avtomatizacije. Vrhunski UX/UI design, bliskovita hitrost in SEO optimizacija. Slovenija.",
   keywords: [
     "spletne strani",
+    "spletna trgovina",
     "digitalne rešitve",
-    "web development",
-    "UI/UX design",
-    "digital products",
-    "venture builder",
+    "izdelava spletnih strani",
+    "web design",
+    "UI/UX oblikovanje",
+    "AI avtomatizacija",
+    "SEO optimizacija",
+    "spletna agencija Slovenija",
     "premium web design",
-    "Slovenia",
+    "e-commerce",
+    "3D tiskanje",
     "aplikacije",
-    "motion design",
+    "digitalna agencija",
   ],
   authors: [{ name: "Nordia d.o.o.", url: "https://nordia.si" }],
   creator: "Nordia d.o.o.",
@@ -56,13 +61,13 @@ export const metadata: Metadata = {
     siteName: "Nordia",
     title: "Nordia — Premium spletne strani in digitalne rešitve",
     description:
-      "High-end studio za spletne strani, aplikacije in digitalne produkte. Storytelling, motion in vrhunski UX/UI.",
+      "Premium studio za spletne strani, spletne trgovine in AI avtomatizacije. Vrhunski UX/UI design in SEO optimizacija.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Nordia — Premium digitalne rešitve",
+        alt: "Nordia — Premium spletne strani, spletne trgovine in digitalne rešitve",
       },
     ],
   },
@@ -70,7 +75,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Nordia — Premium spletne strani in digitalne rešitve",
     description:
-      "High-end studio za spletne strani, aplikacije in digitalne produkte. Storytelling, motion in vrhunski UX/UI.",
+      "Premium studio za spletne strani, spletne trgovine in AI avtomatizacije. Vrhunski UX/UI design in SEO optimizacija.",
     images: ["/og-image.jpg"],
     creator: "@nordia_si",
   },
@@ -87,6 +92,10 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://nordia.si",
+    languages: {
+      "sl-SI": "https://nordia.si",
+      "x-default": "https://nordia.si",
+    },
   },
   manifest: "/site.webmanifest",
 };
@@ -99,19 +108,122 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-const jsonLd = {
+const jsonLdOrganization = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": ["Organization", "ProfessionalService"],
+  "@id": "https://nordia.si/#organization",
   name: "Nordia",
+  legalName: "Nordia d.o.o.",
   url: "https://nordia.si",
-  logo: "https://nordia.si/logo.png",
+  logo: "https://nordia.si/og-image.jpg",
+  image: "https://nordia.si/og-image.jpg",
   description:
-    "High-end studio za spletne strani, aplikacije in digitalne produkte.",
+    "Premium studio za spletne strani, spletne trgovine, AI avtomatizacije in digitalne produkte v Sloveniji.",
   address: {
     "@type": "PostalAddress",
+    streetAddress: "Runarsko 1A",
+    addressLocality: "Nova Vas",
+    postalCode: "1385",
     addressCountry: "SI",
   },
-  sameAs: ["https://instagram.com/nordia_si"],
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 45.815,
+    longitude: 14.5144,
+  },
+  areaServed: {
+    "@type": "Country",
+    name: "Slovenia",
+  },
+  sameAs: [
+    "https://instagram.com/nordia.si",
+    "https://linkedin.com/company/nordia",
+    "https://github.com/nordia",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "info@nordia.si",
+    contactType: "customer service",
+    availableLanguage: ["Slovenian", "English"],
+  },
+  founder: [
+    {
+      "@type": "Person",
+      name: "Nikolaj Taras Fras",
+      jobTitle: "CEO - Komercialni direktor",
+      url: "https://linkedin.com/in/taras-fras",
+    },
+    {
+      "@type": "Person",
+      name: "Izak Ivančič",
+      jobTitle: "CTO - Tehnični direktor",
+      url: "https://linkedin.com/in/izak-ivancic",
+    },
+  ],
+  knowsAbout: [
+    "Web Development",
+    "UI/UX Design",
+    "E-Commerce",
+    "AI Automation",
+    "Digital Products",
+    "3D Printing",
+  ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Digitalne storitve",
+    itemListElement: [
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Premium spletna stran",
+          description:
+            "Oblikovanje in razvoj premium spletnih strani z Lighthouse 100, SEO-first pristopom in responsive designom.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Spletna trgovina",
+          description:
+            "E-commerce rešitve s Stripe/PayPal integracijami, avtomatsko sinhronizacijo zalog in optimiziranim checkoutom.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "AI Avtomatizacija",
+          description:
+            "Prilagojeni programi za avtomatizacijo procesov in integracija AI v obstoječo poslovno infrastrukturo.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "3D Tiskanje",
+          description:
+            "FDM in SLA 3D tiskanje s profesionalnimi materiali za hitro prototipiranje — od ideje do izdelka v 48 urah.",
+        },
+      },
+    ],
+  },
+};
+
+const jsonLdWebSite = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://nordia.si/#website",
+  url: "https://nordia.si",
+  name: "Nordia",
+  description:
+    "Premium studio za spletne strani, spletne trgovine, AI avtomatizacije in digitalne produkte.",
+  publisher: {
+    "@id": "https://nordia.si/#organization",
+  },
+  inLanguage: "sl-SI",
 };
 
 export default function RootLayout({
@@ -139,7 +251,15 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLdOrganization),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLdWebSite),
+          }}
         />
         {children}
         <SpeedInsights />

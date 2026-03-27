@@ -2,11 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import ArrowIcon from "@/components/icons/ArrowIcon";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Animation timing constants
 const ANIMATION = {

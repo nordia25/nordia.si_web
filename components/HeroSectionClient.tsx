@@ -2,11 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useContactForm } from "@/contexts/ContactFormContext";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const services = [
   "Spletne strani",
@@ -66,9 +63,9 @@ export default function HeroSectionClient() {
             alt=""
             fill
             priority
-            quality={85}
+            quality={75}
             className="object-cover"
-            sizes="100vw"
+            sizes="(min-width: 1024px) 100vw, 1px"
           />
         </div>
       </div>
@@ -80,8 +77,13 @@ export default function HeroSectionClient() {
         className="relative z-10 min-h-screen bg-black lg:bg-transparent"
         style={{ contain: "layout style paint" }}
       >
+        {/* SEO: Visually hidden H1 for crawlers — SVG text is not semantic HTML */}
+        <h1 className="sr-only">
+          Digitalne rešitve prihodnosti — Premium spletne strani, spletne trgovine in AI avtomatizacije
+        </h1>
+
         {/* Desktop: SVG mask cutout effect - hidden on mobile */}
-        <svg className="absolute inset-0 hidden h-full w-full lg:block">
+        <svg className="absolute inset-0 hidden h-full w-full lg:block" aria-hidden="true">
           <defs>
             <mask id="textCutout">
               <rect width="100%" height="100%" fill="white" />
@@ -130,8 +132,8 @@ export default function HeroSectionClient() {
               Digitalna agencija
             </p>
 
-            {/* Main title */}
-            <h1 className="font-display font-bold uppercase leading-[1.15] tracking-tight">
+            {/* Main title — visual only, semantic H1 is above */}
+            <p className="font-display font-bold uppercase leading-[1.15] tracking-tight" aria-hidden="true">
               <span
                 className="block text-white"
                 style={{ fontSize: "clamp(2.5rem, 13vw, 5rem)" }}
@@ -150,7 +152,7 @@ export default function HeroSectionClient() {
               >
                 prihodnosti.
               </span>
-            </h1>
+            </p>
 
             {/* Mobile CTA Button - under title */}
             <div className="cta-hero-wrapper mt-10">

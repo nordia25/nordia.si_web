@@ -1,13 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useContactForm } from "@/contexts/ContactFormContext";
 import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 import type { SocialLink, LegalLink } from "@/lib/data";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Animation timing constants
 const ANIMATION = {

@@ -13,8 +13,11 @@ export default function PitchPage() {
         controls
         autoPlay
         playsInline
+        preload="metadata"
+        width={1920}
+        height={1080}
       >
-        <source src="/IMG_1125.mp4" type="video/mp4" />
+        <source src="/pitch-video.mp4" type="video/mp4" />
       </video>
     </div>
   );

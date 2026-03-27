@@ -2,13 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 import type { TeamMember } from "@/lib/data";
 import { BLUR_DATA_URL_1PX } from "@/lib/imagePlaceholders";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Animation timing constants - OPTIMIZED for snappier feel
 const ANIMATION = {
@@ -169,7 +166,7 @@ export default function TeamSectionClient({
                           sizes="(max-width: 768px) 45vw, 30vw"
                           className="object-cover"
                           loading="lazy"
-                          quality={85}
+                          quality={75}
                           placeholder="blur"
                           blurDataURL={BLUR_DATA_URL_1PX}
                         />

@@ -2,14 +2,11 @@
 
 import { useEffect, useRef, useState, memo } from "react";
 import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useSimpleLayout, usePrefersReducedMotion } from "@/hooks/useDeviceDetection";
 import { useContactForm } from "@/contexts/ContactFormContext";
 import type { Project } from "@/lib/data";
 import { BLUR_DATA_URL_1PX } from "@/lib/imagePlaceholders";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Animation timing constants
 const ANIMATION = {

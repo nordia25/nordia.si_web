@@ -2,11 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useSimpleLayout } from "@/hooks/useDeviceDetection";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Lenis configuration optimized for ScrollTrigger compatibility
 const LENIS_CONFIG = {

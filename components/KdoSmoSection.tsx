@@ -2,10 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 /** Text segments with styling info */
 const TEXT_SEGMENTS = [
@@ -156,6 +153,9 @@ export default function KdoSmoSection() {
       {/* Content */}
       <div className="relative px-6 md:px-12 pt-32 md:pt-48 lg:pt-64 pb-32 md:pb-48 lg:pb-64">
         <div className="ml-[5%] md:ml-[15%] lg:ml-[25%] max-w-[50.4rem]">
+          {/* Section heading — visible to crawlers, visually part of the watermark design */}
+          <h2 className="sr-only">Kdo smo — Digitalna agencija za spletne rešitve</h2>
+
           {/* Main text with typewriter */}
           <p className="font-display text-[clamp(1.1rem,3vw,2.5rem)] font-medium leading-[1.4] tracking-tight min-h-[4em]">
             {renderText()}
@@ -168,7 +168,7 @@ export default function KdoSmoSection() {
           <Link
             ref={buttonRef}
             href="#kontakt"
-            className="mt-12 inline-block bg-[#3b82f6] px-8 py-4 text-sm font-semibold uppercase tracking-wider text-white transition-colors duration-300 hover:bg-[#2563eb]"
+            className="mt-12 inline-block bg-[#3b82f6] px-8 py-4 text-sm font-bold uppercase tracking-wider text-white transition-colors duration-300 hover:bg-[#2563eb]"
           >
             Pogovorimo se
           </Link>

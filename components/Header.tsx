@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import Navigation from "./Navigation";
+import dynamic from "next/dynamic";
+import { gsap } from "@/lib/gsap";
 import { useContactForm } from "@/contexts/ContactFormContext";
+
+const Navigation = dynamic(() => import("./Navigation"), { ssr: false });
 
 // Animation timing
 const MENU_ANIMATION = {
